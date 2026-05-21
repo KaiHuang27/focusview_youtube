@@ -1,0 +1,71 @@
+.ytvt-toolbar {
+  position: absolute;
+  z-index: 2147483647;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 24px);
+  min-height: 36px;
+  padding: 6px;
+  color: rgba(255, 255, 255, 0.94);
+  background: rgba(28, 28, 30, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  font: 500 12px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+}
+
+.ytvt-label {
+  min-width: 36px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ytvt-slider {
+  width: 116px;
+  accent-color: rgb(10, 132, 255);
+}
+
+.ytvt-segment {
+  display: flex;
+  padding: 2px;
+  background: rgba(118, 118, 128, 0.24);
+  border-radius: 7px;
+}
+
+.ytvt-button {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 9px;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.ytvt-button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.ytvt-button.is-active {
+  color: rgb(255, 255, 255);
+  background: rgb(10, 132, 255);
+}
+
+@media (max-width: 720px) {
+  .ytvt-toolbar {
+    right: 8px;
+    left: 8px;
+    flex-wrap: wrap;
+  }
+
+  .ytvt-slider {
+    flex: 1 1 140px;
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Video Transform",
+  "description": "Zoom, rotate, and mirror YouTube videos in Microsoft Edge or Chrome.",
+  "version": "0.1.0",
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["src/transform-state.js", "src/content.js"],
+      "css": ["src/overlay.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
