@@ -1,5 +1,5 @@
 const ROTATIONS = [0, 90, 180, 270];
-const { createDefaultState, createTransformStyle } = globalThis.YTVTTransform;
+const { applyZoomDelta, createDefaultState, createTransformStyle } = globalThis.YTVTTransform;
 
 let state = createDefaultState();
 let video = null;
@@ -174,6 +174,18 @@ function onPointerMove(event) {
   event.preventDefault();
 }
 
+function onWheel(event) {
+  if (!state.panMode) {
+    return;
+  }
+
+  const direction = event.deltaY < 0 ? 1 : -1;
+  state.zoom = applyZoomDelta(state.zoom, direction);
+  renderToolbar();
+  applyTransform();
+  event.preventDefault();
+}
+
 function endDrag(event) {
   if (!dragStart || event.pointerId !== dragStart.pointerId) {
     return;
@@ -193,6 +205,7 @@ function bindVideo(nextVideo) {
     video.removeEventListener("pointermove", onPointerMove);
     video.removeEventListener("pointerup", endDrag);
     video.removeEventListener("pointercancel", endDrag);
+    video.removeEventListener("wheel", onWheel);
   }
 
   video = nextVideo;
@@ -200,6 +213,7 @@ function bindVideo(nextVideo) {
   video.addEventListener("pointermove", onPointerMove);
   video.addEventListener("pointerup", endDrag);
   video.addEventListener("pointercancel", endDrag);
+  video.addEventListener("wheel", onWheel, { passive: false });
   applyTransform();
 }
 

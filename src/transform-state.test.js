@@ -4,6 +4,7 @@ import test from "node:test";
 await import("./transform-state.js");
 
 const {
+  applyZoomDelta,
   createDefaultState,
   createTransformStyle,
   normalizeRotation,
@@ -49,4 +50,11 @@ test("normalizeRotation only accepts right-angle rotations", () => {
   assert.equal(normalizeRotation(180), 180);
   assert.equal(normalizeRotation(270), 270);
   assert.throws(() => normalizeRotation(45), /Unsupported rotation/);
+});
+
+test("applyZoomDelta changes zoom and clamps it to the supported range", () => {
+  assert.equal(applyZoomDelta(100, 1), 110);
+  assert.equal(applyZoomDelta(100, -1), 90);
+  assert.equal(applyZoomDelta(295, 1), 300);
+  assert.equal(applyZoomDelta(55, -1), 50);
 });
