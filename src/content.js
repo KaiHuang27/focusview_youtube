@@ -1,5 +1,10 @@
 const ROTATIONS = [0, 90, 180, 270];
-const { applyZoomDelta, createDefaultState, createTransformStyle } = globalThis.YTVTTransform;
+const {
+  applyZoomDelta,
+  createDefaultState,
+  createTransformStyle,
+  shouldResetForVideoKey,
+} = globalThis.YTVTTransform;
 
 let state = createDefaultState();
 let video = null;
@@ -197,6 +202,7 @@ function endDrag(event) {
 
 function bindVideo(nextVideo) {
   if (video === nextVideo) {
+    applyTransform();
     return;
   }
 
@@ -239,7 +245,7 @@ function sync() {
   bindVideo(nextVideo);
 
   const nextVideoKey = getVideoKey();
-  if (currentVideoKey && currentVideoKey !== nextVideoKey) {
+  if (shouldResetForVideoKey(currentVideoKey, nextVideoKey)) {
     resetState();
   }
   currentVideoKey = nextVideoKey;

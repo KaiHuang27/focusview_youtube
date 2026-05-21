@@ -18,6 +18,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 4. Select this project folder: `/Users/kai/Documents/New project 2`.
 5. Open a normal YouTube video page, such as `https://www.youtube.com/watch?v=...`.
 6. Use the floating toolbar in the top-right corner of the YouTube player.
+7. After changing zoom, enter and leave fullscreen to confirm the transform is preserved.
 
 ## Controls
 

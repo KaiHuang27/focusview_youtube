@@ -22,7 +22,8 @@ The extension keeps YouTube's native player and controls intact. It only applies
 4. In Pan mode, wheel events update zoom in 10% steps and clamp it to 50%-300%.
 5. `createTransformStyle` converts state into a CSS `transform`.
 6. The transform is applied directly to the video element.
-7. URL or player changes trigger `sync`; when the video key changes, state resets to defaults.
+7. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform is reapplied to the same video element.
+8. When the video key changes, state resets to defaults.
 
 ## State Model
 
@@ -52,5 +53,6 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm the toolbar appears on a normal YouTube watch page.
 - Confirm zoom, rotation, horizontal mirror, vertical mirror, combined mirror, Pan, and Reset.
 - Confirm mouse wheel zooms only while Pan is enabled.
+- Confirm zoom, rotation, mirror, and pan state are preserved when entering and leaving fullscreen.
 - Confirm switching YouTube videos resets state.
 - Confirm normal video click-to-play still works while Pan is off.

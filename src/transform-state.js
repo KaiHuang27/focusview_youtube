@@ -39,10 +39,15 @@
     return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + direction * ZOOM_STEP));
   }
 
+  function shouldResetForVideoKey(currentVideoKey, nextVideoKey) {
+    return Boolean(currentVideoKey && currentVideoKey !== nextVideoKey);
+  }
+
   globalThis.YTVTTransform = {
     applyZoomDelta,
     createDefaultState,
     createTransformStyle,
     normalizeRotation,
+    shouldResetForVideoKey,
   };
 })();

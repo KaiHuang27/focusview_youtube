@@ -8,6 +8,7 @@ const {
   createDefaultState,
   createTransformStyle,
   normalizeRotation,
+  shouldResetForVideoKey,
 } = globalThis.YTVTTransform;
 
 test("createDefaultState returns reset video transform values", () => {
@@ -57,4 +58,10 @@ test("applyZoomDelta changes zoom and clamps it to the supported range", () => {
   assert.equal(applyZoomDelta(100, -1), 90);
   assert.equal(applyZoomDelta(295, 1), 300);
   assert.equal(applyZoomDelta(55, -1), 50);
+});
+
+test("shouldResetForVideoKey resets only when an existing video key changes", () => {
+  assert.equal(shouldResetForVideoKey("", "abc123"), false);
+  assert.equal(shouldResetForVideoKey("abc123", "abc123"), false);
+  assert.equal(shouldResetForVideoKey("abc123", "def456"), true);
 });
