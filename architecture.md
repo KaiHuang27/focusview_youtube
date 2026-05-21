@@ -19,7 +19,7 @@ The extension keeps YouTube's native player and controls intact. It only applies
 1. YouTube loads or navigates to a watch URL.
 2. The content script finds `.html5-video-player` and `video.html5-main-video`.
 3. The toolbar updates local in-memory state.
-4. In Pan mode, wheel events update zoom in 10% steps and clamp it to 50%-300%.
+4. In Pan mode, wheel events update zoom in 10% steps and clamp it to 100%-500%.
 5. `createTransformStyle` converts state into a CSS `transform`.
 6. The transform is applied directly to the video element.
 7. `createViewportFrame` maps zoom and pan into a normalized visible rectangle for the top-left position map.

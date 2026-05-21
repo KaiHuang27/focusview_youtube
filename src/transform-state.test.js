@@ -56,9 +56,9 @@ test("normalizeRotation only accepts right-angle rotations", () => {
 
 test("applyZoomDelta changes zoom and clamps it to the supported range", () => {
   assert.equal(applyZoomDelta(100, 1), 110);
-  assert.equal(applyZoomDelta(100, -1), 90);
-  assert.equal(applyZoomDelta(295, 1), 300);
-  assert.equal(applyZoomDelta(55, -1), 50);
+  assert.equal(applyZoomDelta(100, -1), 100);
+  assert.equal(applyZoomDelta(495, 1), 500);
+  assert.equal(applyZoomDelta(105, -1), 100);
 });
 
 test("shouldResetForVideoKey resets only when an existing video key changes", () => {

@@ -4,7 +4,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 
 ## Features
 
-- Zoom slider from 50% to 300%.
+- Zoom slider from 100% to 500%.
 - Rotate video by 0, 90, 180, or 270 degrees.
 - Mirror horizontally, vertically, or both.
 - Pan mode for dragging a zoomed video and using the mouse wheel to zoom.
@@ -23,7 +23,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 
 ## Controls
 
-- Slider: changes zoom between 50% and 300%.
+- Slider: changes zoom between 100% and 500%.
 - `0`, `90`, `180`, `270`: rotates the video.
 - `H`: mirrors the video horizontally.
 - `V`: mirrors the video vertically.

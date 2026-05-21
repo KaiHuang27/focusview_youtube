@@ -1,8 +1,8 @@
 (() => {
   const ALLOWED_ROTATIONS = new Set([0, 90, 180, 270]);
   const ZOOM_STEP = 10;
-  const MIN_ZOOM = 50;
-  const MAX_ZOOM = 300;
+  const MIN_ZOOM = 100;
+  const MAX_ZOOM = 500;
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));

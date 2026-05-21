@@ -121,8 +121,8 @@ function renderToolbar() {
   const zoom = document.createElement("input");
   zoom.className = "ytvt-slider";
   zoom.type = "range";
-  zoom.min = "50";
-  zoom.max = "300";
+  zoom.min = "100";
+  zoom.max = "500";
   zoom.step = "1";
   zoom.value = String(state.zoom);
   zoom.title = "Zoom";
