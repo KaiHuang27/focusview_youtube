@@ -5,6 +5,7 @@ await import("./transform-state.js");
 
 const {
   applyZoomDelta,
+  createViewportFrame,
   createDefaultState,
   createTransformStyle,
   normalizeRotation,
@@ -64,4 +65,25 @@ test("shouldResetForVideoKey resets only when an existing video key changes", ()
   assert.equal(shouldResetForVideoKey("", "abc123"), false);
   assert.equal(shouldResetForVideoKey("abc123", "abc123"), false);
   assert.equal(shouldResetForVideoKey("abc123", "def456"), true);
+});
+
+test("createViewportFrame returns full frame when video is not zoomed in", () => {
+  assert.deepEqual(createViewportFrame(createDefaultState(), 1280, 720), {
+    x: 0,
+    y: 0,
+    width: 1,
+    height: 1,
+  });
+});
+
+test("createViewportFrame maps zoom and pan into normalized original-video coordinates", () => {
+  assert.deepEqual(
+    createViewportFrame({ ...createDefaultState(), zoom: 200, panX: 160, panY: -90 }, 1280, 720),
+    {
+      x: 0.1875,
+      y: 0.3125,
+      width: 0.5,
+      height: 0.5,
+    }
+  );
 });

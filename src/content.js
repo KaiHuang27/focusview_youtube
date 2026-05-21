@@ -1,6 +1,7 @@
 const ROTATIONS = [0, 90, 180, 270];
 const {
   applyZoomDelta,
+  createViewportFrame,
   createDefaultState,
   createTransformStyle,
   shouldResetForVideoKey,
@@ -10,6 +11,7 @@ let state = createDefaultState();
 let video = null;
 let player = null;
 let toolbar = null;
+let viewportMap = null;
 let resizeObserver = null;
 let currentVideoKey = "";
 let dragStart = null;
@@ -45,6 +47,7 @@ function applyTransform() {
   video.style.transform = style.transform;
   video.style.transformOrigin = style.transformOrigin;
   video.style.cursor = state.panMode ? "grab" : "";
+  renderViewportMap();
 }
 
 function clearTransform() {
@@ -55,6 +58,30 @@ function clearTransform() {
   video.style.transform = "";
   video.style.transformOrigin = "";
   video.style.cursor = "";
+  viewportMap?.remove();
+  viewportMap = null;
+}
+
+function renderViewportMap() {
+  if (!player || !video) {
+    return;
+  }
+
+  if (!viewportMap) {
+    viewportMap = document.createElement("div");
+    viewportMap.className = "ytvt-map";
+    viewportMap.setAttribute("aria-label", "Visible area inside original video");
+    viewportMap.innerHTML = '<div class="ytvt-map-frame"></div>';
+    player.append(viewportMap);
+  }
+
+  const frame = createViewportFrame(state, video.clientWidth, video.clientHeight);
+  const frameElement = viewportMap.querySelector(".ytvt-map-frame");
+  frameElement.style.left = `${frame.x * 100}%`;
+  frameElement.style.top = `${frame.y * 100}%`;
+  frameElement.style.width = `${frame.width * 100}%`;
+  frameElement.style.height = `${frame.height * 100}%`;
+  viewportMap.hidden = state.zoom === 100 && state.panX === 0 && state.panY === 0;
 }
 
 function createButton(label, title, active, onClick) {
@@ -228,6 +255,8 @@ function sync() {
     clearTransform();
     toolbar?.remove();
     toolbar = null;
+    viewportMap?.remove();
+    viewportMap = null;
     state = createDefaultState();
     currentVideoKey = "";
     return;

@@ -4,6 +4,10 @@
   const MIN_ZOOM = 50;
   const MAX_ZOOM = 300;
 
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
   function createDefaultState() {
     return {
       zoom: 100,
@@ -43,8 +47,28 @@
     return Boolean(currentVideoKey && currentVideoKey !== nextVideoKey);
   }
 
+  function createViewportFrame(state, width, height) {
+    const scale = state.zoom / 100;
+    if (scale <= 1 || width <= 0 || height <= 0) {
+      return { x: 0, y: 0, width: 1, height: 1 };
+    }
+
+    const frameWidth = 1 / scale;
+    const frameHeight = 1 / scale;
+    const x = clamp(0.5 - state.panX / (scale * width) - frameWidth / 2, 0, 1 - frameWidth);
+    const y = clamp(0.5 - state.panY / (scale * height) - frameHeight / 2, 0, 1 - frameHeight);
+
+    return {
+      x: Number(x.toFixed(4)),
+      y: Number(y.toFixed(4)),
+      width: Number(frameWidth.toFixed(4)),
+      height: Number(frameHeight.toFixed(4)),
+    };
+  }
+
   globalThis.YTVTTransform = {
     applyZoomDelta,
+    createViewportFrame,
     createDefaultState,
     createTransformStyle,
     normalizeRotation,
