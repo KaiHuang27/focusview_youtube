@@ -9,6 +9,7 @@ const {
   createViewportFrame,
   createDefaultState,
   createTransformStyle,
+  getRotationFitScale,
   normalizeRotation,
   shouldInterceptPanWheel,
   shouldResetForVideoKey,
@@ -45,6 +46,20 @@ test("createTransformStyle combines pan, rotation, and flips", () => {
       panY: -8,
     }).transform,
     "translate(12px, -8px) rotate(90deg) scale(-2, -2)"
+  );
+});
+
+test("getRotationFitScale fits right-angle rotation inside the video frame", () => {
+  assert.equal(getRotationFitScale(0, 1920, 1080), 1);
+  assert.equal(getRotationFitScale(180, 1920, 1080), 1);
+  assert.equal(getRotationFitScale(90, 1920, 1080), 0.5625);
+  assert.equal(getRotationFitScale(270, 1080, 1920), 0.5625);
+});
+
+test("createTransformStyle applies rotation fit before user zoom", () => {
+  assert.equal(
+    createTransformStyle({ ...createDefaultState(), rotation: 90 }, 1920, 1080).transform,
+    "translate(0px, 0px) rotate(90deg) scale(0.5625, 0.5625)"
   );
 });
 
@@ -94,6 +109,20 @@ test("clampPanState centers pan at 100 percent zoom", () => {
   assert.deepEqual(
     clampPanState({ ...createDefaultState(), panX: 240, panY: -120 }, 1280, 720),
     createDefaultState()
+  );
+});
+
+test("clampPanState centers pan when rotated fit leaves empty side space", () => {
+  assert.deepEqual(
+    clampPanState({ ...createDefaultState(), rotation: 90, panX: 240, panY: -120 }, 1920, 1080),
+    { ...createDefaultState(), rotation: 90 }
+  );
+});
+
+test("clampPanState uses rotated bounds when zoomed after fit", () => {
+  assert.deepEqual(
+    clampPanState({ ...createDefaultState(), rotation: 90, zoom: 200, panX: 900, panY: -900 }, 1920, 1080),
+    { ...createDefaultState(), rotation: 90, zoom: 200, panX: 0, panY: -540 }
   );
 });
 

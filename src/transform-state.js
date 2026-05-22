@@ -28,8 +28,21 @@
     return rotation;
   }
 
-  function createTransformStyle(state) {
-    const scale = state.zoom / 100;
+  function getRotationFitScale(rotation, width = 0, height = 0) {
+    const normalizedRotation = normalizeRotation(rotation);
+    if (normalizedRotation === 0 || normalizedRotation === 180 || width <= 0 || height <= 0) {
+      return 1;
+    }
+
+    return Number(Math.min(width / height, height / width).toFixed(4));
+  }
+
+  function getEffectiveScale(state, width, height) {
+    return (state.zoom / 100) * getRotationFitScale(state.rotation, width, height);
+  }
+
+  function createTransformStyle(state, width = 0, height = 0) {
+    const scale = getEffectiveScale(state, width, height);
     const scaleX = state.flipX ? -scale : scale;
     const scaleY = state.flipY ? -scale : scale;
 
@@ -44,13 +57,16 @@
   }
 
   function clampPanState(state, width, height) {
-    const scale = state.zoom / 100;
+    const scale = getEffectiveScale(state, width, height);
     if (scale <= 1 || width <= 0 || height <= 0) {
       return { ...state, panX: 0, panY: 0 };
     }
 
-    const maxPanX = ((scale - 1) * width) / 2;
-    const maxPanY = ((scale - 1) * height) / 2;
+    const isSideways = state.rotation === 90 || state.rotation === 270;
+    const scaledWidth = (isSideways ? height : width) * scale;
+    const scaledHeight = (isSideways ? width : height) * scale;
+    const maxPanX = Math.max(0, (scaledWidth - width) / 2);
+    const maxPanY = Math.max(0, (scaledHeight - height) / 2);
 
     return {
       ...state,
@@ -92,6 +108,7 @@
     createViewportFrame,
     createDefaultState,
     createTransformStyle,
+    getRotationFitScale,
     normalizeRotation,
     shouldInterceptPanWheel,
     shouldResetForVideoKey,

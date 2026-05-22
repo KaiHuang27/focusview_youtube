@@ -53,7 +53,7 @@ function applyTransform() {
   }
 
   state = clampPanState(state, video.clientWidth, video.clientHeight);
-  const style = createTransformStyle(state);
+  const style = createTransformStyle(state, video.clientWidth, video.clientHeight);
   video.style.transform = style.transform;
   video.style.transformOrigin = style.transformOrigin;
   video.style.cursor = state.panMode ? "grab" : "";

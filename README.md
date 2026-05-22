@@ -5,7 +5,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 ## Features
 
 - Zoom slider from 100% to 500%.
-- Rotate video by 0, 90, 180, or 270 degrees.
+- Rotate video by 0, 90, 180, or 270 degrees, fitting 90/270-degree rotations inside the player frame first.
 - Mirror horizontally, vertically, or both.
 - Pan mode for dragging a zoomed video and using the mouse wheel to zoom without adding extra black borders.
 - Top-left position map showing the visible area inside the original video frame.
@@ -31,6 +31,8 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 - `Reset`: restores zoom, rotation, mirror, and pan to the default state.
 
 Pan movement is bounded by the current zoom level and video element size. When the video edge reaches the visible edge, the extension stops further movement in that direction. Returning to 100% zoom recenters the video.
+
+When rotating 90 or 270 degrees, 100% zoom means the rotated video is first scaled to fit inside the player frame. This prevents a landscape video from being cut off at the top and bottom after rotating to portrait orientation.
 
 When zoom is not 100%, a small position map appears in the top-left corner of the player. The blue rectangle shows which part of the original video frame is currently visible.
 
