@@ -10,6 +10,7 @@ const {
   createDefaultState,
   createTransformStyle,
   normalizeRotation,
+  shouldInterceptPanWheel,
   shouldResetForVideoKey,
 } = globalThis.YTVTTransform;
 
@@ -115,4 +116,9 @@ test("createViewportFrame keeps extreme pan inside original-video coordinates", 
     createViewportFrame({ ...createDefaultState(), zoom: 200, panX: 5000, panY: -5000 }, 1280, 720),
     { x: 0, y: 0.5, width: 0.5, height: 0.5 }
   );
+});
+
+test("shouldInterceptPanWheel intercepts wheel events only in Pan mode", () => {
+  assert.equal(shouldInterceptPanWheel(createDefaultState()), false);
+  assert.equal(shouldInterceptPanWheel({ ...createDefaultState(), panMode: true }), true);
 });

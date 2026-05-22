@@ -63,6 +63,10 @@
     return Boolean(currentVideoKey && currentVideoKey !== nextVideoKey);
   }
 
+  function shouldInterceptPanWheel(state) {
+    return state.panMode === true;
+  }
+
   function createViewportFrame(state, width, height) {
     const scale = state.zoom / 100;
     if (scale <= 1 || width <= 0 || height <= 0) {
@@ -89,6 +93,7 @@
     createDefaultState,
     createTransformStyle,
     normalizeRotation,
+    shouldInterceptPanWheel,
     shouldResetForVideoKey,
   };
 })();

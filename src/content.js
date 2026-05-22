@@ -5,12 +5,14 @@ const {
   createViewportFrame,
   createDefaultState,
   createTransformStyle,
+  shouldInterceptPanWheel,
   shouldResetForVideoKey,
 } = globalThis.YTVTTransform;
 
 let state = createDefaultState();
 let video = null;
 let player = null;
+let wheelTarget = null;
 let toolbar = null;
 let viewportMap = null;
 let resizeObserver = null;
@@ -37,6 +39,12 @@ function findPlayer() {
 
 function findVideo() {
   return document.querySelector("video.html5-main-video");
+}
+
+function blockYouTubeWheel(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation?.();
 }
 
 function applyTransform() {
@@ -211,16 +219,16 @@ function onPointerMove(event) {
 }
 
 function onWheel(event) {
-  if (!state.panMode) {
+  if (!shouldInterceptPanWheel(state) || !video) {
     return;
   }
 
+  blockYouTubeWheel(event);
   const direction = event.deltaY < 0 ? 1 : -1;
   state.zoom = applyZoomDelta(state.zoom, direction);
   state = clampPanState(state, video.clientWidth, video.clientHeight);
   renderToolbar();
   applyTransform();
-  event.preventDefault();
 }
 
 function endDrag(event) {
@@ -243,7 +251,6 @@ function bindVideo(nextVideo) {
     video.removeEventListener("pointermove", onPointerMove);
     video.removeEventListener("pointerup", endDrag);
     video.removeEventListener("pointercancel", endDrag);
-    video.removeEventListener("wheel", onWheel);
   }
 
   video = nextVideo;
@@ -251,8 +258,17 @@ function bindVideo(nextVideo) {
   video.addEventListener("pointermove", onPointerMove);
   video.addEventListener("pointerup", endDrag);
   video.addEventListener("pointercancel", endDrag);
-  video.addEventListener("wheel", onWheel, { passive: false });
   applyTransform();
+}
+
+function bindWheelTarget(nextPlayer) {
+  if (wheelTarget === nextPlayer) {
+    return;
+  }
+
+  wheelTarget?.removeEventListener("wheel", onWheel, true);
+  wheelTarget = nextPlayer;
+  wheelTarget.addEventListener("wheel", onWheel, { capture: true, passive: false });
 }
 
 function sync() {
@@ -262,6 +278,8 @@ function sync() {
     toolbar = null;
     viewportMap?.remove();
     viewportMap = null;
+    wheelTarget?.removeEventListener("wheel", onWheel, true);
+    wheelTarget = null;
     state = createDefaultState();
     currentVideoKey = "";
     return;
@@ -275,6 +293,7 @@ function sync() {
   }
 
   player = nextPlayer;
+  bindWheelTarget(nextPlayer);
   ensureToolbar();
   bindVideo(nextVideo);
 
