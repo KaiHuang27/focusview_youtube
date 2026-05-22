@@ -19,7 +19,7 @@ The extension keeps YouTube's native player and controls intact. It only applies
 1. YouTube loads or navigates to a watch URL.
 2. The content script finds `.html5-video-player` and `video.html5-main-video`.
 3. The toolbar updates local in-memory state.
-4. In Pan mode, player-level capture wheel events are intercepted before YouTube can handle them; they update zoom in 10% steps and clamp it to 100%-500%.
+4. In Pan mode, player-level capture wheel events are intercepted before YouTube can handle them; they update zoom in 1% steps and clamp it to 100%-500%.
 5. `getRotationFitScale` computes the fit scale for 90/270-degree rotations so the rotated bounding box fits inside the player frame before user zoom is applied.
 6. `clampPanState` bounds pan to the current scaled and rotated video size before transforms are applied.
 7. `createTransformStyle` converts state into a CSS `transform`.

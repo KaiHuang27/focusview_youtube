@@ -27,7 +27,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 - `0`, `90`, `180`, `270`: rotates the video.
 - `H`: mirrors the video horizontally.
 - `V`: mirrors the video vertically.
-- `Pan`: enables drag-to-pan on the video. While enabled, the mouse wheel changes zoom in 10% steps and is blocked from YouTube's native fullscreen controls.
+- `Pan`: enables drag-to-pan on the video. While enabled, the mouse wheel changes zoom in 1% steps and is blocked from YouTube's native fullscreen controls.
 - `Reset`: restores zoom, rotation, mirror, and pan to the default state.
 
 Pan movement is bounded by the current zoom level and video element size. When the video edge reaches the visible edge, the extension stops further movement in that direction. Returning to 100% zoom recenters the video.
