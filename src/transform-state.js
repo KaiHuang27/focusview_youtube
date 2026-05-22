@@ -1,6 +1,6 @@
 (() => {
   const ALLOWED_ROTATIONS = new Set([0, 90, 180, 270]);
-  const ZOOM_STEP = 1;
+  const ZOOM_STEP = 5;
   const MIN_ZOOM = 100;
   const MAX_ZOOM = 500;
 
