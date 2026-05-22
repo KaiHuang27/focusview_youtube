@@ -7,7 +7,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 - Zoom slider from 100% to 500%.
 - Rotate video by 0, 90, 180, or 270 degrees.
 - Mirror horizontally, vertically, or both.
-- Pan mode for dragging a zoomed video and using the mouse wheel to zoom.
+- Pan mode for dragging a zoomed video and using the mouse wheel to zoom without adding extra black borders.
 - Top-left position map showing the visible area inside the original video frame.
 - Reset transform state when switching to another YouTube video.
 
@@ -29,6 +29,8 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 - `V`: mirrors the video vertically.
 - `Pan`: enables drag-to-pan on the video. While enabled, the mouse wheel changes zoom in 10% steps.
 - `Reset`: restores zoom, rotation, mirror, and pan to the default state.
+
+Pan movement is bounded by the current zoom level and video element size. When the video edge reaches the visible edge, the extension stops further movement in that direction. Returning to 100% zoom recenters the video.
 
 When zoom is not 100%, a small position map appears in the top-left corner of the player. The blue rectangle shows which part of the original video frame is currently visible.
 
@@ -52,4 +54,5 @@ npm test
 
 - Version 1 targets normal YouTube watch pages only.
 - Shorts, embedded YouTube iframes, and special live-player layouts are out of scope.
+- The extension avoids extra black borders caused by panning too far, but it does not remove black borders already present because of vertical video or YouTube letterboxing.
 - The extension uses CSS transforms, not canvas video rendering, to keep performance and compatibility simple.

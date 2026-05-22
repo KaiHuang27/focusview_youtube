@@ -1,6 +1,7 @@
 const ROTATIONS = [0, 90, 180, 270];
 const {
   applyZoomDelta,
+  clampPanState,
   createViewportFrame,
   createDefaultState,
   createTransformStyle,
@@ -43,6 +44,7 @@ function applyTransform() {
     return;
   }
 
+  state = clampPanState(state, video.clientWidth, video.clientHeight);
   const style = createTransformStyle(state);
   video.style.transform = style.transform;
   video.style.transformOrigin = style.transformOrigin;
@@ -128,6 +130,7 @@ function renderToolbar() {
   zoom.title = "Zoom";
   zoom.addEventListener("input", () => {
     state.zoom = Number(zoom.value);
+    state = clampPanState(state, video.clientWidth, video.clientHeight);
     zoomLabel.textContent = `${state.zoom}%`;
     applyTransform();
   });
@@ -202,6 +205,7 @@ function onPointerMove(event) {
 
   state.panX = Math.round(dragStart.panX + event.clientX - dragStart.x);
   state.panY = Math.round(dragStart.panY + event.clientY - dragStart.y);
+  state = clampPanState(state, video.clientWidth, video.clientHeight);
   applyTransform();
   event.preventDefault();
 }
@@ -213,6 +217,7 @@ function onWheel(event) {
 
   const direction = event.deltaY < 0 ? 1 : -1;
   state.zoom = applyZoomDelta(state.zoom, direction);
+  state = clampPanState(state, video.clientWidth, video.clientHeight);
   renderToolbar();
   applyTransform();
   event.preventDefault();

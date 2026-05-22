@@ -12,7 +12,7 @@ The extension keeps YouTube's native player and controls intact. It only applies
 - `src/transform-state.js`: shared transform helper exposed on `globalThis.YTVTTransform` so it can run as a classic content script and still be tested with Node.
 - `src/content.js`: detects the YouTube player, renders controls, updates transform state, renders the position map, handles pan dragging, handles Pan-mode wheel zoom, and resets state on YouTube SPA navigation.
 - `src/overlay.css`: macOS-style translucent toolbar styling.
-- `src/transform-state.test.js`: Node test coverage for reset state, zoom scale conversion, zoom clamping, viewport-map math, rotation validation, and mirror composition.
+- `src/transform-state.test.js`: Node test coverage for reset state, zoom scale conversion, zoom and pan clamping, viewport-map math, rotation validation, and mirror composition.
 
 ## Data Flow
 
@@ -20,11 +20,12 @@ The extension keeps YouTube's native player and controls intact. It only applies
 2. The content script finds `.html5-video-player` and `video.html5-main-video`.
 3. The toolbar updates local in-memory state.
 4. In Pan mode, wheel events update zoom in 10% steps and clamp it to 100%-500%.
-5. `createTransformStyle` converts state into a CSS `transform`.
-6. The transform is applied directly to the video element.
-7. `createViewportFrame` maps zoom and pan into a normalized visible rectangle for the top-left position map.
-8. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform and position map are reapplied to the same video element.
-9. When the video key changes, state resets to defaults.
+5. `clampPanState` bounds pan to the current scaled video size before transforms are applied.
+6. `createTransformStyle` converts state into a CSS `transform`.
+7. The transform is applied directly to the video element.
+8. `createViewportFrame` maps zoom and pan into a normalized visible rectangle for the top-left position map.
+9. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform, clamped pan, and position map are reapplied to the same video element.
+10. When the video key changes, state resets to defaults.
 
 ## State Model
 
@@ -53,6 +54,8 @@ Manual Edge acceptance covers browser-specific behavior:
 - Load unpacked extension in `edge://extensions`.
 - Confirm the toolbar appears on a normal YouTube watch page.
 - Confirm zoom, rotation, horizontal mirror, vertical mirror, combined mirror, Pan, and Reset.
+- Confirm panning stops at video-content edges and does not create extra black borders.
+- Confirm returning to 100% zoom recenters the video.
 - Confirm the top-left position map appears when zoom is not 100% and updates while zooming or panning.
 - Confirm mouse wheel zooms only while Pan is enabled.
 - Confirm zoom, rotation, mirror, and pan state are preserved when entering and leaving fullscreen.

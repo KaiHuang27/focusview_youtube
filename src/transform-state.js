@@ -43,6 +43,22 @@
     return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + direction * ZOOM_STEP));
   }
 
+  function clampPanState(state, width, height) {
+    const scale = state.zoom / 100;
+    if (scale <= 1 || width <= 0 || height <= 0) {
+      return { ...state, panX: 0, panY: 0 };
+    }
+
+    const maxPanX = ((scale - 1) * width) / 2;
+    const maxPanY = ((scale - 1) * height) / 2;
+
+    return {
+      ...state,
+      panX: Math.round(clamp(state.panX, -maxPanX, maxPanX)),
+      panY: Math.round(clamp(state.panY, -maxPanY, maxPanY)),
+    };
+  }
+
   function shouldResetForVideoKey(currentVideoKey, nextVideoKey) {
     return Boolean(currentVideoKey && currentVideoKey !== nextVideoKey);
   }
@@ -68,6 +84,7 @@
 
   globalThis.YTVTTransform = {
     applyZoomDelta,
+    clampPanState,
     createViewportFrame,
     createDefaultState,
     createTransformStyle,

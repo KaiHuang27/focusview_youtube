@@ -5,6 +5,7 @@ await import("./transform-state.js");
 
 const {
   applyZoomDelta,
+  clampPanState,
   createViewportFrame,
   createDefaultState,
   createTransformStyle,
@@ -85,5 +86,33 @@ test("createViewportFrame maps zoom and pan into normalized original-video coord
       width: 0.5,
       height: 0.5,
     }
+  );
+});
+
+test("clampPanState centers pan at 100 percent zoom", () => {
+  assert.deepEqual(
+    clampPanState({ ...createDefaultState(), panX: 240, panY: -120 }, 1280, 720),
+    createDefaultState()
+  );
+});
+
+test("clampPanState limits pan to the scaled video bounds", () => {
+  assert.deepEqual(
+    clampPanState({ ...createDefaultState(), zoom: 200, panX: 900, panY: -500 }, 1280, 720),
+    { ...createDefaultState(), zoom: 200, panX: 640, panY: -360 }
+  );
+});
+
+test("clampPanState clamps pan to smaller bounds after zooming out", () => {
+  assert.deepEqual(
+    clampPanState({ ...createDefaultState(), zoom: 150, panX: 640, panY: 360 }, 1280, 720),
+    { ...createDefaultState(), zoom: 150, panX: 320, panY: 180 }
+  );
+});
+
+test("createViewportFrame keeps extreme pan inside original-video coordinates", () => {
+  assert.deepEqual(
+    createViewportFrame({ ...createDefaultState(), zoom: 200, panX: 5000, panY: -5000 }, 1280, 720),
+    { x: 0, y: 0.5, width: 0.5, height: 0.5 }
   );
 });
