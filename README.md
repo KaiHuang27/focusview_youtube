@@ -19,7 +19,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 4. Select this project folder: `/Users/kai/Documents/New project 2`.
 5. Open a normal YouTube video page, such as `https://www.youtube.com/watch?v=...`.
 6. Use the floating toolbar in the top-right corner of the YouTube player.
-7. After changing zoom, enter and leave fullscreen to confirm the transform is preserved.
+7. After changing zoom, enter and leave fullscreen to confirm the transform is preserved without briefly flashing back to the original view.
 
 ## Controls
 
@@ -37,6 +37,8 @@ When rotating 90 or 270 degrees, 100% zoom means the rotated video is first scal
 When zoom is not 100%, a small position map appears in the top-left corner of the player. The blue rectangle shows which part of the original video frame is currently visible.
 
 When Pan is off, clicking the video keeps YouTube's normal play and pause behavior, and the mouse wheel is not intercepted by the extension. When Pan is on, the extension intercepts wheel events at the player level to avoid triggering YouTube's native fullscreen recommendations or extra controls.
+
+During fullscreen changes, YouTube may rewrite the video element's inline style. The extension watches for those style changes and reapplies the current transform across the next few animation frames to reduce flicker.
 
 ## Development
 

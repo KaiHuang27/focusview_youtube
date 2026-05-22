@@ -10,9 +10,9 @@ The extension keeps YouTube's native player and controls intact. It only applies
 
 - `manifest.json`: declares the MV3 extension and injects CSS plus content scripts on YouTube.
 - `src/transform-state.js`: shared transform helper exposed on `globalThis.YTVTTransform` so it can run as a classic content script and still be tested with Node.
-- `src/content.js`: detects the YouTube player, renders controls, updates transform state, renders the position map, handles pan dragging, handles Pan-mode wheel zoom, and resets state on YouTube SPA navigation.
+- `src/content.js`: detects the YouTube player, renders controls, updates transform state, renders the position map, handles pan dragging, handles Pan-mode wheel zoom, reapplies transforms after fullscreen/style mutations, and resets state on YouTube SPA navigation.
 - `src/overlay.css`: macOS-style translucent toolbar styling.
-- `src/transform-state.test.js`: Node test coverage for reset state, zoom scale conversion, rotation fit scaling, zoom and pan clamping, Pan-mode wheel interception, viewport-map math, rotation validation, and mirror composition.
+- `src/transform-state.test.js`: Node test coverage for reset state, zoom scale conversion, rotation fit scaling, zoom and pan clamping, Pan-mode wheel interception, transform reapply detection, viewport-map math, rotation validation, and mirror composition.
 
 ## Data Flow
 
@@ -26,7 +26,8 @@ The extension keeps YouTube's native player and controls intact. It only applies
 8. The transform is applied directly to the video element.
 9. `createViewportFrame` maps zoom and pan into a normalized visible rectangle for the top-left position map.
 10. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform, clamped pan, and position map are reapplied to the same video element.
-11. When the video key changes, state resets to defaults.
+11. Fullscreen events and video style mutations schedule repeated `requestAnimationFrame` reapplication so YouTube style rewrites are corrected quickly.
+12. When the video key changes, state resets to defaults.
 
 ## State Model
 
@@ -61,6 +62,6 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm the top-left position map appears when zoom is not 100% and updates while zooming or panning.
 - Confirm mouse wheel zooms only while Pan is enabled.
 - Confirm mouse wheel zoom in fullscreen Pan mode does not open YouTube's native recommendations or more-video controls.
-- Confirm zoom, rotation, mirror, and pan state are preserved when entering and leaving fullscreen.
+- Confirm zoom, rotation, mirror, and pan state are preserved when entering and leaving fullscreen without flashing back to the original view.
 - Confirm switching YouTube videos resets state.
 - Confirm normal video click-to-play still works while Pan is off.

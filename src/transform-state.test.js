@@ -11,6 +11,7 @@ const {
   createTransformStyle,
   getRotationFitScale,
   normalizeRotation,
+  shouldReapplyTransformAfterMutation,
   shouldInterceptPanWheel,
   shouldResetForVideoKey,
 } = globalThis.YTVTTransform;
@@ -150,4 +151,12 @@ test("createViewportFrame keeps extreme pan inside original-video coordinates", 
 test("shouldInterceptPanWheel intercepts wheel events only in Pan mode", () => {
   assert.equal(shouldInterceptPanWheel(createDefaultState()), false);
   assert.equal(shouldInterceptPanWheel({ ...createDefaultState(), panMode: true }), true);
+});
+
+test("shouldReapplyTransformAfterMutation detects active transform state", () => {
+  assert.equal(shouldReapplyTransformAfterMutation(createDefaultState()), false);
+  assert.equal(shouldReapplyTransformAfterMutation({ ...createDefaultState(), zoom: 105 }), true);
+  assert.equal(shouldReapplyTransformAfterMutation({ ...createDefaultState(), rotation: 90 }), true);
+  assert.equal(shouldReapplyTransformAfterMutation({ ...createDefaultState(), flipX: true }), true);
+  assert.equal(shouldReapplyTransformAfterMutation({ ...createDefaultState(), panX: 1 }), true);
 });

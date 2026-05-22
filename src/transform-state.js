@@ -83,6 +83,18 @@
     return state.panMode === true;
   }
 
+  function shouldReapplyTransformAfterMutation(state) {
+    const defaultState = createDefaultState();
+    return (
+      state.zoom !== defaultState.zoom ||
+      state.rotation !== defaultState.rotation ||
+      state.flipX !== defaultState.flipX ||
+      state.flipY !== defaultState.flipY ||
+      state.panX !== defaultState.panX ||
+      state.panY !== defaultState.panY
+    );
+  }
+
   function createViewportFrame(state, width, height) {
     const scale = state.zoom / 100;
     if (scale <= 1 || width <= 0 || height <= 0) {
@@ -111,6 +123,7 @@
     getRotationFitScale,
     normalizeRotation,
     shouldInterceptPanWheel,
+    shouldReapplyTransformAfterMutation,
     shouldResetForVideoKey,
   };
 })();

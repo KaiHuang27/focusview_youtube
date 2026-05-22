@@ -6,6 +6,7 @@ const {
   createDefaultState,
   createTransformStyle,
   shouldInterceptPanWheel,
+  shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
 } = globalThis.YTVTTransform;
 
@@ -16,8 +17,11 @@ let wheelTarget = null;
 let toolbar = null;
 let viewportMap = null;
 let resizeObserver = null;
+let videoStyleObserver = null;
+let reapplyFrame = 0;
 let currentVideoKey = "";
 let dragStart = null;
+let ignoreNextStyleMutation = false;
 
 function resetState() {
   state = createDefaultState();
@@ -54,10 +58,30 @@ function applyTransform() {
 
   state = clampPanState(state, video.clientWidth, video.clientHeight);
   const style = createTransformStyle(state, video.clientWidth, video.clientHeight);
+  ignoreNextStyleMutation = true;
   video.style.transform = style.transform;
   video.style.transformOrigin = style.transformOrigin;
   video.style.cursor = state.panMode ? "grab" : "";
   renderViewportMap();
+}
+
+function scheduleTransformReapply(frames = 6) {
+  if (!shouldReapplyTransformAfterMutation(state) || reapplyFrame) {
+    return;
+  }
+
+  sync();
+  let remainingFrames = frames;
+  const reapply = () => {
+    reapplyFrame = 0;
+    applyTransform();
+    remainingFrames -= 1;
+    if (remainingFrames > 0) {
+      reapplyFrame = requestAnimationFrame(reapply);
+    }
+  };
+
+  reapplyFrame = requestAnimationFrame(reapply);
 }
 
 function clearTransform() {
@@ -251,6 +275,8 @@ function bindVideo(nextVideo) {
     video.removeEventListener("pointermove", onPointerMove);
     video.removeEventListener("pointerup", endDrag);
     video.removeEventListener("pointercancel", endDrag);
+    videoStyleObserver?.disconnect();
+    videoStyleObserver = null;
   }
 
   video = nextVideo;
@@ -258,6 +284,15 @@ function bindVideo(nextVideo) {
   video.addEventListener("pointermove", onPointerMove);
   video.addEventListener("pointerup", endDrag);
   video.addEventListener("pointercancel", endDrag);
+  videoStyleObserver = new MutationObserver(() => {
+    if (ignoreNextStyleMutation) {
+      ignoreNextStyleMutation = false;
+      return;
+    }
+
+    scheduleTransformReapply();
+  });
+  videoStyleObserver.observe(video, { attributes: true, attributeFilter: ["style"] });
   applyTransform();
 }
 
@@ -278,6 +313,12 @@ function sync() {
     toolbar = null;
     viewportMap?.remove();
     viewportMap = null;
+    videoStyleObserver?.disconnect();
+    videoStyleObserver = null;
+    if (reapplyFrame) {
+      cancelAnimationFrame(reapplyFrame);
+      reapplyFrame = 0;
+    }
     wheelTarget?.removeEventListener("wheel", onWheel, true);
     wheelTarget = null;
     state = createDefaultState();
@@ -319,6 +360,8 @@ function start() {
   setInterval(sync, 800);
   window.addEventListener("yt-navigate-finish", sync);
   window.addEventListener("popstate", sync);
+  document.addEventListener("fullscreenchange", () => scheduleTransformReapply(12));
+  document.addEventListener("webkitfullscreenchange", () => scheduleTransformReapply(12));
 }
 
 start();
