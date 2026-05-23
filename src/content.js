@@ -186,6 +186,34 @@ function togglePanMode() {
   applyTransform();
 }
 
+function resetZoomOnly() {
+  state.zoom = 100;
+  state.panX = 0;
+  state.panY = 0;
+  renderToolbar();
+  applyTransform();
+}
+
+function createZoomIcon() {
+  const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  icon.classList.add("ytvt-trigger-icon");
+  icon.setAttribute("viewBox", "0 0 48 48");
+  icon.setAttribute("aria-hidden", "true");
+  icon.innerHTML = `
+    <path d="M14 16.5V14h8.5M33.5 22.5V14H25M25.5 34H34v-8.5M14.5 25.5V34H23" />
+    <path d="M24 19v10M19 24h10" />
+  `;
+  return icon;
+}
+
+function getTriggerTitle() {
+  if (state.zoom !== 100) {
+    return `Zoom: ${state.zoom}% · Double-click to reset`;
+  }
+
+  return isMenuOpen ? "Zoom controls" : "Zoom";
+}
+
 function renderToolbar() {
   if (!toolbar) {
     return;
@@ -196,13 +224,27 @@ function renderToolbar() {
   const trigger = document.createElement("button");
   trigger.type = "button";
   trigger.className = isMenuOpen ? "ytvt-trigger is-active" : "ytvt-trigger";
-  trigger.textContent = `${state.zoom}%`;
   trigger.setAttribute("aria-haspopup", "menu");
   trigger.setAttribute("aria-expanded", String(isMenuOpen));
-  trigger.title = "Open video transform menu";
+  trigger.setAttribute("aria-label", getTriggerTitle());
+  trigger.title = getTriggerTitle();
+  trigger.append(createZoomIcon());
+
+  if (isMenuOpen || state.zoom !== 100) {
+    const badge = document.createElement("span");
+    badge.className = "ytvt-badge";
+    badge.textContent = `${state.zoom}%`;
+    trigger.append(badge);
+  }
+
   trigger.addEventListener("click", () => {
     isMenuOpen = !isMenuOpen;
     renderToolbar();
+  });
+  trigger.addEventListener("dblclick", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    resetZoomOnly();
   });
 
   toolbar.append(trigger);
