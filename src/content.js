@@ -160,23 +160,6 @@ function setZoom(zoom) {
   applyTransform();
 }
 
-function createMenuIcon(label) {
-  const icon = document.createElement("span");
-  icon.className = "ytvt-menu-icon";
-  icon.setAttribute("aria-hidden", "true");
-
-  const icons = {
-    Zoom: '<svg viewBox="0 0 24 24"><path d="M4 8V5h3M17 5h3v3M20 16v3h-3M7 19H4v-3" /><path d="M12 8v8M8 12h8" /></svg>',
-    Rotation: '<svg viewBox="0 0 24 24"><path d="M7 7h10v10H7z" /><path d="M9 3h6M21 9v6M15 21H9M3 15V9" /></svg>',
-    "Mirror H": '<svg viewBox="0 0 24 24"><path d="M12 4v16" /><path d="M4 7h5v10H4zM15 7h5v10h-5z" /></svg>',
-    "Mirror V": '<svg viewBox="0 0 24 24"><path d="M4 12h16" /><path d="M7 4h10v5H7zM7 15h10v5H7z" /></svg>',
-    Pan: '<svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18" /><path d="M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3" /></svg>',
-  };
-
-  icon.innerHTML = icons[label] || '<svg viewBox="0 0 24 24"><path d="M5 12h14" /></svg>';
-  return icon;
-}
-
 function createZoomPanel() {
   const panel = document.createElement("div");
   panel.className = "ytvt-zoom-panel";
@@ -235,7 +218,7 @@ function createMenuRow(label, control, value = "") {
   controlWrap.className = "ytvt-menu-control";
   controlWrap.append(control);
 
-  row.append(createMenuIcon(label), labelElement, valueElement, controlWrap);
+  row.append(labelElement, valueElement, controlWrap);
   return row;
 }
 
