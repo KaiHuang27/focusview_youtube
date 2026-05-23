@@ -83,6 +83,30 @@
     return state.panMode === true;
   }
 
+  function isEditableShortcutTarget(target) {
+    const tagName = target?.tagName?.toUpperCase();
+    return (
+      target?.isContentEditable === true ||
+      tagName === "INPUT" ||
+      tagName === "TEXTAREA" ||
+      tagName === "SELECT" ||
+      target?.getAttribute?.("role") === "textbox"
+    );
+  }
+
+  function shouldTogglePanShortcut(event) {
+    const isPanKey = event?.code === "KeyP" || event?.key?.toLowerCase() === "p";
+    return (
+      isPanKey &&
+      event?.altKey === true &&
+      event?.shiftKey === true &&
+      event?.ctrlKey !== true &&
+      event?.metaKey !== true &&
+      event?.repeat !== true &&
+      !isEditableShortcutTarget(event?.target)
+    );
+  }
+
   function shouldReapplyTransformAfterMutation(state) {
     const defaultState = createDefaultState();
     return (
@@ -125,5 +149,6 @@
     shouldInterceptPanWheel,
     shouldReapplyTransformAfterMutation,
     shouldResetForVideoKey,
+    shouldTogglePanShortcut,
   };
 })();

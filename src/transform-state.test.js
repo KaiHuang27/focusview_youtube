@@ -14,6 +14,7 @@ const {
   shouldReapplyTransformAfterMutation,
   shouldInterceptPanWheel,
   shouldResetForVideoKey,
+  shouldTogglePanShortcut,
 } = globalThis.YTVTTransform;
 
 test("createDefaultState returns reset video transform values", () => {
@@ -151,6 +152,33 @@ test("createViewportFrame keeps extreme pan inside original-video coordinates", 
 test("shouldInterceptPanWheel intercepts wheel events only in Pan mode", () => {
   assert.equal(shouldInterceptPanWheel(createDefaultState()), false);
   assert.equal(shouldInterceptPanWheel({ ...createDefaultState(), panMode: true }), true);
+});
+
+test("shouldTogglePanShortcut accepts only Alt Shift P outside editable targets", () => {
+  assert.equal(shouldTogglePanShortcut({ code: "KeyP", altKey: true, shiftKey: true }), true);
+  assert.equal(shouldTogglePanShortcut({ key: "p", altKey: true, shiftKey: true }), true);
+  assert.equal(shouldTogglePanShortcut({ code: "KeyP", altKey: true, shiftKey: true, ctrlKey: true }), false);
+  assert.equal(shouldTogglePanShortcut({ code: "KeyP", altKey: true, shiftKey: true, metaKey: true }), false);
+  assert.equal(shouldTogglePanShortcut({ code: "KeyP", altKey: true, shiftKey: true, repeat: true }), false);
+  assert.equal(shouldTogglePanShortcut({ code: "KeyP", shiftKey: true }), false);
+  assert.equal(shouldTogglePanShortcut({ code: "KeyP", altKey: true }), false);
+  assert.equal(
+    shouldTogglePanShortcut({ code: "KeyP", altKey: true, shiftKey: true, target: { tagName: "INPUT" } }),
+    false
+  );
+  assert.equal(
+    shouldTogglePanShortcut({ code: "KeyP", altKey: true, shiftKey: true, target: { isContentEditable: true } }),
+    false
+  );
+  assert.equal(
+    shouldTogglePanShortcut({
+      code: "KeyP",
+      altKey: true,
+      shiftKey: true,
+      target: { getAttribute: (name) => (name === "role" ? "textbox" : "") },
+    }),
+    false
+  );
 });
 
 test("shouldReapplyTransformAfterMutation detects active transform state", () => {

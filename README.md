@@ -31,6 +31,7 @@ The top-right button only displays the current zoom, such as `100%` or `150%`. C
 - `Mirror H`: mirrors the video horizontally.
 - `Mirror V`: mirrors the video vertically.
 - `Pan`: enables drag-to-pan on the video. While enabled, the mouse wheel changes zoom in 5% steps and is blocked from YouTube's native fullscreen controls.
+- `Alt/Option + Shift + P`: toggles Pan mode without using YouTube's single-key shortcuts or Chrome/Edge `Ctrl`/`Cmd` shortcuts. It is ignored while typing in inputs, comments, search, or other editable fields.
 - `Reset`: restores zoom, rotation, mirror, and pan to the default state and closes the menu.
 
 Pan movement is bounded by the current zoom level and video element size. When the video edge reaches the visible edge, the extension stops further movement in that direction. Returning to 100% zoom recenters the video.

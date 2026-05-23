@@ -8,6 +8,7 @@ const {
   shouldInterceptPanWheel,
   shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
+  shouldTogglePanShortcut,
 } = globalThis.YTVTTransform;
 
 let state = createDefaultState();
@@ -174,6 +175,12 @@ function createToggle(label, active, onClick) {
   return button;
 }
 
+function togglePanMode() {
+  state.panMode = !state.panMode;
+  renderToolbar();
+  applyTransform();
+}
+
 function renderToolbar() {
   if (!toolbar) {
     return;
@@ -235,11 +242,7 @@ function renderToolbar() {
       renderToolbar();
       applyTransform();
     })),
-    createMenuRow("Pan", createToggle("Pan mode", state.panMode, () => {
-      state.panMode = !state.panMode;
-      renderToolbar();
-      applyTransform();
-    })),
+    createMenuRow("Pan", createToggle("Pan mode", state.panMode, togglePanMode)),
     createMenuRow("Reset", createButton("Reset", "Reset video transform", false, resetState))
   );
 
@@ -262,6 +265,17 @@ function closeMenuOnEscape(event) {
 
   isMenuOpen = false;
   renderToolbar();
+}
+
+function onShortcutKeyDown(event) {
+  if (!video || !isWatchPage() || !shouldTogglePanShortcut(event)) {
+    return;
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation?.();
+  togglePanMode();
 }
 
 function ensureToolbar() {
@@ -440,6 +454,7 @@ function start() {
   setInterval(sync, 800);
   window.addEventListener("yt-navigate-finish", sync);
   window.addEventListener("popstate", sync);
+  document.addEventListener("keydown", onShortcutKeyDown, true);
   document.addEventListener("pointerdown", closeMenuOnOutsidePointer, true);
   document.addEventListener("keydown", closeMenuOnEscape);
   document.addEventListener("fullscreenchange", () => scheduleTransformReapply(12));
