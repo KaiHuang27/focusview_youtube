@@ -157,6 +157,16 @@ function getSliderProgress() {
   return `${((state.zoom - 100) / 400) * 100}%`;
 }
 
+function getZoomFromPointer(slider, clientX) {
+  const rect = slider.getBoundingClientRect();
+  if (rect.width <= 0) {
+    return state.zoom;
+  }
+
+  const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+  return Math.round(100 + ratio * 400);
+}
+
 function setZoom(zoom, shouldRender = true) {
   state.zoom = Math.min(500, Math.max(100, zoom));
   state = clampPanState(state, video.clientWidth, video.clientHeight);
@@ -169,10 +179,22 @@ function setZoom(zoom, shouldRender = true) {
 function createZoomPanel() {
   const panel = document.createElement("div");
   panel.className = "ytvt-zoom-panel";
+  let activeSliderPointerId = null;
 
   const value = document.createElement("div");
   value.className = "ytvt-zoom-value";
   value.textContent = formatZoomScale();
+
+  const syncZoomControls = () => {
+    zoom.value = String(state.zoom);
+    zoom.style.setProperty("--ytvt-slider-progress", getSliderProgress());
+    value.textContent = formatZoomScale();
+
+    const triggerLabel = toolbar.querySelector(".ytvt-trigger-label");
+    if (triggerLabel) {
+      triggerLabel.textContent = `${state.zoom}%`;
+    }
+  };
 
   const controls = document.createElement("div");
   controls.className = "ytvt-zoom-controls";
@@ -196,15 +218,46 @@ function createZoomPanel() {
   zoom.style.setProperty("--ytvt-slider-progress", getSliderProgress());
   zoom.addEventListener("input", () => {
     setZoom(Number(zoom.value), false);
-    zoom.value = String(state.zoom);
-    zoom.style.setProperty("--ytvt-slider-progress", getSliderProgress());
-    value.textContent = formatZoomScale();
-    const triggerLabel = toolbar.querySelector(".ytvt-trigger-label");
-    if (triggerLabel) {
-      triggerLabel.textContent = `${state.zoom}%`;
-    }
+    syncZoomControls();
   });
   zoom.addEventListener("change", renderToolbar);
+  zoom.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    activeSliderPointerId = event.pointerId;
+    zoom.setPointerCapture?.(event.pointerId);
+    setZoom(getZoomFromPointer(zoom, event.clientX), false);
+    syncZoomControls();
+  });
+  zoom.addEventListener("pointermove", (event) => {
+    if (event.pointerId !== activeSliderPointerId) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    setZoom(getZoomFromPointer(zoom, event.clientX), false);
+    syncZoomControls();
+  });
+
+  const endSliderDrag = (event) => {
+    if (event.pointerId !== activeSliderPointerId) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    activeSliderPointerId = null;
+    zoom.releasePointerCapture?.(event.pointerId);
+    renderToolbar();
+  };
+
+  zoom.addEventListener("pointerup", endSliderDrag);
+  zoom.addEventListener("pointercancel", endSliderDrag);
 
   const zoomIn = document.createElement("button");
   zoomIn.type = "button";
