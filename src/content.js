@@ -153,10 +153,16 @@ function formatZoomScale() {
   return `${(state.zoom / 100).toFixed(2)}x`;
 }
 
-function setZoom(zoom) {
+function getSliderProgress() {
+  return `${((state.zoom - 100) / 400) * 100}%`;
+}
+
+function setZoom(zoom, shouldRender = true) {
   state.zoom = Math.min(500, Math.max(100, zoom));
   state = clampPanState(state, video.clientWidth, video.clientHeight);
-  renderToolbar();
+  if (shouldRender) {
+    renderToolbar();
+  }
   applyTransform();
 }
 
@@ -187,8 +193,18 @@ function createZoomPanel() {
   zoom.step = "1";
   zoom.value = String(state.zoom);
   zoom.title = "Zoom";
-  zoom.style.setProperty("--ytvt-slider-progress", `${((state.zoom - 100) / 400) * 100}%`);
-  zoom.addEventListener("input", () => setZoom(Number(zoom.value)));
+  zoom.style.setProperty("--ytvt-slider-progress", getSliderProgress());
+  zoom.addEventListener("input", () => {
+    setZoom(Number(zoom.value), false);
+    zoom.value = String(state.zoom);
+    zoom.style.setProperty("--ytvt-slider-progress", getSliderProgress());
+    value.textContent = formatZoomScale();
+    const triggerLabel = toolbar.querySelector(".ytvt-trigger-label");
+    if (triggerLabel) {
+      triggerLabel.textContent = `${state.zoom}%`;
+    }
+  });
+  zoom.addEventListener("change", renderToolbar);
 
   const zoomIn = document.createElement("button");
   zoomIn.type = "button";
