@@ -61,7 +61,7 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm only one zoom percentage button appears at the left edge of YouTube's native right-side control group on a normal YouTube watch page.
 - Confirm the zoom percentage text is centered inside the native control slot and hover behavior matches nearby YouTube controls.
 - Confirm double-clicking the trigger resets zoom to 100%.
-- Confirm clicking the zoom button opens and closes the YouTube-style transform menu with gray rounded panel, native-like gray controls, compact top zoom control with white progress and gray remaining track, red top-right Reset action, text rows, and right-aligned controls that stay inside the panel.
+- Confirm clicking the zoom button opens and closes the YouTube-style transform menu with gray rounded panel, native-like gray controls, rounded inset row hover states, compact top zoom control with white progress and gray remaining track, red top-right Reset action, text rows, and right-aligned controls that stay inside the panel.
 - Confirm menu Zoom, Rotation, horizontal mirror, vertical mirror, combined mirror, Pan, and Reset.
 - Confirm `Alt/Option + Shift + P` toggles Pan mode while focus is on the video page, and does nothing while typing in YouTube search or comments.
 - Confirm slider changes and Pan-mode wheel zoom update the zoom button text.
