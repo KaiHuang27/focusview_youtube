@@ -22,9 +22,11 @@ let reapplyFrame = 0;
 let currentVideoKey = "";
 let dragStart = null;
 let ignoreNextStyleMutation = false;
+let isMenuOpen = false;
 
 function resetState() {
   state = createDefaultState();
+  isMenuOpen = false;
   renderToolbar();
   applyTransform();
 }
@@ -141,6 +143,37 @@ function createSegment(value) {
   );
 }
 
+function createMenuRow(label, control, value = "") {
+  const row = document.createElement("div");
+  row.className = "ytvt-menu-row";
+
+  const labelElement = document.createElement("span");
+  labelElement.className = "ytvt-menu-label";
+  labelElement.textContent = label;
+
+  const valueElement = document.createElement("span");
+  valueElement.className = "ytvt-menu-value";
+  valueElement.textContent = value;
+
+  const controlWrap = document.createElement("div");
+  controlWrap.className = "ytvt-menu-control";
+  controlWrap.append(control);
+
+  row.append(labelElement, valueElement, controlWrap);
+  return row;
+}
+
+function createToggle(label, active, onClick) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = active ? "ytvt-toggle is-active" : "ytvt-toggle";
+  button.setAttribute("aria-label", label);
+  button.setAttribute("aria-pressed", String(active));
+  button.addEventListener("click", onClick);
+  button.append(document.createElement("span"));
+  return button;
+}
+
 function renderToolbar() {
   if (!toolbar) {
     return;
@@ -148,9 +181,27 @@ function renderToolbar() {
 
   toolbar.replaceChildren();
 
-  const zoomLabel = document.createElement("span");
-  zoomLabel.className = "ytvt-label";
-  zoomLabel.textContent = `${state.zoom}%`;
+  const trigger = document.createElement("button");
+  trigger.type = "button";
+  trigger.className = isMenuOpen ? "ytvt-trigger is-active" : "ytvt-trigger";
+  trigger.textContent = `${state.zoom}%`;
+  trigger.setAttribute("aria-haspopup", "menu");
+  trigger.setAttribute("aria-expanded", String(isMenuOpen));
+  trigger.title = "Open video transform menu";
+  trigger.addEventListener("click", () => {
+    isMenuOpen = !isMenuOpen;
+    renderToolbar();
+  });
+
+  toolbar.append(trigger);
+
+  if (!isMenuOpen) {
+    return;
+  }
+
+  const menu = document.createElement("div");
+  menu.className = "ytvt-menu";
+  menu.setAttribute("role", "menu");
 
   const zoom = document.createElement("input");
   zoom.className = "ytvt-slider";
@@ -163,7 +214,7 @@ function renderToolbar() {
   zoom.addEventListener("input", () => {
     state.zoom = Number(zoom.value);
     state = clampPanState(state, video.clientWidth, video.clientHeight);
-    zoomLabel.textContent = `${state.zoom}%`;
+    renderToolbar();
     applyTransform();
   });
 
@@ -171,27 +222,46 @@ function renderToolbar() {
   rotationGroup.className = "ytvt-segment";
   ROTATIONS.forEach((rotation) => rotationGroup.append(createSegment(rotation)));
 
-  toolbar.append(
-    zoomLabel,
-    zoom,
-    rotationGroup,
-    createButton("H", "Mirror horizontally", state.flipX, () => {
+  menu.append(
+    createMenuRow("Zoom", zoom, `${state.zoom}%`),
+    createMenuRow("Rotation", rotationGroup, `${state.rotation}`),
+    createMenuRow("Mirror H", createToggle("Mirror horizontally", state.flipX, () => {
       state.flipX = !state.flipX;
       renderToolbar();
       applyTransform();
-    }),
-    createButton("V", "Mirror vertically", state.flipY, () => {
+    })),
+    createMenuRow("Mirror V", createToggle("Mirror vertically", state.flipY, () => {
       state.flipY = !state.flipY;
       renderToolbar();
       applyTransform();
-    }),
-    createButton("Pan", "Drag video while enabled", state.panMode, () => {
+    })),
+    createMenuRow("Pan", createToggle("Pan mode", state.panMode, () => {
       state.panMode = !state.panMode;
       renderToolbar();
       applyTransform();
-    }),
-    createButton("Reset", "Reset video transform", false, resetState)
+    })),
+    createMenuRow("Reset", createButton("Reset", "Reset video transform", false, resetState))
   );
+
+  toolbar.append(menu);
+}
+
+function closeMenuOnOutsidePointer(event) {
+  if (!isMenuOpen || !toolbar || toolbar.contains(event.target)) {
+    return;
+  }
+
+  isMenuOpen = false;
+  renderToolbar();
+}
+
+function closeMenuOnEscape(event) {
+  if (!isMenuOpen || event.key !== "Escape") {
+    return;
+  }
+
+  isMenuOpen = false;
+  renderToolbar();
 }
 
 function ensureToolbar() {
@@ -207,6 +277,10 @@ function ensureToolbar() {
   if (!existing) {
     toolbar.addEventListener("click", (event) => event.stopPropagation());
     toolbar.addEventListener("pointerdown", (event) => event.stopPropagation());
+    toolbar.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    }, { passive: false });
     player.append(toolbar);
   }
 
@@ -244,6 +318,11 @@ function onPointerMove(event) {
 
 function onWheel(event) {
   if (!shouldInterceptPanWheel(state) || !video) {
+    return;
+  }
+
+  if (toolbar?.contains(event.target)) {
+    blockYouTubeWheel(event);
     return;
   }
 
@@ -322,6 +401,7 @@ function sync() {
     wheelTarget?.removeEventListener("wheel", onWheel, true);
     wheelTarget = null;
     state = createDefaultState();
+    isMenuOpen = false;
     currentVideoKey = "";
     return;
   }
@@ -360,6 +440,8 @@ function start() {
   setInterval(sync, 800);
   window.addEventListener("yt-navigate-finish", sync);
   window.addEventListener("popstate", sync);
+  document.addEventListener("pointerdown", closeMenuOnOutsidePointer, true);
+  document.addEventListener("keydown", closeMenuOnEscape);
   document.addEventListener("fullscreenchange", () => scheduleTransformReapply(12));
   document.addEventListener("webkitfullscreenchange", () => scheduleTransformReapply(12));
 }

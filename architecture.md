@@ -4,30 +4,31 @@
 
 This is a Manifest V3 extension with one content-script entrypoint on `https://www.youtube.com/*`.
 
-The extension keeps YouTube's native player and controls intact. It only applies CSS transforms to the `video.html5-main-video` element and renders a small floating toolbar inside `.html5-video-player`.
+The extension keeps YouTube's native player and controls intact. It only applies CSS transforms to the `video.html5-main-video` element and renders a small zoom trigger plus menu inside `.html5-video-player`.
 
 ## Components
 
 - `manifest.json`: declares the MV3 extension and injects CSS plus content scripts on YouTube.
 - `src/transform-state.js`: shared transform helper exposed on `globalThis.YTVTTransform` so it can run as a classic content script and still be tested with Node.
-- `src/content.js`: detects the YouTube player, renders controls, updates transform state, renders the position map, handles pan dragging, handles Pan-mode wheel zoom, reapplies transforms after fullscreen/style mutations, and resets state on YouTube SPA navigation.
-- `src/overlay.css`: macOS-style translucent toolbar styling.
+- `src/content.js`: detects the YouTube player, renders the zoom trigger and YouTube-style menu, updates transform state, renders the position map, handles pan dragging, handles Pan-mode wheel zoom, reapplies transforms after fullscreen/style mutations, and resets state on YouTube SPA navigation.
+- `src/overlay.css`: macOS-style zoom trigger, YouTube-style dark menu, toggle, segment, slider, and position-map styling.
 - `src/transform-state.test.js`: Node test coverage for reset state, zoom scale conversion, rotation fit scaling, zoom and pan clamping, Pan-mode wheel interception, transform reapply detection, viewport-map math, rotation validation, and mirror composition.
 
 ## Data Flow
 
 1. YouTube loads or navigates to a watch URL.
 2. The content script finds `.html5-video-player` and `video.html5-main-video`.
-3. The toolbar updates local in-memory state.
-4. In Pan mode, player-level capture wheel events are intercepted before YouTube can handle them; they update zoom in 5% steps and clamp it to 100%-500%.
-5. `getRotationFitScale` computes the fit scale for 90/270-degree rotations so the rotated bounding box fits inside the player frame before user zoom is applied.
-6. `clampPanState` bounds pan to the current scaled and rotated video size before transforms are applied.
-7. `createTransformStyle` converts state into a CSS `transform`.
-8. The transform is applied directly to the video element.
-9. `createViewportFrame` maps zoom and pan into a normalized visible rectangle for the top-left position map.
-10. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform, clamped pan, and position map are reapplied to the same video element.
-11. Fullscreen events and video style mutations schedule repeated `requestAnimationFrame` reapplication so YouTube style rewrites are corrected quickly.
-12. When the video key changes, state resets to defaults.
+3. The top-right zoom trigger opens a dark menu with Zoom, Rotation, Mirror H, Mirror V, Pan, and Reset controls.
+4. Menu controls update local in-memory state. The trigger text is re-rendered from `state.zoom`.
+5. In Pan mode, player-level capture wheel events are intercepted before YouTube can handle them; they update zoom in 5% steps and clamp it to 100%-500%. Wheel events that start inside the menu are blocked without changing zoom.
+6. `getRotationFitScale` computes the fit scale for 90/270-degree rotations so the rotated bounding box fits inside the player frame before user zoom is applied.
+7. `clampPanState` bounds pan to the current scaled and rotated video size before transforms are applied.
+8. `createTransformStyle` converts state into a CSS `transform`.
+9. The transform is applied directly to the video element.
+10. `createViewportFrame` maps zoom and pan into a normalized visible rectangle for the top-left position map.
+11. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform, clamped pan, and position map are reapplied to the same video element.
+12. Fullscreen events and video style mutations schedule repeated `requestAnimationFrame` reapplication so YouTube style rewrites are corrected quickly.
+13. When the video key changes, state resets to defaults and the menu closes.
 
 ## State Model
 
@@ -54,8 +55,10 @@ Automated tests cover the pure transform helper with `node --test`.
 Manual Edge acceptance covers browser-specific behavior:
 
 - Load unpacked extension in `edge://extensions`.
-- Confirm the toolbar appears on a normal YouTube watch page.
-- Confirm zoom, rotation, horizontal mirror, vertical mirror, combined mirror, Pan, and Reset.
+- Confirm only the zoom percentage button appears in the top-right corner on a normal YouTube watch page.
+- Confirm clicking the zoom button opens and closes the dark transform menu.
+- Confirm menu Zoom, Rotation, horizontal mirror, vertical mirror, combined mirror, Pan, and Reset.
+- Confirm slider changes and Pan-mode wheel zoom update the zoom button text.
 - Confirm 90/270-degree rotation fits the rotated video inside the player frame at 100% zoom without cropping the rotated top/bottom or left/right edges.
 - Confirm panning stops at video-content edges and does not create extra black borders.
 - Confirm returning to 100% zoom recenters the video.

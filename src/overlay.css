@@ -3,43 +3,103 @@
   z-index: 2147483647;
   top: 12px;
   right: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  max-width: calc(100% - 24px);
-  min-height: 36px;
-  padding: 6px;
   color: rgba(255, 255, 255, 0.94);
-  background: rgba(28, 28, 30, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(18px) saturate(180%);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
   font: 500 12px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
 }
 
-.ytvt-label {
-  min-width: 36px;
+.ytvt-trigger {
+  min-width: 58px;
+  height: 34px;
+  padding: 0 12px;
+  color: rgb(255, 255, 255);
+  background: rgba(28, 28, 30, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 17px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  font: 600 13px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.ytvt-trigger:hover,
+.ytvt-trigger.is-active {
+  background: rgba(48, 48, 50, 0.9);
+}
+
+.ytvt-menu {
+  position: absolute;
+  top: 42px;
+  right: 0;
+  width: min(360px, calc(100vw - 32px));
+  padding: 8px 0;
+  color: rgb(255, 255, 255);
+  background: rgba(0, 0, 0, 0.92);
+  border-radius: 12px;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.46);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+}
+
+.ytvt-menu-row {
+  display: grid;
+  grid-template-columns: minmax(82px, 1fr) auto;
+  grid-template-areas:
+    "label value"
+    "control control";
+  align-items: center;
+  gap: 8px 14px;
+  min-height: 52px;
+  padding: 8px 18px;
+}
+
+.ytvt-menu-row:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ytvt-menu-label {
+  grid-area: label;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.ytvt-menu-value {
+  grid-area: value;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 14px;
+  line-height: 20px;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
+.ytvt-menu-control {
+  grid-area: control;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ytvt-menu-control:has(.ytvt-slider),
+.ytvt-menu-control:has(.ytvt-segment) {
+  justify-content: stretch;
+}
+
 .ytvt-slider {
-  width: 116px;
+  width: 100%;
   accent-color: rgb(10, 132, 255);
 }
 
 .ytvt-segment {
   display: flex;
+  width: 100%;
   padding: 2px;
   background: rgba(118, 118, 128, 0.24);
   border-radius: 7px;
 }
 
 .ytvt-button {
-  min-width: 28px;
-  height: 28px;
+  min-width: 48px;
+  height: 32px;
   padding: 0 9px;
   color: inherit;
   background: transparent;
@@ -56,6 +116,41 @@
 .ytvt-button.is-active {
   color: rgb(255, 255, 255);
   background: rgb(10, 132, 255);
+}
+
+.ytvt-segment .ytvt-button {
+  flex: 1;
+}
+
+.ytvt-toggle {
+  position: relative;
+  width: 50px;
+  height: 30px;
+  padding: 0;
+  background: rgba(120, 120, 128, 0.5);
+  border: 0;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+.ytvt-toggle span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  background: rgb(255, 255, 255);
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.32);
+  transition: transform 120ms ease;
+}
+
+.ytvt-toggle.is-active {
+  background: rgb(10, 132, 255);
+}
+
+.ytvt-toggle.is-active span {
+  transform: translateX(20px);
 }
 
 .ytvt-map {
@@ -85,11 +180,9 @@
 @media (max-width: 720px) {
   .ytvt-toolbar {
     right: 8px;
-    left: 8px;
-    flex-wrap: wrap;
   }
 
-  .ytvt-slider {
-    flex: 1 1 140px;
+  .ytvt-menu {
+    width: min(320px, calc(100vw - 16px));
   }
 }
