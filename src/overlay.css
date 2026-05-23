@@ -1,6 +1,6 @@
 .ytvt-toolbar {
   color: rgba(255, 255, 255, 0.94);
-  font: 500 12px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  font: 500 12px Roboto, Arial, sans-serif;
 }
 
 .ytvt-toolbar.is-floating {
@@ -202,14 +202,14 @@
 .ytvt-map {
   position: absolute;
   z-index: 2147483646;
-  top: 12px;
-  right: 12px;
+  top: 18px;
+  right: 18px;
   width: 112px;
   aspect-ratio: 16 / 9;
   pointer-events: none;
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.42);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.34);
 }
 
@@ -217,7 +217,7 @@
   position: absolute;
   border: 2px solid rgb(255, 255, 255);
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.25);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
 }
 
