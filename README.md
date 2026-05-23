@@ -19,12 +19,12 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 3. Click **Load unpacked**.
 4. Select this project folder: `/Users/kai/Documents/New project 2`.
 5. Open a normal YouTube video page, such as `https://www.youtube.com/watch?v=...`.
-6. Click the zoom percentage button in the top-right corner of the YouTube player to open the transform menu.
+6. Click the zoom percentage button in YouTube's native control bar to open the transform menu.
 7. After changing zoom, enter and leave fullscreen to confirm the transform is preserved without briefly flashing back to the original view.
 
 ## Controls
 
-The top-right button only displays the current zoom, such as `100%` or `150%`. Click it to open or close the transform menu.
+The zoom button is placed in YouTube's native right-side control bar, at the left edge of the right control group. It only displays the current zoom, such as `100%` or `150%`. Click it to open or close the transform menu. If YouTube's native controls are unavailable, the extension falls back to a floating top-right button.
 
 - `Zoom`: changes zoom between 100% and 500%.
 - `Rotation`: rotates the video by `0`, `90`, `180`, or `270` degrees.

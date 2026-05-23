@@ -1,4 +1,5 @@
 const ROTATIONS = [0, 90, 180, 270];
+const TOOLBAR_SELECTOR = '[data-ytvt-toolbar="true"]';
 const {
   applyZoomDelta,
   clampPanState,
@@ -41,11 +42,15 @@ function isWatchPage() {
 }
 
 function findPlayer() {
-  return document.querySelector(".html5-video-player");
+  return findVideo()?.closest(".html5-video-player") || document.querySelector(".html5-video-player");
 }
 
 function findVideo() {
   return document.querySelector("video.html5-main-video");
+}
+
+function findControlsHost() {
+  return player?.querySelector(".ytp-right-controls") || null;
 }
 
 function blockYouTubeWheel(event) {
@@ -283,9 +288,12 @@ function ensureToolbar() {
     return;
   }
 
-  const existing = player.querySelector(".ytvt-toolbar");
+  const controlsHost = findControlsHost();
+  const toolbarHost = controlsHost || player;
+  const existing = document.querySelector(TOOLBAR_SELECTOR);
   toolbar = existing || document.createElement("div");
-  toolbar.className = "ytvt-toolbar";
+  toolbar.dataset.ytvtToolbar = "true";
+  toolbar.className = controlsHost ? "ytvt-toolbar is-native" : "ytvt-toolbar is-floating";
   toolbar.setAttribute("aria-label", "YouTube video transform controls");
 
   if (!existing) {
@@ -295,7 +303,20 @@ function ensureToolbar() {
       event.preventDefault();
       event.stopPropagation();
     }, { passive: false });
-    player.append(toolbar);
+  }
+
+  document.querySelectorAll(TOOLBAR_SELECTOR).forEach((element) => {
+    if (element !== toolbar) {
+      element.remove();
+    }
+  });
+
+  if (controlsHost) {
+    if (toolbar.parentElement !== controlsHost || toolbar !== controlsHost.firstElementChild) {
+      controlsHost.prepend(toolbar);
+    }
+  } else if (toolbar.parentElement !== toolbarHost) {
+    toolbarHost.append(toolbar);
   }
 
   renderToolbar();
