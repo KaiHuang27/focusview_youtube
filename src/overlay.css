@@ -1,6 +1,7 @@
 .ytvt-toolbar {
   color: rgba(255, 255, 255, 0.94);
-  font: 500 12px Roboto, Arial, sans-serif;
+  font: 500 14px Roboto, Arial, sans-serif;
+  text-shadow: 0 0 2px rgba(0,0,0,0.8);
 }
 
 .ytvt-toolbar.is-floating {
@@ -15,7 +16,7 @@
   float: left;
   z-index: 2147483647;
   display: block;
-  width: 58px;
+  width: 48px;
   height: 100%;
   pointer-events: auto;
 }
@@ -73,95 +74,121 @@
   position: absolute;
   right: 0;
   top: 42px;
-  width: min(360px, calc(100vw - 32px));
-  padding: 8px 0;
+  width: min(420px, calc(100vw - 32px));
+  padding: 12px 0;
   color: rgb(255, 255, 255);
-  background: rgba(0, 0, 0, 0.92);
-  border-radius: 12px;
-  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.46);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  background: rgba(76, 76, 76, 0.92);
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.34);
+  font: 400 20px/1.25 Roboto, Arial, sans-serif;
 }
 
 .ytvt-toolbar.is-native .ytvt-menu {
   top: auto;
-  bottom: 54px;
+  bottom: 58px;
 }
 
 .ytvt-menu-row {
   display: grid;
-  grid-template-columns: minmax(82px, 1fr) auto;
+  grid-template-columns: 54px minmax(0, 1fr) auto;
   grid-template-areas:
-    "label value"
-    "control control";
+    "icon label value"
+    "icon control control";
   align-items: center;
-  gap: 8px 14px;
-  min-height: 52px;
-  padding: 8px 18px;
+  column-gap: 20px;
+  row-gap: 10px;
+  min-height: 76px;
+  padding: 10px 32px;
 }
 
 .ytvt-menu-row:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ytvt-menu-icon {
+  grid-area: icon;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: rgb(255, 255, 255);
+}
+
+.ytvt-menu-icon svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .ytvt-menu-label {
   grid-area: label;
-  font-size: 15px;
-  line-height: 20px;
+  color: rgba(255, 255, 255, 0.96);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 28px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.36);
 }
 
 .ytvt-menu-value {
   grid-area: value;
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 14px;
-  line-height: 20px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 28px;
   text-align: right;
   font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.36);
 }
 
 .ytvt-menu-control {
   grid-area: control;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .ytvt-menu-control:has(.ytvt-slider),
 .ytvt-menu-control:has(.ytvt-segment) {
   justify-content: stretch;
+  padding-top: 2px;
 }
 
 .ytvt-slider {
   width: 100%;
-  accent-color: rgb(10, 132, 255);
+  accent-color: rgb(255, 255, 255);
 }
 
 .ytvt-segment {
   display: flex;
   width: 100%;
-  padding: 2px;
-  background: rgba(118, 118, 128, 0.24);
-  border-radius: 7px;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
 }
 
 .ytvt-button {
   min-width: 48px;
-  height: 32px;
+  height: 34px;
   padding: 0 9px;
   color: inherit;
   background: transparent;
   border: 0;
-  border-radius: 6px;
-  font: inherit;
+  border-radius: 999px;
+  font: 500 14px/1 Roboto, Arial, sans-serif;
   cursor: pointer;
 }
 
 .ytvt-button:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .ytvt-button.is-active {
   color: rgb(255, 255, 255);
-  background: rgb(10, 132, 255);
+  background: rgba(255, 255, 255, 0.22);
 }
 
 .ytvt-segment .ytvt-button {
@@ -170,21 +197,21 @@
 
 .ytvt-toggle {
   position: relative;
-  width: 50px;
-  height: 30px;
+  width: 60px;
+  height: 36px;
   padding: 0;
-  background: rgba(120, 120, 128, 0.5);
+  background: rgba(255, 255, 255, 0.28);
   border: 0;
-  border-radius: 15px;
+  border-radius: 999px;
   cursor: pointer;
 }
 
 .ytvt-toggle span {
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 24px;
-  height: 24px;
+  top: 4px;
+  left: 4px;
+  width: 28px;
+  height: 28px;
   background: rgb(255, 255, 255);
   border-radius: 50%;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.32);
@@ -192,11 +219,11 @@
 }
 
 .ytvt-toggle.is-active {
-  background: rgb(10, 132, 255);
+  background: rgba(255, 255, 255, 0.42);
 }
 
 .ytvt-toggle.is-active span {
-  transform: translateX(20px);
+  transform: translateX(24px);
 }
 
 .ytvt-map {
