@@ -11,7 +11,7 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 - `manifest.json`: declares the MV3 extension and injects CSS plus content scripts on YouTube at `document_start`.
 - `src/transform-state.js`: shared transform and shortcut helpers exposed on `globalThis.YTVTTransform` so they can run as a classic content script and still be tested with Node.
 - `src/content.js`: detects the YouTube player, inserts the zoom trigger into `.ytp-right-controls` when available, renders the YouTube-style menu, updates transform state, renders the position map, handles pan dragging, handles Pan-mode wheel zoom, handles the Pan keyboard shortcut, reapplies transforms after fullscreen/style mutations, and resets state on YouTube SPA navigation.
-- `src/overlay.css`: native-control-bar zoom trigger, floating fallback trigger, YouTube-style dark menu, toggle, segment, slider, and position-map styling.
+- `src/overlay.css`: native-control-bar zoom trigger with compact YouTube-like typography and hover feedback, floating fallback trigger, YouTube-style dark menu, toggle, segment, slider, and position-map styling.
 - `src/transform-state.test.js`: Node test coverage for reset state, zoom scale conversion, rotation fit scaling, zoom and pan clamping, Pan-mode wheel interception, Pan shortcut detection, transform reapply detection, viewport-map math, rotation validation, and mirror composition.
 
 ## Data Flow
@@ -58,6 +58,7 @@ Manual Edge acceptance covers browser-specific behavior:
 
 - Load unpacked extension in `edge://extensions`.
 - Confirm only one zoom percentage button appears at the left edge of YouTube's native right-side control group on a normal YouTube watch page.
+- Confirm the zoom button font size, weight, spacing, and hover background visually match the nearby native YouTube controls.
 - Confirm clicking the zoom button opens and closes the dark transform menu.
 - Confirm menu Zoom, Rotation, horizontal mirror, vertical mirror, combined mirror, Pan, and Reset.
 - Confirm `Alt/Option + Shift + P` toggles Pan mode while focus is on the video page, and does nothing while typing in YouTube search or comments.
