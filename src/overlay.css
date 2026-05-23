@@ -185,10 +185,8 @@
   align-items: center;
 }
 
-.ytvt-menu-control:has(.ytvt-slider),
-.ytvt-menu-control:has(.ytvt-rotation-input) {
-  justify-content: stretch;
-  padding-top: 2px;
+.ytvt-menu-control:has(.ytvt-segment) {
+  width: 148px;
 }
 
 .ytvt-slider {
@@ -196,23 +194,37 @@
   accent-color: rgb(255, 255, 255);
 }
 
-.ytvt-rotation-input {
-  width: 64px;
-  height: 28px;
-  box-sizing: border-box;
-  padding: 0 8px;
-  color: rgb(255, 255, 255);
+.ytvt-segment {
+  display: flex;
+  width: 100%;
+  padding: 2px;
   background: rgba(255, 255, 255, 0.14);
-  border: 0;
-  border-radius: 6px;
-  font: 400 13px/28px Roboto, Arial, sans-serif;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  outline: none;
+  border-radius: 999px;
 }
 
-.ytvt-rotation-input:focus {
-  background: rgba(255, 255, 255, 0.2);
+.ytvt-button {
+  min-width: 42px;
+  height: 26px;
+  padding: 0 8px;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  font: 500 12px/1 Roboto, Arial, sans-serif;
+  cursor: pointer;
+}
+
+.ytvt-button:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.ytvt-button.is-active {
+  color: rgb(255, 255, 255);
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.ytvt-segment .ytvt-button {
+  flex: 1;
 }
 
 .ytvt-toggle {

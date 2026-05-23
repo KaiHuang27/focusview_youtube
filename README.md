@@ -6,7 +6,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 
 - Single zoom button showing the current zoom percentage.
 - YouTube-native-style transform menu with compact text rows and a top zoom control from 100% to 500%.
-- Rotate video by a custom degree value, fitting the rotated video inside the player frame first.
+- Rotate video by 0, 90, 180, or 270 degrees, fitting 90/270-degree rotations inside the player frame first.
 - Mirror horizontally, vertically, or both.
 - Pan mode for dragging a zoomed video and using the mouse wheel to zoom without adding extra black borders.
 - Top-right position map showing the visible area inside the original video frame.
@@ -29,7 +29,7 @@ The zoom button is placed in YouTube's native right-side control bar, at the lef
 The transform menu follows YouTube's settings-menu density: rounded gray panel, compact centered text rows, a top `- / slider / +` zoom control, and a small red `Reset` action in the top-right corner.
 
 - `Zoom`: changes zoom between 100% and 500%.
-- `Rotation`: enter a custom degree value, such as `0`, `45`, `90`, or `-15`.
+- `Rotation`: rotates the video by `0`, `90`, `180`, or `270` degrees.
 - `Mirror H`: mirrors the video horizontally.
 - `Mirror V`: mirrors the video vertically.
 - `Pan`: enables drag-to-pan on the video. While enabled, the mouse wheel changes zoom in 5% steps and is blocked from YouTube's native fullscreen controls.
@@ -38,7 +38,7 @@ The transform menu follows YouTube's settings-menu density: rounded gray panel, 
 
 Pan movement is bounded by the current zoom level and video element size. When the video edge reaches the visible edge, the extension stops further movement in that direction. Returning to 100% zoom recenters the video.
 
-When rotating, 100% zoom means the rotated video is first scaled to fit inside the player frame. This prevents a rotated video from being cut off at the top, bottom, left, or right before extra zoom is applied.
+When rotating 90 or 270 degrees, 100% zoom means the rotated video is first scaled to fit inside the player frame. This prevents a landscape video from being cut off at the top and bottom after rotating to portrait orientation.
 
 When zoom is not 100%, a small position map appears in the top-right corner of the player. The white rectangle shows which part of the original video frame is currently visible.
 

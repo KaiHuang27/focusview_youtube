@@ -24,7 +24,7 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 6. Menu controls update local in-memory state. The badge is re-rendered from `state.zoom`.
 7. `Alt/Option + Shift + P` toggles Pan mode at window/document capture time, but only outside editable fields and without `Ctrl` or `Cmd` modifiers.
 8. In Pan mode, player-level capture wheel events are intercepted before YouTube can handle them; they update zoom in 5% steps and clamp it to 100%-500%. Wheel events that start inside the menu are blocked without changing zoom.
-9. `getRotationFitScale` computes the fit scale for the current rotation angle so the rotated bounding box fits inside the player frame before user zoom is applied.
+9. `getRotationFitScale` computes the fit scale for 90/270-degree rotations so the rotated bounding box fits inside the player frame before user zoom is applied.
 10. `clampPanState` bounds pan to the current scaled and rotated video size before transforms are applied.
 11. `createTransformStyle` converts state into a CSS `transform`.
 12. The transform is applied directly to the video element.
@@ -62,10 +62,10 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm the zoom percentage text is centered inside the native control slot and hover behavior matches nearby YouTube controls.
 - Confirm double-clicking the trigger resets zoom to 100%.
 - Confirm clicking the zoom button opens and closes the YouTube-style transform menu with gray rounded panel, compact top zoom control, red top-right Reset action, text rows, and right-aligned controls.
-- Confirm menu Zoom, custom Rotation degree input, horizontal mirror, vertical mirror, combined mirror, Pan, and Reset.
+- Confirm menu Zoom, Rotation, horizontal mirror, vertical mirror, combined mirror, Pan, and Reset.
 - Confirm `Alt/Option + Shift + P` toggles Pan mode while focus is on the video page, and does nothing while typing in YouTube search or comments.
 - Confirm slider changes and Pan-mode wheel zoom update the zoom button text.
-- Confirm custom rotation values fit the rotated video inside the player frame at 100% zoom without cropping the rotated top/bottom or left/right edges.
+- Confirm 90/270-degree rotation fits the rotated video inside the player frame at 100% zoom without cropping the rotated top/bottom or left/right edges.
 - Confirm panning stops at video-content edges and does not create extra black borders.
 - Confirm returning to 100% zoom recenters the video.
 - Confirm the top-right position map appears when zoom is not 100% and updates while zooming or panning.

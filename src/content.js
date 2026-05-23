@@ -1,3 +1,4 @@
+const ROTATIONS = [0, 90, 180, 270];
 const TOOLBAR_SELECTOR = '[data-ytvt-toolbar="true"]';
 const {
   applyZoomDelta,
@@ -125,6 +126,29 @@ function renderViewportMap() {
   viewportMap.hidden = state.zoom === 100 && state.panX === 0 && state.panY === 0;
 }
 
+function createButton(label, title, active, onClick) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = active ? "ytvt-button is-active" : "ytvt-button";
+  button.textContent = label;
+  button.title = title;
+  button.addEventListener("click", onClick);
+  return button;
+}
+
+function createSegment(value) {
+  return createButton(
+    `${value}`,
+    `Rotate ${value} degrees`,
+    state.rotation === value,
+    () => {
+      state.rotation = value;
+      renderToolbar();
+      applyTransform();
+    }
+  );
+}
+
 function formatZoomScale() {
   return `${(state.zoom / 100).toFixed(2)}x`;
 }
@@ -176,36 +200,6 @@ function createZoomPanel() {
   controls.append(zoomOut, zoom, zoomIn);
   panel.append(value, controls);
   return panel;
-}
-
-function createRotationInput() {
-  const input = document.createElement("input");
-  input.className = "ytvt-rotation-input";
-  input.type = "text";
-  input.inputMode = "decimal";
-  input.value = String(state.rotation);
-  input.title = "Rotation degrees";
-  input.setAttribute("aria-label", "Rotation degrees");
-  const applyRotation = () => {
-    const nextRotation = Number(input.value.trim());
-    if (!Number.isFinite(nextRotation)) {
-      input.value = String(state.rotation);
-      return;
-    }
-
-    state.rotation = nextRotation;
-    state = clampPanState(state, video.clientWidth, video.clientHeight);
-    renderToolbar();
-    applyTransform();
-  };
-  input.addEventListener("change", applyRotation);
-  input.addEventListener("keydown", (event) => {
-    event.stopPropagation();
-    if (event.key === "Enter") {
-      applyRotation();
-    }
-  });
-  return input;
 }
 
 function createMenuRow(label, control, value = "") {
@@ -308,10 +302,14 @@ function renderToolbar() {
   reset.title = "Reset video transform";
   reset.addEventListener("click", resetState);
 
+  const rotationGroup = document.createElement("div");
+  rotationGroup.className = "ytvt-segment";
+  ROTATIONS.forEach((rotation) => rotationGroup.append(createSegment(rotation)));
+
   menu.append(
     reset,
     createZoomPanel(),
-    createMenuRow("Rotation", createRotationInput()),
+    createMenuRow("Rotation", rotationGroup),
     createMenuRow("Mirror H", createToggle("Mirror horizontally", state.flipX, () => {
       state.flipX = !state.flipX;
       renderToolbar();
