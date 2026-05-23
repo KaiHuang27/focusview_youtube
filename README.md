@@ -9,7 +9,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 - Rotate video by 0, 90, 180, or 270 degrees, fitting 90/270-degree rotations inside the player frame first.
 - Mirror horizontally, vertically, or both.
 - Pan mode for dragging a zoomed video and using the mouse wheel to zoom without adding extra black borders.
-- Top-left position map showing the visible area inside the original video frame.
+- Top-right position map showing the visible area inside the original video frame.
 - Reset transform state when switching to another YouTube video.
 
 ## Test in Microsoft Edge
@@ -38,7 +38,7 @@ Pan movement is bounded by the current zoom level and video element size. When t
 
 When rotating 90 or 270 degrees, 100% zoom means the rotated video is first scaled to fit inside the player frame. This prevents a landscape video from being cut off at the top and bottom after rotating to portrait orientation.
 
-When zoom is not 100%, a small position map appears in the top-left corner of the player. The blue rectangle shows which part of the original video frame is currently visible.
+When zoom is not 100%, a small position map appears in the top-right corner of the player. The white rectangle shows which part of the original video frame is currently visible.
 
 When Pan is off, clicking the video keeps YouTube's normal play and pause behavior, and the mouse wheel is not intercepted by the extension. When Pan is on, the extension intercepts wheel events at the player level to avoid triggering YouTube's native fullscreen recommendations or extra controls.
 

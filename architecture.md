@@ -28,7 +28,7 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 10. `clampPanState` bounds pan to the current scaled and rotated video size before transforms are applied.
 11. `createTransformStyle` converts state into a CSS `transform`.
 12. The transform is applied directly to the video element.
-13. `createViewportFrame` maps zoom and pan into a normalized visible rectangle for the top-left position map.
+13. `createViewportFrame` maps zoom and pan into a normalized visible rectangle for the top-right position map.
 14. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform, clamped pan, and position map are reapplied to the same video element.
 15. Fullscreen events and video style mutations schedule repeated `requestAnimationFrame` reapplication so YouTube style rewrites are corrected quickly.
 16. When the video key changes, state resets to defaults and the menu closes.
@@ -68,7 +68,7 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm 90/270-degree rotation fits the rotated video inside the player frame at 100% zoom without cropping the rotated top/bottom or left/right edges.
 - Confirm panning stops at video-content edges and does not create extra black borders.
 - Confirm returning to 100% zoom recenters the video.
-- Confirm the top-left position map appears when zoom is not 100% and updates while zooming or panning.
+- Confirm the top-right position map appears when zoom is not 100% and updates while zooming or panning.
 - Confirm mouse wheel zooms only while Pan is enabled.
 - Confirm mouse wheel zoom in fullscreen Pan mode does not open YouTube's native recommendations or more-video controls.
 - Confirm zoom, rotation, mirror, and pan state are preserved when entering and leaving fullscreen without flashing back to the original view.
