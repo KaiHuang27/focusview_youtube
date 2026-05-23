@@ -440,6 +440,11 @@ function sync() {
 }
 
 function observePlayerSize() {
+  if (!document.documentElement) {
+    window.addEventListener("DOMContentLoaded", observePlayerSize, { once: true });
+    return;
+  }
+
   if (resizeObserver) {
     resizeObserver.disconnect();
   }
@@ -454,6 +459,7 @@ function start() {
   setInterval(sync, 800);
   window.addEventListener("yt-navigate-finish", sync);
   window.addEventListener("popstate", sync);
+  window.addEventListener("keydown", onShortcutKeyDown, true);
   document.addEventListener("keydown", onShortcutKeyDown, true);
   document.addEventListener("pointerdown", closeMenuOnOutsidePointer, true);
   document.addEventListener("keydown", closeMenuOnEscape);

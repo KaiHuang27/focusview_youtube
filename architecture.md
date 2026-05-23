@@ -2,13 +2,13 @@
 
 ## Overview
 
-This is a Manifest V3 extension with one content-script entrypoint on `https://www.youtube.com/*`.
+This is a Manifest V3 extension with one content-script entrypoint on `https://www.youtube.com/*`, loaded at `document_start` so keyboard capture can be registered before YouTube consumes shortcuts.
 
 The extension keeps YouTube's native player and controls intact. It only applies CSS transforms to the `video.html5-main-video` element and renders a small zoom trigger plus menu inside `.html5-video-player`.
 
 ## Components
 
-- `manifest.json`: declares the MV3 extension and injects CSS plus content scripts on YouTube.
+- `manifest.json`: declares the MV3 extension and injects CSS plus content scripts on YouTube at `document_start`.
 - `src/transform-state.js`: shared transform and shortcut helpers exposed on `globalThis.YTVTTransform` so they can run as a classic content script and still be tested with Node.
 - `src/content.js`: detects the YouTube player, renders the zoom trigger and YouTube-style menu, updates transform state, renders the position map, handles pan dragging, handles Pan-mode wheel zoom, handles the Pan keyboard shortcut, reapplies transforms after fullscreen/style mutations, and resets state on YouTube SPA navigation.
 - `src/overlay.css`: macOS-style zoom trigger, YouTube-style dark menu, toggle, segment, slider, and position-map styling.
@@ -20,7 +20,7 @@ The extension keeps YouTube's native player and controls intact. It only applies
 2. The content script finds `.html5-video-player` and `video.html5-main-video`.
 3. The top-right zoom trigger opens a dark menu with Zoom, Rotation, Mirror H, Mirror V, Pan, and Reset controls.
 4. Menu controls update local in-memory state. The trigger text is re-rendered from `state.zoom`.
-5. `Alt/Option + Shift + P` toggles Pan mode at document capture time, but only outside editable fields and without `Ctrl` or `Cmd` modifiers.
+5. `Alt/Option + Shift + P` toggles Pan mode at window/document capture time, but only outside editable fields and without `Ctrl` or `Cmd` modifiers.
 6. In Pan mode, player-level capture wheel events are intercepted before YouTube can handle them; they update zoom in 5% steps and clamp it to 100%-500%. Wheel events that start inside the menu are blocked without changing zoom.
 7. `getRotationFitScale` computes the fit scale for 90/270-degree rotations so the rotated bounding box fits inside the player frame before user zoom is applied.
 8. `clampPanState` bounds pan to the current scaled and rotated video size before transforms are applied.
