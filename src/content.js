@@ -216,7 +216,11 @@ function renderToolbar() {
   trigger.setAttribute("aria-expanded", String(isMenuOpen));
   trigger.setAttribute("aria-label", getTriggerTitle());
   trigger.title = getTriggerTitle();
-  trigger.textContent = `${state.zoom}%`;
+
+  const label = document.createElement("span");
+  label.className = "ytvt-trigger-label";
+  label.textContent = `${state.zoom}%`;
+  trigger.append(label);
 
   trigger.addEventListener("click", () => {
     isMenuOpen = !isMenuOpen;
