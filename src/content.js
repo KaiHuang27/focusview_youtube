@@ -223,7 +223,7 @@ function renderToolbar() {
 
   const trigger = document.createElement("button");
   trigger.type = "button";
-  trigger.className = isMenuOpen ? "ytvt-trigger is-active" : "ytvt-trigger";
+  trigger.className = isMenuOpen ? "ytvt-trigger ytp-button is-active" : "ytvt-trigger ytp-button";
   trigger.setAttribute("aria-haspopup", "menu");
   trigger.setAttribute("aria-expanded", String(isMenuOpen));
   trigger.setAttribute("aria-label", getTriggerTitle());
