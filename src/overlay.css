@@ -123,6 +123,7 @@
   grid-template-columns: 32px minmax(0, 1fr) 32px;
   align-items: center;
   column-gap: 10px;
+  touch-action: none;
 }
 
 .ytvt-zoom-step {
@@ -157,6 +158,10 @@
 
 .ytvt-menu-row:hover {
   background: rgba(255, 255, 255, 0.14);
+}
+
+.ytvt-menu-row:has(.ytvt-segment):hover {
+  background: transparent;
 }
 
 .ytvt-menu-label {
@@ -198,6 +203,7 @@
   margin: 0;
   background: transparent;
   cursor: pointer;
+  pointer-events: none;
   appearance: none;
   -webkit-appearance: none;
 }

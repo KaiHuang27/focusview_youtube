@@ -221,27 +221,36 @@ function createZoomPanel() {
     syncZoomControls();
   });
   zoom.addEventListener("change", renderToolbar);
-  zoom.addEventListener("pointerdown", (event) => {
+
+  const updateZoomFromPointer = (event) => {
+    setZoom(getZoomFromPointer(zoom, event.clientX), false);
+    syncZoomControls();
+  };
+
+  controls.addEventListener("pointerdown", (event) => {
     if (event.button !== 0) {
+      return;
+    }
+
+    if (event.target.closest(".ytvt-zoom-step")) {
       return;
     }
 
     event.preventDefault();
     event.stopPropagation();
     activeSliderPointerId = event.pointerId;
-    zoom.setPointerCapture?.(event.pointerId);
-    setZoom(getZoomFromPointer(zoom, event.clientX), false);
-    syncZoomControls();
+    controls.setPointerCapture?.(event.pointerId);
+    updateZoomFromPointer(event);
   });
-  zoom.addEventListener("pointermove", (event) => {
+
+  controls.addEventListener("pointermove", (event) => {
     if (event.pointerId !== activeSliderPointerId) {
       return;
     }
 
     event.preventDefault();
     event.stopPropagation();
-    setZoom(getZoomFromPointer(zoom, event.clientX), false);
-    syncZoomControls();
+    updateZoomFromPointer(event);
   });
 
   const endSliderDrag = (event) => {
@@ -252,12 +261,12 @@ function createZoomPanel() {
     event.preventDefault();
     event.stopPropagation();
     activeSliderPointerId = null;
-    zoom.releasePointerCapture?.(event.pointerId);
+    controls.releasePointerCapture?.(event.pointerId);
     renderToolbar();
   };
 
-  zoom.addEventListener("pointerup", endSliderDrag);
-  zoom.addEventListener("pointercancel", endSliderDrag);
+  controls.addEventListener("pointerup", endSliderDrag);
+  controls.addEventListener("pointercancel", endSliderDrag);
 
   const zoomIn = document.createElement("button");
   zoomIn.type = "button";

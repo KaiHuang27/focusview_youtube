@@ -21,7 +21,7 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 3. The zoom trigger is prepended to `.ytp-right-controls` so it appears at the left edge of YouTube's right-side native control group. If the native host is missing, it falls back to a floating top-right trigger.
 4. The zoom trigger renders as native-sized `ytp-button` percentage text centered in the toolbar slot.
 5. Clicking the zoom trigger opens a compact YouTube-settings-style gray menu. The top section shows the zoom scale with `- / slider / +` controls and a small red Reset action in the top-right corner; the remaining rows use centered text labels and right-aligned controls. Double-clicking the trigger resets only zoom and pan to the centered 100% view.
-6. Menu controls update local in-memory state. During slider dragging, pointer capture keeps the drag active even when the cursor leaves the track vertically; zoom text and slider progress update in place without remounting the menu. After the change finishes the toolbar is re-rendered from `state.zoom`.
+6. Menu controls update local in-memory state. During slider dragging, pointer capture on the whole zoom control row keeps the drag active even when the cursor leaves the track vertically; zoom text and slider progress update in place without remounting the menu. After the change finishes the toolbar is re-rendered from `state.zoom`.
 7. `Alt/Option + Shift + P` toggles Pan mode at window/document capture time, but only outside editable fields and without `Ctrl` or `Cmd` modifiers.
 8. In Pan mode, player-level capture wheel events are intercepted before YouTube can handle them; they update zoom in 5% steps and clamp it to 100%-500%. Wheel events that start inside the menu are blocked without changing zoom.
 9. `getRotationFitScale` computes the fit scale for 90/270-degree rotations so the rotated bounding box fits inside the player frame before user zoom is applied.
@@ -66,6 +66,7 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm `Alt/Option + Shift + P` toggles Pan mode while focus is on the video page, and does nothing while typing in YouTube search or comments.
 - Confirm slider changes and Pan-mode wheel zoom update the zoom button text.
 - Confirm pressing and holding the zoom slider keeps dragging while the cursor moves above or below the track, matching YouTube's native slider behavior.
+- Confirm the Rotation row itself does not show a row hover background; only the `0 / 90 / 180 / 270` buttons show their own hover or active state.
 - Confirm 90/270-degree rotation fits the rotated video inside the player frame at 100% zoom without cropping the rotated top/bottom or left/right edges.
 - Confirm panning stops at video-content edges and does not create extra black borders.
 - Confirm returning to 100% zoom recenters the video.
