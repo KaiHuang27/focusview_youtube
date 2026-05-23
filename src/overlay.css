@@ -178,19 +178,6 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.36);
 }
 
-.ytvt-menu-row:has(.ytvt-segment) {
-  grid-template-areas:
-    "label value"
-    "control control";
-  row-gap: 5px;
-  min-height: 60px;
-}
-
-.ytvt-menu-row:has(.ytvt-segment) .ytvt-menu-value {
-  display: block;
-  grid-area: value;
-}
-
 .ytvt-menu-control {
   grid-area: control;
   display: flex;
@@ -199,7 +186,7 @@
 }
 
 .ytvt-menu-control:has(.ytvt-slider),
-.ytvt-menu-control:has(.ytvt-segment) {
+.ytvt-menu-control:has(.ytvt-rotation-input) {
   justify-content: stretch;
   padding-top: 2px;
 }
@@ -209,37 +196,23 @@
   accent-color: rgb(255, 255, 255);
 }
 
-.ytvt-segment {
-  display: flex;
-  width: 100%;
-  padding: 2px;
-  background: rgba(255, 255, 255, 0.14);
-  border-radius: 999px;
-}
-
-.ytvt-button {
-  min-width: 42px;
-  height: 26px;
+.ytvt-rotation-input {
+  width: 64px;
+  height: 28px;
+  box-sizing: border-box;
   padding: 0 8px;
-  color: inherit;
-  background: transparent;
-  border: 0;
-  border-radius: 999px;
-  font: 500 12px/1 Roboto, Arial, sans-serif;
-  cursor: pointer;
-}
-
-.ytvt-button:hover {
-  background: rgba(255, 255, 255, 0.14);
-}
-
-.ytvt-button.is-active {
   color: rgb(255, 255, 255);
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.14);
+  border: 0;
+  border-radius: 6px;
+  font: 400 13px/28px Roboto, Arial, sans-serif;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  outline: none;
 }
 
-.ytvt-segment .ytvt-button {
-  flex: 1;
+.ytvt-rotation-input:focus {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .ytvt-toggle {

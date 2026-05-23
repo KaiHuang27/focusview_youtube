@@ -1,5 +1,4 @@
 (() => {
-  const ALLOWED_ROTATIONS = new Set([0, 90, 180, 270]);
   const ZOOM_STEP = 5;
   const MIN_ZOOM = 100;
   const MAX_ZOOM = 500;
@@ -21,20 +20,32 @@
   }
 
   function normalizeRotation(rotation) {
-    if (!ALLOWED_ROTATIONS.has(rotation)) {
+    if (typeof rotation !== "number" || !Number.isFinite(rotation)) {
       throw new Error(`Unsupported rotation: ${rotation}`);
     }
 
     return rotation;
   }
 
+  function getRotatedBounds(rotation, width, height) {
+    const radians = (Math.abs(normalizeRotation(rotation)) % 360) * Math.PI / 180;
+    const sin = Math.abs(Math.sin(radians));
+    const cos = Math.abs(Math.cos(radians));
+
+    return {
+      width: width * cos + height * sin,
+      height: width * sin + height * cos,
+    };
+  }
+
   function getRotationFitScale(rotation, width = 0, height = 0) {
     const normalizedRotation = normalizeRotation(rotation);
-    if (normalizedRotation === 0 || normalizedRotation === 180 || width <= 0 || height <= 0) {
+    if (width <= 0 || height <= 0) {
       return 1;
     }
 
-    return Number(Math.min(width / height, height / width).toFixed(4));
+    const bounds = getRotatedBounds(normalizedRotation, width, height);
+    return Number(Math.min(1, width / bounds.width, height / bounds.height).toFixed(4));
   }
 
   function getEffectiveScale(state, width, height) {
@@ -62,9 +73,9 @@
       return { ...state, panX: 0, panY: 0 };
     }
 
-    const isSideways = state.rotation === 90 || state.rotation === 270;
-    const scaledWidth = (isSideways ? height : width) * scale;
-    const scaledHeight = (isSideways ? width : height) * scale;
+    const bounds = getRotatedBounds(state.rotation, width, height);
+    const scaledWidth = bounds.width * scale;
+    const scaledHeight = bounds.height * scale;
     const maxPanX = Math.max(0, (scaledWidth - width) / 2);
     const maxPanY = Math.max(0, (scaledHeight - height) / 2);
 

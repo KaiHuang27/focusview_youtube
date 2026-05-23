@@ -51,11 +51,12 @@ test("createTransformStyle combines pan, rotation, and flips", () => {
   );
 });
 
-test("getRotationFitScale fits right-angle rotation inside the video frame", () => {
+test("getRotationFitScale fits rotated bounds inside the video frame", () => {
   assert.equal(getRotationFitScale(0, 1920, 1080), 1);
   assert.equal(getRotationFitScale(180, 1920, 1080), 1);
   assert.equal(getRotationFitScale(90, 1920, 1080), 0.5625);
   assert.equal(getRotationFitScale(270, 1080, 1920), 0.5625);
+  assert.equal(getRotationFitScale(45, 1000, 1000), 0.7071);
 });
 
 test("createTransformStyle applies rotation fit before user zoom", () => {
@@ -65,12 +66,13 @@ test("createTransformStyle applies rotation fit before user zoom", () => {
   );
 });
 
-test("normalizeRotation only accepts right-angle rotations", () => {
+test("normalizeRotation accepts any finite number rotation", () => {
   assert.equal(normalizeRotation(0), 0);
-  assert.equal(normalizeRotation(90), 90);
-  assert.equal(normalizeRotation(180), 180);
-  assert.equal(normalizeRotation(270), 270);
-  assert.throws(() => normalizeRotation(45), /Unsupported rotation/);
+  assert.equal(normalizeRotation(45), 45);
+  assert.equal(normalizeRotation(-22.5), -22.5);
+  assert.throws(() => normalizeRotation(Number.NaN), /Unsupported rotation/);
+  assert.throws(() => normalizeRotation(Infinity), /Unsupported rotation/);
+  assert.throws(() => normalizeRotation("90"), /Unsupported rotation/);
 });
 
 test("applyZoomDelta changes zoom and clamps it to the supported range", () => {
