@@ -187,6 +187,7 @@ function createZoomPanel() {
   zoom.step = "1";
   zoom.value = String(state.zoom);
   zoom.title = "Zoom";
+  zoom.style.setProperty("--ytvt-slider-progress", `${((state.zoom - 100) / 400) * 100}%`);
   zoom.addEventListener("input", () => setZoom(Number(zoom.value)));
 
   const zoomIn = document.createElement("button");
