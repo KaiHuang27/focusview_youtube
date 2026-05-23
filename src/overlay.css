@@ -186,7 +186,7 @@
 }
 
 .ytvt-menu-control:has(.ytvt-segment) {
-  width: 148px;
+  width: 170px;
 }
 
 .ytvt-slider {
@@ -225,6 +225,8 @@
 
 .ytvt-segment .ytvt-button {
   flex: 1;
+  min-width: 0;
+  padding: 0;
 }
 
 .ytvt-toggle {
