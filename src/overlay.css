@@ -74,13 +74,13 @@
   position: absolute;
   right: 0;
   top: 42px;
-  width: min(360px, calc(100vw - 32px));
-  padding: 14px 0 10px;
+  width: min(300px, calc(100vw - 24px));
+  padding: 10px 0 8px;
   color: rgb(255, 255, 255);
-  background: rgba(76, 76, 76, 0.92);
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.34);
-  font: 400 16px/1.25 Roboto, Arial, sans-serif;
+  background: rgba(64, 64, 64, 0.92);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.32);
+  font: 400 14px/1.25 Roboto, Arial, sans-serif;
 }
 
 .ytvt-toolbar.is-native .ytvt-menu {
@@ -90,13 +90,13 @@
 
 .ytvt-menu-reset {
   position: absolute;
-  top: 12px;
-  right: 18px;
+  top: 10px;
+  right: 14px;
   padding: 0;
   color: rgb(255, 77, 77);
   background: transparent;
   border: 0;
-  font: 500 12px/18px Roboto, Arial, sans-serif;
+  font: 500 11px/16px Roboto, Arial, sans-serif;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.38);
   cursor: pointer;
 }
@@ -106,13 +106,13 @@
 }
 
 .ytvt-zoom-panel {
-  padding: 2px 22px 14px;
+  padding: 0 18px 10px;
 }
 
 .ytvt-zoom-value {
-  padding: 0 52px 12px;
+  padding: 0 42px 10px;
   color: rgba(255, 255, 255, 0.96);
-  font: 500 22px/28px Roboto, Arial, sans-serif;
+  font: 500 18px/24px Roboto, Arial, sans-serif;
   text-align: center;
   font-variant-numeric: tabular-nums;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.38);
@@ -120,22 +120,22 @@
 
 .ytvt-zoom-controls {
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) 42px;
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
   align-items: center;
-  column-gap: 16px;
+  column-gap: 12px;
 }
 
 .ytvt-zoom-step {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
+  width: 34px;
+  height: 34px;
   padding: 0;
   color: rgb(255, 255, 255);
   background: rgba(255, 255, 255, 0.14);
   border: 0;
   border-radius: 50%;
-  font: 700 28px/1 Roboto, Arial, sans-serif;
+  font: 700 22px/1 Roboto, Arial, sans-serif;
   cursor: pointer;
 }
 
@@ -145,12 +145,12 @@
 
 .ytvt-menu-row {
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) auto;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
   grid-template-areas: "icon label control";
   align-items: center;
-  column-gap: 18px;
-  min-height: 56px;
-  padding: 6px 22px;
+  column-gap: 14px;
+  min-height: 44px;
+  padding: 4px 18px;
 }
 
 .ytvt-menu-row:hover {
@@ -161,14 +161,14 @@
   grid-area: icon;
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   color: rgb(255, 255, 255);
 }
 
 .ytvt-menu-icon svg {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2.6;
@@ -179,9 +179,9 @@
 .ytvt-menu-label {
   grid-area: label;
   color: rgba(255, 255, 255, 0.96);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
-  line-height: 22px;
+  line-height: 20px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.36);
 }
 
@@ -189,9 +189,9 @@
   display: none;
   grid-area: control;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 400;
-  line-height: 22px;
+  line-height: 20px;
   text-align: right;
   font-variant-numeric: tabular-nums;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.36);
@@ -201,8 +201,8 @@
   grid-template-areas:
     "icon label value"
     "icon control control";
-  row-gap: 8px;
-  min-height: 82px;
+  row-gap: 6px;
+  min-height: 68px;
 }
 
 .ytvt-menu-row:has(.ytvt-segment) .ytvt-menu-value {
@@ -231,20 +231,20 @@
 .ytvt-segment {
   display: flex;
   width: 100%;
-  padding: 3px;
+  padding: 2px;
   background: rgba(255, 255, 255, 0.14);
   border-radius: 999px;
 }
 
 .ytvt-button {
-  min-width: 48px;
-  height: 30px;
-  padding: 0 9px;
+  min-width: 42px;
+  height: 26px;
+  padding: 0 8px;
   color: inherit;
   background: transparent;
   border: 0;
   border-radius: 999px;
-  font: 500 14px/1 Roboto, Arial, sans-serif;
+  font: 500 12px/1 Roboto, Arial, sans-serif;
   cursor: pointer;
 }
 
@@ -263,8 +263,8 @@
 
 .ytvt-toggle {
   position: relative;
-  width: 52px;
-  height: 32px;
+  width: 40px;
+  height: 24px;
   padding: 0;
   background: rgba(255, 255, 255, 0.28);
   border: 0;
@@ -274,10 +274,10 @@
 
 .ytvt-toggle span {
   position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 24px;
-  height: 24px;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
   background: rgb(255, 255, 255);
   border-radius: 50%;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.32);
@@ -289,7 +289,7 @@
 }
 
 .ytvt-toggle.is-active span {
-  transform: translateX(20px);
+  transform: translateX(16px);
 }
 
 .ytvt-map {

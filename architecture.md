@@ -11,7 +11,7 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 - `manifest.json`: declares the MV3 extension and injects CSS plus content scripts on YouTube at `document_start`.
 - `src/transform-state.js`: shared transform and shortcut helpers exposed on `globalThis.YTVTTransform` so they can run as a classic content script and still be tested with Node.
 - `src/content.js`: detects the YouTube player, inserts the zoom trigger into `.ytp-right-controls` when available, renders the YouTube-style menu with a compact zoom panel and row icons, updates transform state, renders the position map, handles pan dragging, handles Pan-mode wheel zoom, handles the Pan keyboard shortcut, reapplies transforms after fullscreen/style mutations, and resets state on YouTube SPA navigation.
-- `src/overlay.css`: native-control-bar zoom trigger using YouTube's `ytp-button` sizing, Roboto/Arial typography, centered percentage text, floating fallback trigger, YouTube-settings-style gray menu, toggle, segment, slider, and position-map styling.
+- `src/overlay.css`: native-control-bar zoom trigger using YouTube's `ytp-button` sizing, Roboto/Arial typography, centered percentage text, floating fallback trigger, compact YouTube-settings-style gray menu, toggle, segment, slider, and position-map styling.
 - `src/transform-state.test.js`: Node test coverage for reset state, zoom scale conversion, rotation fit scaling, zoom and pan clamping, Pan-mode wheel interception, Pan shortcut detection, transform reapply detection, viewport-map math, rotation validation, and mirror composition.
 
 ## Data Flow
@@ -20,7 +20,7 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 2. The content script finds `.html5-video-player` and `video.html5-main-video`.
 3. The zoom trigger is prepended to `.ytp-right-controls` so it appears at the left edge of YouTube's right-side native control group. If the native host is missing, it falls back to a floating top-right trigger.
 4. The zoom trigger renders as native-sized `ytp-button` percentage text centered in the toolbar slot.
-5. Clicking the zoom trigger opens a YouTube-settings-style gray menu. The top section shows the zoom scale with `- / slider / +` controls and a small red Reset action in the top-right corner; the remaining rows use left icons, centered labels, and right-aligned controls. Double-clicking the trigger resets only zoom and pan to the centered 100% view.
+5. Clicking the zoom trigger opens a compact YouTube-settings-style gray menu. The top section shows the zoom scale with `- / slider / +` controls and a small red Reset action in the top-right corner; the remaining rows use left icons, centered labels, and right-aligned controls. Double-clicking the trigger resets only zoom and pan to the centered 100% view.
 6. Menu controls update local in-memory state. The badge is re-rendered from `state.zoom`.
 7. `Alt/Option + Shift + P` toggles Pan mode at window/document capture time, but only outside editable fields and without `Ctrl` or `Cmd` modifiers.
 8. In Pan mode, player-level capture wheel events are intercepted before YouTube can handle them; they update zoom in 5% steps and clamp it to 100%-500%. Wheel events that start inside the menu are blocked without changing zoom.

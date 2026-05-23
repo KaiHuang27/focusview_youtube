@@ -5,7 +5,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 ## Features
 
 - Single zoom button showing the current zoom percentage.
-- YouTube-native-style transform menu with compact rows, left-side icons, and a top zoom control from 100% to 500%.
+- YouTube-native-style transform menu with compact 300px layout, left-side icons, and a top zoom control from 100% to 500%.
 - Rotate video by 0, 90, 180, or 270 degrees, fitting 90/270-degree rotations inside the player frame first.
 - Mirror horizontally, vertically, or both.
 - Pan mode for dragging a zoomed video and using the mouse wheel to zoom without adding extra black borders.
@@ -26,7 +26,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 
 The zoom button is placed in YouTube's native right-side control bar, at the left edge of the right control group. It directly shows the current zoom percentage in a native-sized toolbar slot. Click it to open or close the YouTube-style transform menu, or double-click it to reset zoom to 100%. If YouTube's native controls are unavailable, the extension falls back to a floating top-right button.
 
-The transform menu follows YouTube's settings-menu layout: rounded gray panel, compact centered rows, left-side icons, a top `- / slider / +` zoom control, and a small red `Reset` action in the top-right corner.
+The transform menu follows YouTube's settings-menu density: rounded gray 300px panel, compact centered rows, left-side icons, a top `- / slider / +` zoom control, and a small red `Reset` action in the top-right corner.
 
 - `Zoom`: changes zoom between 100% and 500%.
 - `Rotation`: rotates the video by `0`, `90`, `180`, or `270` degrees.
