@@ -149,6 +149,17 @@ function createSegment(value) {
   );
 }
 
+function formatZoomScale() {
+  return `${(state.zoom / 100).toFixed(2)}x`;
+}
+
+function setZoom(zoom) {
+  state.zoom = Math.min(500, Math.max(100, zoom));
+  state = clampPanState(state, video.clientWidth, video.clientHeight);
+  renderToolbar();
+  applyTransform();
+}
+
 function createMenuIcon(label) {
   const icon = document.createElement("span");
   icon.className = "ytvt-menu-icon";
@@ -160,11 +171,52 @@ function createMenuIcon(label) {
     "Mirror H": '<svg viewBox="0 0 24 24"><path d="M12 4v16" /><path d="M4 7h5v10H4zM15 7h5v10h-5z" /></svg>',
     "Mirror V": '<svg viewBox="0 0 24 24"><path d="M4 12h16" /><path d="M7 4h10v5H7zM7 15h10v5H7z" /></svg>',
     Pan: '<svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18" /><path d="M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3" /></svg>',
-    Reset: '<svg viewBox="0 0 24 24"><path d="M6 8a7 7 0 1 1 1.2 8.8" /><path d="M6 8V4M6 8h4" /></svg>',
   };
 
   icon.innerHTML = icons[label] || '<svg viewBox="0 0 24 24"><path d="M5 12h14" /></svg>';
   return icon;
+}
+
+function createZoomPanel() {
+  const panel = document.createElement("div");
+  panel.className = "ytvt-zoom-panel";
+
+  const value = document.createElement("div");
+  value.className = "ytvt-zoom-value";
+  value.textContent = formatZoomScale();
+
+  const controls = document.createElement("div");
+  controls.className = "ytvt-zoom-controls";
+
+  const zoomOut = document.createElement("button");
+  zoomOut.type = "button";
+  zoomOut.className = "ytvt-zoom-step";
+  zoomOut.textContent = "-";
+  zoomOut.title = "Zoom out";
+  zoomOut.setAttribute("aria-label", "Zoom out");
+  zoomOut.addEventListener("click", () => setZoom(state.zoom - 5));
+
+  const zoom = document.createElement("input");
+  zoom.className = "ytvt-slider";
+  zoom.type = "range";
+  zoom.min = "100";
+  zoom.max = "500";
+  zoom.step = "1";
+  zoom.value = String(state.zoom);
+  zoom.title = "Zoom";
+  zoom.addEventListener("input", () => setZoom(Number(zoom.value)));
+
+  const zoomIn = document.createElement("button");
+  zoomIn.type = "button";
+  zoomIn.className = "ytvt-zoom-step";
+  zoomIn.textContent = "+";
+  zoomIn.title = "Zoom in";
+  zoomIn.setAttribute("aria-label", "Zoom in");
+  zoomIn.addEventListener("click", () => setZoom(state.zoom + 5));
+
+  controls.append(zoomOut, zoom, zoomIn);
+  panel.append(value, controls);
+  return panel;
 }
 
 function createMenuRow(label, control, value = "") {
@@ -260,27 +312,20 @@ function renderToolbar() {
   menu.className = "ytvt-menu";
   menu.setAttribute("role", "menu");
 
-  const zoom = document.createElement("input");
-  zoom.className = "ytvt-slider";
-  zoom.type = "range";
-  zoom.min = "100";
-  zoom.max = "500";
-  zoom.step = "1";
-  zoom.value = String(state.zoom);
-  zoom.title = "Zoom";
-  zoom.addEventListener("input", () => {
-    state.zoom = Number(zoom.value);
-    state = clampPanState(state, video.clientWidth, video.clientHeight);
-    renderToolbar();
-    applyTransform();
-  });
+  const reset = document.createElement("button");
+  reset.type = "button";
+  reset.className = "ytvt-menu-reset";
+  reset.textContent = "Reset";
+  reset.title = "Reset video transform";
+  reset.addEventListener("click", resetState);
 
   const rotationGroup = document.createElement("div");
   rotationGroup.className = "ytvt-segment";
   ROTATIONS.forEach((rotation) => rotationGroup.append(createSegment(rotation)));
 
   menu.append(
-    createMenuRow("Zoom", zoom, `${state.zoom}%`),
+    reset,
+    createZoomPanel(),
     createMenuRow("Rotation", rotationGroup, `${state.rotation}`),
     createMenuRow("Mirror H", createToggle("Mirror horizontally", state.flipX, () => {
       state.flipX = !state.flipX;
@@ -292,8 +337,7 @@ function renderToolbar() {
       renderToolbar();
       applyTransform();
     })),
-    createMenuRow("Pan", createToggle("Pan mode", state.panMode, togglePanMode)),
-    createMenuRow("Reset", createButton("Reset", "Reset video transform", false, resetState))
+    createMenuRow("Pan", createToggle("Pan mode", state.panMode, togglePanMode))
   );
 
   toolbar.append(menu);

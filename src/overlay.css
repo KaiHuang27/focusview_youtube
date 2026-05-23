@@ -74,13 +74,13 @@
   position: absolute;
   right: 0;
   top: 42px;
-  width: min(420px, calc(100vw - 32px));
-  padding: 12px 0;
+  width: min(360px, calc(100vw - 32px));
+  padding: 14px 0 10px;
   color: rgb(255, 255, 255);
   background: rgba(76, 76, 76, 0.92);
-  border-radius: 18px;
+  border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.34);
-  font: 400 20px/1.25 Roboto, Arial, sans-serif;
+  font: 400 16px/1.25 Roboto, Arial, sans-serif;
 }
 
 .ytvt-toolbar.is-native .ytvt-menu {
@@ -88,17 +88,69 @@
   bottom: 58px;
 }
 
+.ytvt-menu-reset {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  padding: 0;
+  color: rgb(255, 77, 77);
+  background: transparent;
+  border: 0;
+  font: 500 12px/18px Roboto, Arial, sans-serif;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.38);
+  cursor: pointer;
+}
+
+.ytvt-menu-reset:hover {
+  color: rgb(255, 120, 120);
+}
+
+.ytvt-zoom-panel {
+  padding: 2px 22px 14px;
+}
+
+.ytvt-zoom-value {
+  padding: 0 52px 12px;
+  color: rgba(255, 255, 255, 0.96);
+  font: 500 22px/28px Roboto, Arial, sans-serif;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.38);
+}
+
+.ytvt-zoom-controls {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 42px;
+  align-items: center;
+  column-gap: 16px;
+}
+
+.ytvt-zoom-step {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  color: rgb(255, 255, 255);
+  background: rgba(255, 255, 255, 0.14);
+  border: 0;
+  border-radius: 50%;
+  font: 700 28px/1 Roboto, Arial, sans-serif;
+  cursor: pointer;
+}
+
+.ytvt-zoom-step:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .ytvt-menu-row {
   display: grid;
-  grid-template-columns: 54px minmax(0, 1fr) auto;
-  grid-template-areas:
-    "icon label value"
-    "icon control control";
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  grid-template-areas: "icon label control";
   align-items: center;
-  column-gap: 20px;
-  row-gap: 10px;
-  min-height: 76px;
-  padding: 10px 32px;
+  column-gap: 18px;
+  min-height: 56px;
+  padding: 6px 22px;
 }
 
 .ytvt-menu-row:hover {
@@ -109,14 +161,14 @@
   grid-area: icon;
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   color: rgb(255, 255, 255);
 }
 
 .ytvt-menu-icon svg {
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2.6;
@@ -127,21 +179,35 @@
 .ytvt-menu-label {
   grid-area: label;
   color: rgba(255, 255, 255, 0.96);
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 400;
-  line-height: 28px;
+  line-height: 22px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.36);
 }
 
 .ytvt-menu-value {
-  grid-area: value;
+  display: none;
+  grid-area: control;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 400;
-  line-height: 28px;
+  line-height: 22px;
   text-align: right;
   font-variant-numeric: tabular-nums;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.36);
+}
+
+.ytvt-menu-row:has(.ytvt-segment) {
+  grid-template-areas:
+    "icon label value"
+    "icon control control";
+  row-gap: 8px;
+  min-height: 82px;
+}
+
+.ytvt-menu-row:has(.ytvt-segment) .ytvt-menu-value {
+  display: block;
+  grid-area: value;
 }
 
 .ytvt-menu-control {
@@ -172,7 +238,7 @@
 
 .ytvt-button {
   min-width: 48px;
-  height: 34px;
+  height: 30px;
   padding: 0 9px;
   color: inherit;
   background: transparent;
@@ -197,8 +263,8 @@
 
 .ytvt-toggle {
   position: relative;
-  width: 60px;
-  height: 36px;
+  width: 52px;
+  height: 32px;
   padding: 0;
   background: rgba(255, 255, 255, 0.28);
   border: 0;
@@ -210,8 +276,8 @@
   position: absolute;
   top: 4px;
   left: 4px;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   background: rgb(255, 255, 255);
   border-radius: 50%;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.32);
@@ -223,7 +289,7 @@
 }
 
 .ytvt-toggle.is-active span {
-  transform: translateX(24px);
+  transform: translateX(20px);
 }
 
 .ytvt-map {
