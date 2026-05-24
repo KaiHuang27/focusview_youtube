@@ -471,23 +471,24 @@ function renderToolbar() {
   trigger.setAttribute("aria-label", getTriggerTitle());
   trigger.title = getTriggerTitle();
 
-  const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  icon.classList.add("ytvt-trigger-icon");
-  icon.setAttribute("viewBox", "0 0 36 36");
-  icon.setAttribute("aria-hidden", "true");
-  icon.hidden = shouldShowText;
-  icon.innerHTML = `
-    <circle cx="15" cy="15" r="8"></circle>
-    <path d="M21 21 29 29"></path>
-    <path d="M15 10.8v8.4"></path>
-    <path d="M10.8 15h8.4"></path>
-  `;
-
-  const label = document.createElement("span");
-  label.className = "ytvt-trigger-label";
-  label.textContent = `${state.zoom}%`;
-  label.hidden = !shouldShowText;
-  trigger.append(icon, label);
+  if (shouldShowText) {
+    const label = document.createElement("span");
+    label.className = "ytvt-trigger-label";
+    label.textContent = `${state.zoom}%`;
+    trigger.append(label);
+  } else {
+    const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    icon.classList.add("ytvt-trigger-icon");
+    icon.setAttribute("viewBox", "0 0 36 36");
+    icon.setAttribute("aria-hidden", "true");
+    icon.innerHTML = `
+      <circle cx="15" cy="15" r="8"></circle>
+      <path d="M21 21 29 29"></path>
+      <path d="M15 10.8v8.4"></path>
+      <path d="M10.8 15h8.4"></path>
+    `;
+    trigger.append(icon);
+  }
 
   trigger.addEventListener("click", () => {
     togglePanMode();
