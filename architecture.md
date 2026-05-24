@@ -23,15 +23,16 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 5. Clicking the zoom trigger toggles Pan mode directly. Double-clicking the trigger resets only zoom and pan to the centered 100% view.
 6. During Pan dragging or Pan-mode wheel zoom, the top-right position map and centered settings button appear. Mouse movement keeps them visible briefly, and they hide after the activity delay. Clicking the settings button opens a compact YouTube-settings-style gray menu. The top section shows the zoom scale with `- / slider / +` controls and a small red Reset action in the top-right corner; the remaining rows use centered text labels and right-aligned controls.
 7. `Alt/Option + Shift + P` toggles Pan mode at window/document capture time, but only outside editable fields and without `Ctrl` or `Cmd` modifiers.
-8. In Pan mode, player-level capture wheel events are intercepted before YouTube can handle them; they update zoom in 5% steps and clamp it to 100%-500%. Wheel events that start inside the menu are blocked without changing zoom.
-9. `getRotationFitScale` computes the fit scale for 90/270-degree rotations so the rotated bounding box fits inside the player frame before user zoom is applied.
-10. `clampPanState` bounds pan to the current scaled and rotated video size before transforms are applied.
-11. `createTransformStyle` converts state into a CSS `transform`.
-12. The transform is applied directly to the video element.
-13. `createViewportFrame` maps zoom and pan into a normalized visible rectangle for the top-right position map during recent Pan activity.
-14. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform, clamped pan, and position map are reapplied to the same video element.
-15. Fullscreen events and video style mutations schedule repeated `requestAnimationFrame` reapplication so YouTube style rewrites are corrected quickly.
-16. When the video key changes, state resets to defaults and the menu closes.
+8. In Pan mode, pointer down starts a pending gesture instead of immediately blocking YouTube. A quick single click is left for native play/pause; a long press or intentional movement activates frame dragging and suppresses that gesture's following native click.
+9. In Pan mode, player-level capture wheel events are intercepted before YouTube can handle them; they update zoom in 5% steps and clamp it to 100%-500%. Wheel events that start inside the menu are blocked without changing zoom.
+10. `getRotationFitScale` computes the fit scale for 90/270-degree rotations so the rotated bounding box fits inside the player frame before user zoom is applied.
+11. `clampPanState` bounds pan to the current scaled and rotated video size before transforms are applied.
+12. `createTransformStyle` converts state into a CSS `transform`.
+13. The transform is applied directly to the video element.
+14. `createViewportFrame` maps zoom and pan into a normalized visible rectangle for the top-right position map during recent Pan activity.
+15. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform, clamped pan, and position map are reapplied to the same video element.
+16. Fullscreen events and video style mutations schedule repeated `requestAnimationFrame` reapplication so YouTube style rewrites are corrected quickly.
+17. When the video key changes, state resets to defaults and the menu closes.
 
 ## State Model
 
@@ -62,6 +63,8 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm the zoom percentage text is centered inside the native control slot and hover behavior matches nearby YouTube controls.
 - Confirm double-clicking the trigger resets zoom to 100%.
 - Confirm clicking the zoom button toggles Pan mode on and off without opening the menu.
+- Confirm Pan-mode quick single clicks still trigger YouTube native play/pause.
+- Confirm Pan-mode long press or drag moves the frame and does not trigger YouTube native play/pause when released.
 - Confirm the top-right position map and centered settings button appear while dragging or wheel-zooming in Pan mode, stay visible during nearby mouse movement, then hide after the activity delay.
 - Confirm clicking the settings button centered below the top-right position map while dragging opens and closes the YouTube-style transform menu with dark translucent rounded panel, native-like gray controls, rounded inset row hover states, compact top zoom control with white progress and gray remaining track, red top-right Reset action, text rows, and right-aligned controls that stay inside the panel.
 - Confirm menu Zoom, Rotation, horizontal mirror, vertical mirror, combined mirror, Pan, and Reset.

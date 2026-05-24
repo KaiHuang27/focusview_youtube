@@ -14,6 +14,7 @@ const {
   shouldReapplyTransformAfterMutation,
   shouldInterceptPanWheel,
   shouldResetForVideoKey,
+  shouldStartPanDrag,
   shouldShowTransientViewportControls,
   shouldTogglePanShortcut,
 } = globalThis.YTVTTransform;
@@ -172,6 +173,12 @@ test("shouldShowTransientViewportControls keeps controls visible during activity
     shouldShowTransientViewportControls({ isDragging: false, lastActivityAt: 0, now: 1000, delayMs: 3000 }),
     false
   );
+});
+
+test("shouldStartPanDrag starts only after long press or intentional movement", () => {
+  assert.equal(shouldStartPanDrag({ elapsedMs: 80, distancePx: 2, longPressMs: 220, moveThresholdPx: 6 }), false);
+  assert.equal(shouldStartPanDrag({ elapsedMs: 220, distancePx: 0, longPressMs: 220, moveThresholdPx: 6 }), true);
+  assert.equal(shouldStartPanDrag({ elapsedMs: 80, distancePx: 6, longPressMs: 220, moveThresholdPx: 6 }), true);
 });
 
 test("shouldTogglePanShortcut accepts only Alt Shift P outside editable targets", () => {

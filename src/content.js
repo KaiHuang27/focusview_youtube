@@ -9,10 +9,13 @@ const {
   shouldInterceptPanWheel,
   shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
+  shouldStartPanDrag,
   shouldShowTransientViewportControls,
   shouldTogglePanShortcut,
 } = globalThis.YTVTTransform;
 const VIEWPORT_CONTROLS_HIDE_DELAY_MS = 3000;
+const PAN_LONG_PRESS_MS = 220;
+const PAN_MOVE_THRESHOLD_PX = 6;
 
 let state = createDefaultState();
 let video = null;
@@ -26,6 +29,9 @@ let videoStyleObserver = null;
 let reapplyFrame = 0;
 let currentVideoKey = "";
 let dragStart = null;
+let panLongPressTimer = 0;
+let suppressNextVideoClick = false;
+let suppressVideoClickTimer = 0;
 let viewportControlsLastActivityAt = 0;
 let viewportControlsHideTimer = 0;
 let ignoreNextStyleMutation = false;
@@ -109,18 +115,41 @@ function clearTransform() {
   viewportMap = null;
   settingsButton?.remove();
   settingsButton = null;
+  cancelPanGesture();
   clearTimeout(viewportControlsHideTimer);
   viewportControlsHideTimer = 0;
   viewportControlsLastActivityAt = 0;
+  clearTimeout(suppressVideoClickTimer);
+  suppressVideoClickTimer = 0;
+  suppressNextVideoClick = false;
 }
 
 function areViewportControlsVisible() {
   return shouldShowTransientViewportControls({
-    isDragging: Boolean(dragStart),
+    isDragging: Boolean(dragStart?.isDragging),
     lastActivityAt: viewportControlsLastActivityAt,
     now: Date.now(),
     delayMs: VIEWPORT_CONTROLS_HIDE_DELAY_MS,
   });
+}
+
+function clearPanLongPressTimer() {
+  clearTimeout(panLongPressTimer);
+  panLongPressTimer = 0;
+}
+
+function cancelPanGesture() {
+  clearPanLongPressTimer();
+  dragStart = null;
+}
+
+function suppressUpcomingVideoClick() {
+  suppressNextVideoClick = true;
+  clearTimeout(suppressVideoClickTimer);
+  suppressVideoClickTimer = setTimeout(() => {
+    suppressNextVideoClick = false;
+    suppressVideoClickTimer = 0;
+  }, 500);
 }
 
 function scheduleViewportControlsHide() {
@@ -135,6 +164,20 @@ function markViewportControlsActivity() {
   viewportControlsLastActivityAt = Date.now();
   renderViewportMap();
   scheduleViewportControlsHide();
+}
+
+function startPanDrag() {
+  if (!dragStart?.video) {
+    return;
+  }
+
+  dragStart.isDragging = true;
+  suppressUpcomingVideoClick();
+  if (!dragStart.video.hasPointerCapture?.(dragStart.pointerId)) {
+    dragStart.video.setPointerCapture(dragStart.pointerId);
+  }
+  dragStart.video.style.cursor = "grabbing";
+  markViewportControlsActivity();
 }
 
 function renderViewportMap() {
@@ -377,6 +420,9 @@ function createToggle(label, active, onClick) {
 
 function togglePanMode() {
   state.panMode = !state.panMode;
+  if (!state.panMode) {
+    cancelPanGesture();
+  }
   renderToolbar();
   applyTransform();
 }
@@ -540,22 +586,41 @@ function onPointerDown(event) {
     return;
   }
 
+  clearPanLongPressTimer();
   dragStart = {
     pointerId: event.pointerId,
     x: event.clientX,
     y: event.clientY,
     panX: state.panX,
     panY: state.panY,
+    startedAt: Date.now(),
+    isDragging: false,
+    video,
   };
   video.setPointerCapture(event.pointerId);
-  video.style.cursor = "grabbing";
-  markViewportControlsActivity();
-  event.preventDefault();
+  panLongPressTimer = setTimeout(startPanDrag, PAN_LONG_PRESS_MS);
 }
 
 function onPointerMove(event) {
   if (!dragStart || event.pointerId !== dragStart.pointerId) {
     return;
+  }
+
+  const deltaX = event.clientX - dragStart.x;
+  const deltaY = event.clientY - dragStart.y;
+  const distancePx = Math.hypot(deltaX, deltaY);
+  if (!dragStart.isDragging) {
+    if (!shouldStartPanDrag({
+      elapsedMs: Date.now() - dragStart.startedAt,
+      distancePx,
+      longPressMs: PAN_LONG_PRESS_MS,
+      moveThresholdPx: PAN_MOVE_THRESHOLD_PX,
+    })) {
+      return;
+    }
+
+    clearPanLongPressTimer();
+    startPanDrag();
   }
 
   state.panX = Math.round(dragStart.panX + event.clientX - dragStart.x);
@@ -598,9 +663,29 @@ function endDrag(event) {
     return;
   }
 
+  clearPanLongPressTimer();
+  const wasDragging = dragStart.isDragging;
   dragStart = null;
+  if (video.hasPointerCapture?.(event.pointerId)) {
+    video.releasePointerCapture(event.pointerId);
+  }
   video.style.cursor = state.panMode ? "grab" : "";
-  markViewportControlsActivity();
+  if (wasDragging) {
+    markViewportControlsActivity();
+  }
+}
+
+function onVideoClick(event) {
+  if (!suppressNextVideoClick) {
+    return;
+  }
+
+  suppressNextVideoClick = false;
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation?.();
+  clearTimeout(suppressVideoClickTimer);
+  suppressVideoClickTimer = 0;
 }
 
 function bindVideo(nextVideo) {
@@ -610,10 +695,12 @@ function bindVideo(nextVideo) {
   }
 
   if (video) {
+    cancelPanGesture();
     video.removeEventListener("pointerdown", onPointerDown);
     video.removeEventListener("pointermove", onPointerMove);
     video.removeEventListener("pointerup", endDrag);
     video.removeEventListener("pointercancel", endDrag);
+    video.removeEventListener("click", onVideoClick, true);
     videoStyleObserver?.disconnect();
     videoStyleObserver = null;
   }
@@ -623,6 +710,7 @@ function bindVideo(nextVideo) {
   video.addEventListener("pointermove", onPointerMove);
   video.addEventListener("pointerup", endDrag);
   video.addEventListener("pointercancel", endDrag);
+  video.addEventListener("click", onVideoClick, true);
   videoStyleObserver = new MutationObserver(() => {
     if (ignoreNextStyleMutation) {
       ignoreNextStyleMutation = false;

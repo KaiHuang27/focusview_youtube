@@ -91,6 +91,10 @@
     return lastActivityAt > 0 && now - lastActivityAt < delayMs;
   }
 
+  function shouldStartPanDrag({ elapsedMs, distancePx, longPressMs, moveThresholdPx }) {
+    return elapsedMs >= longPressMs || distancePx >= moveThresholdPx;
+  }
+
   function isEditableShortcutTarget(target) {
     const tagName = target?.tagName?.toUpperCase();
     return (
@@ -157,6 +161,7 @@
     shouldInterceptPanWheel,
     shouldReapplyTransformAfterMutation,
     shouldResetForVideoKey,
+    shouldStartPanDrag,
     shouldShowTransientViewportControls,
     shouldTogglePanShortcut,
   };
