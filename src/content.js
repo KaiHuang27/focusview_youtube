@@ -24,6 +24,7 @@ let wheelTarget = null;
 let toolbar = null;
 let viewportMap = null;
 let settingsButton = null;
+let transformMenu = null;
 let resizeObserver = null;
 let videoStyleObserver = null;
 let reapplyFrame = 0;
@@ -115,6 +116,8 @@ function clearTransform() {
   viewportMap = null;
   settingsButton?.remove();
   settingsButton = null;
+  transformMenu?.remove();
+  transformMenu = null;
   cancelPanGesture();
   clearTimeout(viewportControlsHideTimer);
   viewportControlsHideTimer = 0;
@@ -230,6 +233,10 @@ function syncSettingsButtonState() {
 
   settingsButton.classList.toggle("is-active", isMenuOpen);
   settingsButton.setAttribute("aria-expanded", String(isMenuOpen));
+}
+
+function blockMenuEvent(event) {
+  event.stopPropagation();
 }
 
 function createButton(label, title, active, onClick) {
@@ -473,14 +480,34 @@ function renderToolbar() {
   });
 
   toolbar.append(trigger);
+  renderMenu();
+}
 
+function renderMenu() {
   if (!isMenuOpen) {
+    transformMenu?.remove();
+    transformMenu = null;
     return;
   }
 
-  const menu = document.createElement("div");
-  menu.className = "ytvt-menu";
-  menu.setAttribute("role", "menu");
+  if (!player) {
+    return;
+  }
+
+  if (!transformMenu) {
+    transformMenu = document.createElement("div");
+    transformMenu.className = "ytvt-menu";
+    transformMenu.setAttribute("role", "menu");
+    transformMenu.addEventListener("click", blockMenuEvent);
+    transformMenu.addEventListener("pointerdown", blockMenuEvent);
+    transformMenu.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    }, { passive: false });
+    player.append(transformMenu);
+  } else if (transformMenu.parentElement !== player) {
+    player.append(transformMenu);
+  }
 
   const reset = document.createElement("button");
   reset.type = "button";
@@ -493,7 +520,7 @@ function renderToolbar() {
   rotationGroup.className = "ytvt-segment";
   ROTATIONS.forEach((rotation) => rotationGroup.append(createSegment(rotation)));
 
-  menu.append(
+  transformMenu.replaceChildren(
     reset,
     createZoomPanel(),
     createMenuRow("Rotation", rotationGroup),
@@ -510,11 +537,16 @@ function renderToolbar() {
     createMenuRow("Pan", createToggle("Pan mode", state.panMode, togglePanMode))
   );
 
-  toolbar.append(menu);
 }
 
 function closeMenuOnOutsidePointer(event) {
-  if (!isMenuOpen || !toolbar || toolbar.contains(event.target) || settingsButton?.contains(event.target)) {
+  if (
+    !isMenuOpen ||
+    !toolbar ||
+    toolbar.contains(event.target) ||
+    settingsButton?.contains(event.target) ||
+    transformMenu?.contains(event.target)
+  ) {
     return;
   }
 
@@ -649,6 +681,11 @@ function onWheel(event) {
     return;
   }
 
+  if (transformMenu?.contains(event.target)) {
+    blockYouTubeWheel(event);
+    return;
+  }
+
   blockYouTubeWheel(event);
   const direction = event.deltaY < 0 ? 1 : -1;
   state.zoom = applyZoomDelta(state.zoom, direction);
@@ -744,6 +781,8 @@ function sync() {
     viewportMap = null;
     settingsButton?.remove();
     settingsButton = null;
+    transformMenu?.remove();
+    transformMenu = null;
     videoStyleObserver?.disconnect();
     videoStyleObserver = null;
     if (reapplyFrame) {

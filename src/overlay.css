@@ -100,10 +100,10 @@
 
 .ytvt-menu {
   position: absolute;
-  right: 0;
-  top: 42px;
-  width: min(280px, calc(100vw - 24px));
-  padding: 8px 0 6px;
+  right: 18px;
+  top: 118px;
+  width: min(252px, calc(100vw - 36px));
+  padding: 7px 0 6px;
   color: rgb(255, 255, 255);
   background: rgba(20, 20, 20, 0.72);
   border-radius: 12px;
@@ -113,15 +113,10 @@
   -webkit-backdrop-filter: blur(2px);
 }
 
-.ytvt-toolbar.is-native .ytvt-menu {
-  top: auto;
-  bottom: 58px;
-}
-
 .ytvt-menu-reset {
   position: absolute;
-  top: 8px;
-  right: 14px;
+  top: 7px;
+  right: 12px;
   padding: 0;
   color: rgb(255, 77, 77);
   background: transparent;
@@ -136,7 +131,7 @@
 }
 
 .ytvt-zoom-panel {
-  padding: 0 16px 8px;
+  padding: 0 14px 7px;
 }
 
 .ytvt-zoom-value {
@@ -150,17 +145,17 @@
 
 .ytvt-zoom-controls {
   display: grid;
-  grid-template-columns: 32px minmax(0, 1fr) 32px;
+  grid-template-columns: 30px minmax(0, 1fr) 30px;
   align-items: center;
-  column-gap: 10px;
+  column-gap: 9px;
   touch-action: none;
 }
 
 .ytvt-zoom-step {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   padding: 0;
   color: rgb(255, 255, 255);
   background: rgba(255, 255, 255, 0.18);
@@ -384,6 +379,8 @@
   }
 
   .ytvt-menu {
-    width: min(320px, calc(100vw - 16px));
+    right: 8px;
+    top: 106px;
+    width: min(248px, calc(100vw - 16px));
   }
 }
