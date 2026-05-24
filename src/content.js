@@ -139,13 +139,15 @@ function renderViewportMap() {
   settingsButton.classList.toggle("is-active", isMenuOpen);
   settingsButton.setAttribute("aria-expanded", String(isMenuOpen));
 
+  const shouldShowDragControls = Boolean(dragStart);
   const frame = createViewportFrame(state, video.clientWidth, video.clientHeight);
   const frameElement = viewportMap.querySelector(".ytvt-map-frame");
   frameElement.style.left = `${frame.x * 100}%`;
   frameElement.style.top = `${frame.y * 100}%`;
   frameElement.style.width = `${frame.width * 100}%`;
   frameElement.style.height = `${frame.height * 100}%`;
-  viewportMap.hidden = state.zoom === 100 && state.panX === 0 && state.panY === 0;
+  viewportMap.hidden = !shouldShowDragControls;
+  settingsButton.hidden = !shouldShowDragControls;
 }
 
 function syncSettingsButtonState() {
@@ -517,6 +519,7 @@ function onPointerDown(event) {
   };
   video.setPointerCapture(event.pointerId);
   video.style.cursor = "grabbing";
+  renderViewportMap();
   event.preventDefault();
 }
 
@@ -557,6 +560,7 @@ function endDrag(event) {
 
   dragStart = null;
   video.style.cursor = state.panMode ? "grab" : "";
+  renderViewportMap();
 }
 
 function bindVideo(nextVideo) {
