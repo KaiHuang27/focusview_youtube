@@ -207,7 +207,10 @@ function renderViewportMap() {
       event.preventDefault();
       event.stopPropagation();
       isMenuOpen = !isMenuOpen;
+      viewportControlsLastActivityAt = Date.now();
+      scheduleViewportControlsHide();
       renderToolbar();
+      renderViewportMap();
     });
     player.append(settingsButton);
   }
