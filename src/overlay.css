@@ -73,8 +73,8 @@
 .ytvt-settings {
   position: absolute;
   z-index: 2147483647;
-  top: 18px;
-  right: 142px;
+  top: calc(18px + (112px * 9 / 16) + 8px);
+  right: calc(18px + (112px / 2) - 14px);
   display: grid;
   place-items: center;
   width: 28px;
