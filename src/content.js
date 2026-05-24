@@ -106,23 +106,30 @@ function scheduleTransformReapply(frames = 6) {
 }
 
 function clearTransform() {
-  if (!video) {
-    return;
+  if (video) {
+    video.style.transform = "";
+    video.style.transformOrigin = "";
+    video.style.cursor = "";
   }
 
-  video.style.transform = "";
-  video.style.transformOrigin = "";
-  video.style.cursor = "";
+  clearOverlayElements();
+  cancelPanGesture();
+  clearClickSuppression();
+}
+
+function clearOverlayElements() {
   viewportMap?.remove();
   viewportMap = null;
   settingsButton?.remove();
   settingsButton = null;
   transformMenu?.remove();
   transformMenu = null;
-  cancelPanGesture();
   clearTimeout(viewportControlsHideTimer);
   viewportControlsHideTimer = 0;
   viewportControlsLastActivityAt = 0;
+}
+
+function clearClickSuppression() {
   clearTimeout(suppressVideoClickTimer);
   suppressVideoClickTimer = 0;
   suppressNextVideoClick = false;
@@ -195,6 +202,8 @@ function renderViewportMap() {
     viewportMap.setAttribute("aria-label", "Visible area inside original video");
     viewportMap.innerHTML = '<div class="ytvt-map-frame"></div>';
     player.append(viewportMap);
+  } else if (viewportMap.parentElement !== player) {
+    player.append(viewportMap);
   }
 
   if (!settingsButton) {
@@ -213,6 +222,8 @@ function renderViewportMap() {
       renderToolbar();
       renderViewportMap();
     });
+    player.append(settingsButton);
+  } else if (settingsButton.parentElement !== player) {
     player.append(settingsButton);
   }
 
@@ -285,6 +296,10 @@ function getZoomFromPointer(slider, clientX) {
 }
 
 function setZoom(zoom, shouldRender = true) {
+  if (!video) {
+    return;
+  }
+
   state.zoom = Math.min(500, Math.max(100, zoom));
   state = clampPanState(state, video.clientWidth, video.clientHeight);
   if (shouldRender) {
@@ -797,12 +812,6 @@ function sync() {
     clearTransform();
     toolbar?.remove();
     toolbar = null;
-    viewportMap?.remove();
-    viewportMap = null;
-    settingsButton?.remove();
-    settingsButton = null;
-    transformMenu?.remove();
-    transformMenu = null;
     videoStyleObserver?.disconnect();
     videoStyleObserver = null;
     if (reapplyFrame) {
@@ -812,9 +821,6 @@ function sync() {
     wheelTarget?.removeEventListener("wheel", onWheel, true);
     wheelTarget?.removeEventListener("pointermove", onPlayerPointerMove);
     wheelTarget = null;
-    clearTimeout(viewportControlsHideTimer);
-    viewportControlsHideTimer = 0;
-    viewportControlsLastActivityAt = 0;
     state = createDefaultState();
     isMenuOpen = false;
     currentVideoKey = "";

@@ -30,9 +30,9 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 12. `createTransformStyle` converts state into a CSS `transform`.
 13. The transform is applied directly to the video element.
 14. `createViewportFrame` maps zoom and pan into a normalized visible rectangle for the top-right position map during recent Pan activity.
-15. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform, clamped pan, and position map are reapplied to the same video element.
+15. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform, clamped pan, and position controls are reapplied or reparented to the current player root.
 16. Fullscreen events and video style mutations schedule repeated `requestAnimationFrame` reapplication so YouTube style rewrites are corrected quickly.
-17. When the video key changes, state resets to defaults and the menu closes.
+17. When leaving the watch page or switching videos, transient overlays, timers, and transform state are cleared before the next player binding.
 
 ## State Model
 
@@ -80,4 +80,5 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm mouse wheel zoom in fullscreen Pan mode does not open YouTube's native recommendations or more-video controls.
 - Confirm zoom, rotation, mirror, and pan state are preserved when entering and leaving fullscreen without flashing back to the original view.
 - Confirm switching YouTube videos resets state.
+- Confirm leaving a watch page removes the position map, settings button, and transform menu.
 - Confirm normal video click-to-play still works while Pan is off.
