@@ -9,8 +9,10 @@ const {
   shouldInterceptPanWheel,
   shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
+  shouldShowTransientViewportControls,
   shouldTogglePanShortcut,
 } = globalThis.YTVTTransform;
+const VIEWPORT_CONTROLS_HIDE_DELAY_MS = 3000;
 
 let state = createDefaultState();
 let video = null;
@@ -24,6 +26,8 @@ let videoStyleObserver = null;
 let reapplyFrame = 0;
 let currentVideoKey = "";
 let dragStart = null;
+let viewportControlsLastActivityAt = 0;
+let viewportControlsHideTimer = 0;
 let ignoreNextStyleMutation = false;
 let isMenuOpen = false;
 
@@ -105,6 +109,32 @@ function clearTransform() {
   viewportMap = null;
   settingsButton?.remove();
   settingsButton = null;
+  clearTimeout(viewportControlsHideTimer);
+  viewportControlsHideTimer = 0;
+  viewportControlsLastActivityAt = 0;
+}
+
+function areViewportControlsVisible() {
+  return shouldShowTransientViewportControls({
+    isDragging: Boolean(dragStart),
+    lastActivityAt: viewportControlsLastActivityAt,
+    now: Date.now(),
+    delayMs: VIEWPORT_CONTROLS_HIDE_DELAY_MS,
+  });
+}
+
+function scheduleViewportControlsHide() {
+  clearTimeout(viewportControlsHideTimer);
+  viewportControlsHideTimer = setTimeout(() => {
+    viewportControlsHideTimer = 0;
+    renderViewportMap();
+  }, VIEWPORT_CONTROLS_HIDE_DELAY_MS);
+}
+
+function markViewportControlsActivity() {
+  viewportControlsLastActivityAt = Date.now();
+  renderViewportMap();
+  scheduleViewportControlsHide();
 }
 
 function renderViewportMap() {
@@ -139,15 +169,15 @@ function renderViewportMap() {
   settingsButton.classList.toggle("is-active", isMenuOpen);
   settingsButton.setAttribute("aria-expanded", String(isMenuOpen));
 
-  const shouldShowDragControls = Boolean(dragStart);
+  const shouldShowControls = areViewportControlsVisible();
   const frame = createViewportFrame(state, video.clientWidth, video.clientHeight);
   const frameElement = viewportMap.querySelector(".ytvt-map-frame");
   frameElement.style.left = `${frame.x * 100}%`;
   frameElement.style.top = `${frame.y * 100}%`;
   frameElement.style.width = `${frame.width * 100}%`;
   frameElement.style.height = `${frame.height * 100}%`;
-  viewportMap.hidden = !shouldShowDragControls;
-  settingsButton.hidden = !shouldShowDragControls;
+  viewportMap.hidden = !shouldShowControls;
+  settingsButton.hidden = !shouldShowControls;
 }
 
 function syncSettingsButtonState() {
@@ -519,7 +549,7 @@ function onPointerDown(event) {
   };
   video.setPointerCapture(event.pointerId);
   video.style.cursor = "grabbing";
-  renderViewportMap();
+  markViewportControlsActivity();
   event.preventDefault();
 }
 
@@ -531,8 +561,17 @@ function onPointerMove(event) {
   state.panX = Math.round(dragStart.panX + event.clientX - dragStart.x);
   state.panY = Math.round(dragStart.panY + event.clientY - dragStart.y);
   state = clampPanState(state, video.clientWidth, video.clientHeight);
+  viewportControlsLastActivityAt = Date.now();
   applyTransform();
   event.preventDefault();
+}
+
+function onPlayerPointerMove() {
+  if (!state.panMode || !areViewportControlsVisible()) {
+    return;
+  }
+
+  markViewportControlsActivity();
 }
 
 function onWheel(event) {
@@ -549,6 +588,7 @@ function onWheel(event) {
   const direction = event.deltaY < 0 ? 1 : -1;
   state.zoom = applyZoomDelta(state.zoom, direction);
   state = clampPanState(state, video.clientWidth, video.clientHeight);
+  markViewportControlsActivity();
   renderToolbar();
   applyTransform();
 }
@@ -560,7 +600,7 @@ function endDrag(event) {
 
   dragStart = null;
   video.style.cursor = state.panMode ? "grab" : "";
-  renderViewportMap();
+  markViewportControlsActivity();
 }
 
 function bindVideo(nextVideo) {
@@ -601,8 +641,10 @@ function bindWheelTarget(nextPlayer) {
   }
 
   wheelTarget?.removeEventListener("wheel", onWheel, true);
+  wheelTarget?.removeEventListener("pointermove", onPlayerPointerMove);
   wheelTarget = nextPlayer;
   wheelTarget.addEventListener("wheel", onWheel, { capture: true, passive: false });
+  wheelTarget.addEventListener("pointermove", onPlayerPointerMove);
 }
 
 function sync() {
@@ -621,7 +663,11 @@ function sync() {
       reapplyFrame = 0;
     }
     wheelTarget?.removeEventListener("wheel", onWheel, true);
+    wheelTarget?.removeEventListener("pointermove", onPlayerPointerMove);
     wheelTarget = null;
+    clearTimeout(viewportControlsHideTimer);
+    viewportControlsHideTimer = 0;
+    viewportControlsLastActivityAt = 0;
     state = createDefaultState();
     isMenuOpen = false;
     currentVideoKey = "";

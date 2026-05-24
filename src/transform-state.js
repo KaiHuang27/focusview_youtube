@@ -83,6 +83,14 @@
     return state.panMode === true;
   }
 
+  function shouldShowTransientViewportControls({ isDragging, lastActivityAt, now, delayMs }) {
+    if (isDragging) {
+      return true;
+    }
+
+    return lastActivityAt > 0 && now - lastActivityAt < delayMs;
+  }
+
   function isEditableShortcutTarget(target) {
     const tagName = target?.tagName?.toUpperCase();
     return (
@@ -149,6 +157,7 @@
     shouldInterceptPanWheel,
     shouldReapplyTransformAfterMutation,
     shouldResetForVideoKey,
+    shouldShowTransientViewportControls,
     shouldTogglePanShortcut,
   };
 })();

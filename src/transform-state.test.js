@@ -14,6 +14,7 @@ const {
   shouldReapplyTransformAfterMutation,
   shouldInterceptPanWheel,
   shouldResetForVideoKey,
+  shouldShowTransientViewportControls,
   shouldTogglePanShortcut,
 } = globalThis.YTVTTransform;
 
@@ -152,6 +153,25 @@ test("createViewportFrame keeps extreme pan inside original-video coordinates", 
 test("shouldInterceptPanWheel intercepts wheel events only in Pan mode", () => {
   assert.equal(shouldInterceptPanWheel(createDefaultState()), false);
   assert.equal(shouldInterceptPanWheel({ ...createDefaultState(), panMode: true }), true);
+});
+
+test("shouldShowTransientViewportControls keeps controls visible during activity delay", () => {
+  assert.equal(
+    shouldShowTransientViewportControls({ isDragging: true, lastActivityAt: 0, now: 5000, delayMs: 3000 }),
+    true
+  );
+  assert.equal(
+    shouldShowTransientViewportControls({ isDragging: false, lastActivityAt: 2000, now: 4999, delayMs: 3000 }),
+    true
+  );
+  assert.equal(
+    shouldShowTransientViewportControls({ isDragging: false, lastActivityAt: 2000, now: 5000, delayMs: 3000 }),
+    false
+  );
+  assert.equal(
+    shouldShowTransientViewportControls({ isDragging: false, lastActivityAt: 0, now: 1000, delayMs: 3000 }),
+    false
+  );
 });
 
 test("shouldTogglePanShortcut accepts only Alt Shift P outside editable targets", () => {
