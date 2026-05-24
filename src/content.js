@@ -18,6 +18,7 @@ let player = null;
 let wheelTarget = null;
 let toolbar = null;
 let viewportMap = null;
+let settingsButton = null;
 let resizeObserver = null;
 let videoStyleObserver = null;
 let reapplyFrame = 0;
@@ -102,6 +103,8 @@ function clearTransform() {
   video.style.cursor = "";
   viewportMap?.remove();
   viewportMap = null;
+  settingsButton?.remove();
+  settingsButton = null;
 }
 
 function renderViewportMap() {
@@ -117,6 +120,25 @@ function renderViewportMap() {
     player.append(viewportMap);
   }
 
+  if (!settingsButton) {
+    settingsButton = document.createElement("button");
+    settingsButton.type = "button";
+    settingsButton.className = "ytvt-settings";
+    settingsButton.title = "Zoom settings";
+    settingsButton.setAttribute("aria-label", "Zoom settings");
+    settingsButton.innerHTML = '<span aria-hidden="true">⚙</span>';
+    settingsButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      isMenuOpen = !isMenuOpen;
+      renderToolbar();
+    });
+    player.append(settingsButton);
+  }
+
+  settingsButton.classList.toggle("is-active", isMenuOpen);
+  settingsButton.setAttribute("aria-expanded", String(isMenuOpen));
+
   const frame = createViewportFrame(state, video.clientWidth, video.clientHeight);
   const frameElement = viewportMap.querySelector(".ytvt-map-frame");
   frameElement.style.left = `${frame.x * 100}%`;
@@ -124,6 +146,15 @@ function renderViewportMap() {
   frameElement.style.width = `${frame.width * 100}%`;
   frameElement.style.height = `${frame.height * 100}%`;
   viewportMap.hidden = state.zoom === 100 && state.panX === 0 && state.panY === 0;
+}
+
+function syncSettingsButtonState() {
+  if (!settingsButton) {
+    return;
+  }
+
+  settingsButton.classList.toggle("is-active", isMenuOpen);
+  settingsButton.setAttribute("aria-expanded", String(isMenuOpen));
 }
 
 function createButton(label, title, active, onClick) {
@@ -331,7 +362,7 @@ function getTriggerTitle() {
     return `Zoom: ${state.zoom}% · Double-click to reset`;
   }
 
-  return isMenuOpen ? "Zoom controls" : "Zoom";
+  return state.panMode ? "Pan mode on" : "Pan mode off";
 }
 
 function renderToolbar() {
@@ -339,13 +370,13 @@ function renderToolbar() {
     return;
   }
 
+  syncSettingsButtonState();
   toolbar.replaceChildren();
 
   const trigger = document.createElement("button");
   trigger.type = "button";
-  trigger.className = isMenuOpen ? "ytvt-trigger ytp-button is-active" : "ytvt-trigger ytp-button";
-  trigger.setAttribute("aria-haspopup", "menu");
-  trigger.setAttribute("aria-expanded", String(isMenuOpen));
+  trigger.className = state.panMode ? "ytvt-trigger ytp-button is-active" : "ytvt-trigger ytp-button";
+  trigger.setAttribute("aria-pressed", String(state.panMode));
   trigger.setAttribute("aria-label", getTriggerTitle());
   trigger.title = getTriggerTitle();
 
@@ -355,8 +386,7 @@ function renderToolbar() {
   trigger.append(label);
 
   trigger.addEventListener("click", () => {
-    isMenuOpen = !isMenuOpen;
-    renderToolbar();
+    togglePanMode();
   });
   trigger.addEventListener("dblclick", (event) => {
     event.preventDefault();
@@ -406,7 +436,7 @@ function renderToolbar() {
 }
 
 function closeMenuOnOutsidePointer(event) {
-  if (!isMenuOpen || !toolbar || toolbar.contains(event.target)) {
+  if (!isMenuOpen || !toolbar || toolbar.contains(event.target) || settingsButton?.contains(event.target)) {
     return;
   }
 
@@ -578,6 +608,8 @@ function sync() {
     toolbar = null;
     viewportMap?.remove();
     viewportMap = null;
+    settingsButton?.remove();
+    settingsButton = null;
     videoStyleObserver?.disconnect();
     videoStyleObserver = null;
     if (reapplyFrame) {
