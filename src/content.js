@@ -477,8 +477,10 @@ function renderToolbar() {
   icon.setAttribute("aria-hidden", "true");
   icon.hidden = shouldShowText;
   icon.innerHTML = `
-    <circle cx="15.5" cy="15.5" r="8.5"></circle>
-    <path d="M22 22 29 29"></path>
+    <circle cx="15" cy="15" r="8"></circle>
+    <path d="M21 21 29 29"></path>
+    <path d="M15 10.8v8.4"></path>
+    <path d="M10.8 15h8.4"></path>
   `;
 
   const label = document.createElement("span");
