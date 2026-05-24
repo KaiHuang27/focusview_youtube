@@ -10,6 +10,7 @@ const {
   shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
   shouldStartPanDrag,
+  shouldShowZoomTriggerText,
   shouldShowTransientViewportControls,
   shouldTogglePanShortcut,
 } = globalThis.YTVTTransform;
@@ -462,10 +463,10 @@ function renderToolbar() {
   toolbar.replaceChildren();
 
   const trigger = document.createElement("button");
-  const shouldShowZoomText = state.panMode || state.zoom !== 100;
+  const shouldShowText = shouldShowZoomTriggerText(state);
   trigger.type = "button";
   trigger.className = state.panMode ? "ytvt-trigger ytp-button is-active" : "ytvt-trigger ytp-button";
-  trigger.classList.toggle("has-label", shouldShowZoomText);
+  trigger.classList.toggle("is-text", shouldShowText);
   trigger.setAttribute("aria-pressed", String(state.panMode));
   trigger.setAttribute("aria-label", getTriggerTitle());
   trigger.title = getTriggerTitle();
@@ -474,17 +475,16 @@ function renderToolbar() {
   icon.classList.add("ytvt-trigger-icon");
   icon.setAttribute("viewBox", "0 0 36 36");
   icon.setAttribute("aria-hidden", "true");
+  icon.hidden = shouldShowText;
   icon.innerHTML = `
-    <circle cx="16" cy="16" r="8.5"></circle>
-    <path d="M22.5 22.5 29 29"></path>
-    <path d="M16 12v8"></path>
-    <path d="M12 16h8"></path>
+    <circle cx="15.5" cy="15.5" r="8.5"></circle>
+    <path d="M22 22 29 29"></path>
   `;
 
   const label = document.createElement("span");
   label.className = "ytvt-trigger-label";
   label.textContent = `${state.zoom}%`;
-  label.hidden = !shouldShowZoomText;
+  label.hidden = !shouldShowText;
   trigger.append(icon, label);
 
   trigger.addEventListener("click", () => {

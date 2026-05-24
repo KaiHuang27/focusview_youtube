@@ -15,6 +15,7 @@ const {
   shouldInterceptPanWheel,
   shouldResetForVideoKey,
   shouldStartPanDrag,
+  shouldShowZoomTriggerText,
   shouldShowTransientViewportControls,
   shouldTogglePanShortcut,
 } = globalThis.YTVTTransform;
@@ -179,6 +180,12 @@ test("shouldStartPanDrag starts only after long press or intentional movement", 
   assert.equal(shouldStartPanDrag({ elapsedMs: 80, distancePx: 2, longPressMs: 220, moveThresholdPx: 6 }), false);
   assert.equal(shouldStartPanDrag({ elapsedMs: 220, distancePx: 0, longPressMs: 220, moveThresholdPx: 6 }), true);
   assert.equal(shouldStartPanDrag({ elapsedMs: 80, distancePx: 6, longPressMs: 220, moveThresholdPx: 6 }), true);
+});
+
+test("shouldShowZoomTriggerText shows text only when Pan is on or zoom changed", () => {
+  assert.equal(shouldShowZoomTriggerText({ ...createDefaultState(), zoom: 100, panMode: false }), false);
+  assert.equal(shouldShowZoomTriggerText({ ...createDefaultState(), zoom: 100, panMode: true }), true);
+  assert.equal(shouldShowZoomTriggerText({ ...createDefaultState(), zoom: 125, panMode: false }), true);
 });
 
 test("shouldTogglePanShortcut accepts only Alt Shift P outside editable targets", () => {

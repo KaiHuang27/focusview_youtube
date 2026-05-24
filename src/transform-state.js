@@ -95,6 +95,10 @@
     return elapsedMs >= longPressMs || distancePx >= moveThresholdPx;
   }
 
+  function shouldShowZoomTriggerText(state) {
+    return state.panMode === true || state.zoom !== 100;
+  }
+
   function isEditableShortcutTarget(target) {
     const tagName = target?.tagName?.toUpperCase();
     return (
@@ -162,6 +166,7 @@
     shouldReapplyTransformAfterMutation,
     shouldResetForVideoKey,
     shouldStartPanDrag,
+    shouldShowZoomTriggerText,
     shouldShowTransientViewportControls,
     shouldTogglePanShortcut,
   };
