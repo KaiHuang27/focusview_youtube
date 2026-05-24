@@ -4,7 +4,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 
 ## Features
 
-- Single zoom button showing the current zoom percentage.
+- Single native-style magnifier zoom button. It shows zoom text only while Pan mode is on or the video is zoomed.
 - Toolbar zoom button toggles Pan mode directly.
 - Settings button appears below the top-right position map during recent Pan activity and opens the YouTube-native-style transform menu.
 - Rotate video by 0, 90, 180, or 270 degrees, fitting 90/270-degree rotations inside the player frame first.
@@ -20,13 +20,13 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 3. Click **Load unpacked**.
 4. Select this project folder: `/Users/kai/Documents/New project 2`.
 5. Open a normal YouTube video page, such as `https://www.youtube.com/watch?v=...`.
-6. Click the zoom percentage button in YouTube's native control bar to turn Pan mode on or off.
+6. Click the magnifier button in YouTube's native control bar to turn Pan mode on or off.
 7. Turn on Pan mode, drag the video, and click the settings button below the top-right position map to open the transform menu.
 8. After changing zoom, enter and leave fullscreen to confirm the transform is preserved without briefly flashing back to the original view.
 
 ## Controls
 
-The zoom button is placed in YouTube's native right-side control bar, at the left edge of the right control group. It directly shows the current zoom percentage in a native-sized toolbar slot. Click it to turn Pan mode on or off, or double-click it to reset zoom to 100%. If YouTube's native controls are unavailable, the extension falls back to a floating top-right button.
+The zoom button is placed in YouTube's native right-side control bar, at the left edge of the right control group. It uses a YouTube-style magnifier icon by default, then shows compact zoom text when Pan mode is on or the video is zoomed. Click it to turn Pan mode on or off, or double-click it to reset zoom to 100%. If YouTube's native controls are unavailable, the extension falls back to a floating top-right button.
 
 The transform menu opens next to the settings button centered below the top-right position map during recent Pan activity. It follows YouTube's settings-menu density: rounded gray panel, compact centered text rows, a top `- / slider / +` zoom control, and a small red `Reset` action in the top-right corner.
 

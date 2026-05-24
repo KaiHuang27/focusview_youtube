@@ -23,6 +23,8 @@
 
 .ytvt-trigger {
   position: relative;
+  display: grid;
+  place-items: center;
   width: 48px;
   min-width: 48px;
   height: 48px;
@@ -49,12 +51,35 @@
 
 .ytvt-trigger-label {
   position: absolute;
-  top: 50%;
+  top: 63%;
   left: 50%;
   display: block;
   transform: translate(-50%, -50%);
+  font: 600 10px/1 Roboto, Arial, sans-serif;
+  letter-spacing: 0;
   white-space: nowrap;
   pointer-events: none;
+}
+
+.ytvt-trigger-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 29px;
+  height: 29px;
+  transform: translate(-50%, -50%);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.ytvt-trigger.has-label .ytvt-trigger-icon {
+  top: 42%;
+  width: 24px;
+  height: 24px;
 }
 
 .ytvt-trigger:hover,
@@ -106,7 +131,7 @@
   width: min(252px, calc(100vw - 36px));
   padding: 7px 0 6px;
   color: rgb(255, 255, 255);
-  background: rgba(20, 20, 20, 0.72);
+  background: rgba(28, 28, 28, 0.9);
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
   font: 400 14px/1.25 Roboto, Arial, sans-serif;

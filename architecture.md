@@ -11,7 +11,7 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 - `manifest.json`: declares the MV3 extension and injects CSS plus content scripts on YouTube at `document_start`.
 - `src/transform-state.js`: shared transform and shortcut helpers exposed on `globalThis.YTVTTransform` so they can run as a classic content script and still be tested with Node.
 - `src/content.js`: detects the YouTube player, inserts the zoom trigger into `.ytp-right-controls` when available, toggles Pan mode from that trigger, renders a settings button centered below the top-right position map during recent Pan activity, renders the YouTube-style menu beside that settings button, updates transform state, renders the position map during recent Pan activity, handles pan dragging, handles Pan-mode wheel zoom, handles the Pan keyboard shortcut, reapplies transforms after fullscreen/style mutations, and resets state on YouTube SPA navigation.
-- `src/overlay.css`: native-control-bar zoom trigger using YouTube's `ytp-button` sizing, Roboto/Arial typography, centered percentage text, floating fallback trigger, top-right settings button, compact YouTube-settings-style gray menu, toggle, segment, YouTube-style slider track, and position-map styling.
+- `src/overlay.css`: native-control-bar zoom trigger using YouTube's `ytp-button` sizing, magnifier icon, compact conditional percentage text, Roboto/Arial typography, floating fallback trigger, top-right settings button, compact YouTube-settings-style gray menu, toggle, segment, YouTube-style slider track, and position-map styling.
 - `src/transform-state.test.js`: Node test coverage for reset state, zoom scale conversion, rotation fit scaling, zoom and pan clamping, Pan-mode wheel interception, transient viewport-control visibility, Pan shortcut detection, transform reapply detection, viewport-map math, rotation validation, and mirror composition.
 
 ## Data Flow
@@ -19,7 +19,7 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 1. YouTube loads or navigates to a watch URL.
 2. The content script finds `.html5-video-player` and `video.html5-main-video`.
 3. The zoom trigger is prepended to `.ytp-right-controls` so it appears at the left edge of YouTube's right-side native control group. If the native host is missing, it falls back to a floating top-right trigger.
-4. The zoom trigger renders as native-sized `ytp-button` percentage text centered in the toolbar slot.
+4. The zoom trigger renders as a native-sized `ytp-button` magnifier icon. Compact percentage text appears only while Pan mode is on or zoom is not 100%.
 5. Clicking the zoom trigger toggles Pan mode directly. Double-clicking the trigger resets only zoom and pan to the centered 100% view.
 6. During Pan dragging or Pan-mode wheel zoom, the top-right position map and centered settings button appear. Mouse movement keeps them visible briefly, and they hide after the activity delay. Clicking the settings button opens a compact YouTube-settings-style gray menu anchored beside that settings area. The top section shows the zoom scale with `- / slider / +` controls and a small red Reset action in the top-right corner; the remaining rows use centered text labels and right-aligned controls.
 7. `Alt/Option + Shift + P` toggles Pan mode at window/document capture time, but only outside editable fields and without `Ctrl` or `Cmd` modifiers.
@@ -59,8 +59,8 @@ Automated tests cover the pure transform helper with `node --test`.
 Manual Edge acceptance covers browser-specific behavior:
 
 - Load unpacked extension in `edge://extensions`.
-- Confirm only one zoom percentage button appears at the left edge of YouTube's native right-side control group on a normal YouTube watch page.
-- Confirm the zoom percentage text is centered inside the native control slot and hover behavior matches nearby YouTube controls.
+- Confirm only one magnifier zoom button appears at the left edge of YouTube's native right-side control group on a normal YouTube watch page.
+- Confirm the zoom text is hidden at 100% with Pan off, appears as compact centered text after Pan is enabled, and hover behavior matches nearby YouTube controls.
 - Confirm double-clicking the trigger resets zoom to 100%.
 - Confirm clicking the zoom button toggles Pan mode on and off without opening the menu.
 - Confirm Pan-mode quick single clicks still trigger YouTube native play/pause.

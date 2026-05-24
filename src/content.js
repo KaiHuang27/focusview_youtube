@@ -462,16 +462,30 @@ function renderToolbar() {
   toolbar.replaceChildren();
 
   const trigger = document.createElement("button");
+  const shouldShowZoomText = state.panMode || state.zoom !== 100;
   trigger.type = "button";
   trigger.className = state.panMode ? "ytvt-trigger ytp-button is-active" : "ytvt-trigger ytp-button";
+  trigger.classList.toggle("has-label", shouldShowZoomText);
   trigger.setAttribute("aria-pressed", String(state.panMode));
   trigger.setAttribute("aria-label", getTriggerTitle());
   trigger.title = getTriggerTitle();
 
+  const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  icon.classList.add("ytvt-trigger-icon");
+  icon.setAttribute("viewBox", "0 0 36 36");
+  icon.setAttribute("aria-hidden", "true");
+  icon.innerHTML = `
+    <circle cx="16" cy="16" r="8.5"></circle>
+    <path d="M22.5 22.5 29 29"></path>
+    <path d="M16 12v8"></path>
+    <path d="M12 16h8"></path>
+  `;
+
   const label = document.createElement("span");
   label.className = "ytvt-trigger-label";
   label.textContent = `${state.zoom}%`;
-  trigger.append(label);
+  label.hidden = !shouldShowZoomText;
+  trigger.append(icon, label);
 
   trigger.addEventListener("click", () => {
     togglePanMode();
