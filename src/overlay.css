@@ -121,7 +121,7 @@
   width: min(232px, calc(100vw - 36px));
   padding: 6px 0;
   color: rgb(255, 255, 255);
-  background: rgba(28, 28, 28, 0.9);
+  background: rgba(0, 0, 0, 0.6);
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
   font: 400 14px/1.25 Roboto, Arial, sans-serif;
