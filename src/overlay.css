@@ -23,6 +23,7 @@
 
 .ytvt-trigger {
   --ytvt-trigger-active-bg: rgba(255, 255, 255, 0.18);
+  --ytvt-trigger-active-hover-bg: rgba(255, 255, 255, 0.2);
   --ytvt-trigger-hover-bg: rgba(255, 255, 255, 0.22);
 
   position: relative;
@@ -67,8 +68,7 @@
   font-weight: 600;
 }
 
-.ytvt-trigger::before {
-  content: "";
+.ytvt-trigger-bg {
   position: absolute;
   z-index: 0;
   top: 50%;
@@ -79,6 +79,7 @@
   background: rgba(255, 255, 255, 0);
   transform: translate(-50%, -50%);
   transition: background-color 0.12s ease;
+  pointer-events: none;
 }
 
 .ytvt-trigger-icon {
@@ -107,13 +108,13 @@
   opacity: 1;
 }
 
-.ytvt-trigger:hover::before,
-.ytvt-toolbar.is-native .ytvt-trigger:hover::before {
+.ytvt-trigger:hover .ytvt-trigger-bg,
+.ytvt-toolbar.is-native .ytvt-trigger:hover .ytvt-trigger-bg {
   background: var(--ytvt-trigger-hover-bg);
 }
 
-.ytvt-trigger.is-active::before,
-.ytvt-toolbar.is-native .ytvt-trigger.is-active::before {
+.ytvt-trigger.is-active .ytvt-trigger-bg,
+.ytvt-toolbar.is-native .ytvt-trigger.is-active .ytvt-trigger-bg {
   background: var(--ytvt-trigger-active-bg);
 }
 
@@ -122,9 +123,9 @@
   opacity: 1;
 }
 
-.ytvt-trigger.is-active:hover::before,
-.ytvt-toolbar.is-native .ytvt-trigger.is-active:hover::before {
-  background: var(--ytvt-trigger-hover-bg);
+.ytvt-trigger.is-active:hover .ytvt-trigger-bg,
+.ytvt-toolbar.is-native .ytvt-trigger.is-active:hover .ytvt-trigger-bg {
+  background: var(--ytvt-trigger-active-hover-bg);
 }
 
 .ytvt-trigger:disabled {

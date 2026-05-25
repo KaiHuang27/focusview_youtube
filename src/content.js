@@ -500,6 +500,11 @@ function renderToolbar() {
   trigger.setAttribute("aria-label", getTriggerTitle());
   trigger.title = getTriggerTitle();
 
+  const triggerBackground = document.createElement("span");
+  triggerBackground.className = "ytvt-trigger-bg";
+  triggerBackground.setAttribute("aria-hidden", "true");
+  trigger.append(triggerBackground);
+
   if (shouldShowText) {
     const label = document.createElement("span");
     label.className = "ytvt-trigger-label";
