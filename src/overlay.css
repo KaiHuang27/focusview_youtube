@@ -125,8 +125,6 @@
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
   font: 400 14px/1.25 Roboto, Arial, sans-serif;
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
 }
 
 .ytvt-menu-reset {
