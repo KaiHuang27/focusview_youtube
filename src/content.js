@@ -137,6 +137,7 @@ function clearClickSuppression() {
 
 function areViewportControlsVisible() {
   return shouldShowTransientViewportControls({
+    isPanMode: state.panMode,
     isDragging: Boolean(dragStart?.isDragging),
     lastActivityAt: viewportControlsLastActivityAt,
     now: Date.now(),
@@ -448,6 +449,10 @@ function togglePanMode() {
   state.panMode = !state.panMode;
   if (!state.panMode) {
     cancelPanGesture();
+    clearTimeout(viewportControlsHideTimer);
+    viewportControlsHideTimer = 0;
+    viewportControlsLastActivityAt = 0;
+    isMenuOpen = false;
   }
   renderToolbar();
   applyTransform();

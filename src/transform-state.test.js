@@ -159,19 +159,23 @@ test("shouldInterceptPanWheel intercepts wheel events only in Pan mode", () => {
 
 test("shouldShowTransientViewportControls keeps controls visible during activity delay", () => {
   assert.equal(
-    shouldShowTransientViewportControls({ isDragging: true, lastActivityAt: 0, now: 5000, delayMs: 3000 }),
-    true
-  );
-  assert.equal(
-    shouldShowTransientViewportControls({ isDragging: false, lastActivityAt: 2000, now: 4999, delayMs: 3000 }),
-    true
-  );
-  assert.equal(
-    shouldShowTransientViewportControls({ isDragging: false, lastActivityAt: 2000, now: 5000, delayMs: 3000 }),
+    shouldShowTransientViewportControls({ isPanMode: false, isDragging: true, lastActivityAt: 4999, now: 5000, delayMs: 3000 }),
     false
   );
   assert.equal(
-    shouldShowTransientViewportControls({ isDragging: false, lastActivityAt: 0, now: 1000, delayMs: 3000 }),
+    shouldShowTransientViewportControls({ isPanMode: true, isDragging: true, lastActivityAt: 0, now: 5000, delayMs: 3000 }),
+    true
+  );
+  assert.equal(
+    shouldShowTransientViewportControls({ isPanMode: true, isDragging: false, lastActivityAt: 2000, now: 4999, delayMs: 3000 }),
+    true
+  );
+  assert.equal(
+    shouldShowTransientViewportControls({ isPanMode: true, isDragging: false, lastActivityAt: 2000, now: 5000, delayMs: 3000 }),
+    false
+  );
+  assert.equal(
+    shouldShowTransientViewportControls({ isPanMode: true, isDragging: false, lastActivityAt: 0, now: 1000, delayMs: 3000 }),
     false
   );
 });

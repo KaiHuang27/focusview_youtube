@@ -83,7 +83,11 @@
     return state.panMode === true;
   }
 
-  function shouldShowTransientViewportControls({ isDragging, lastActivityAt, now, delayMs }) {
+  function shouldShowTransientViewportControls({ isPanMode, isDragging, lastActivityAt, now, delayMs }) {
+    if (isPanMode === false) {
+      return false;
+    }
+
     if (isDragging) {
       return true;
     }
