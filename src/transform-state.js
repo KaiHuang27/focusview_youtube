@@ -95,6 +95,10 @@
     return lastActivityAt > 0 && now - lastActivityAt < delayMs;
   }
 
+  function getViewportControlsActivityAfterPanToggle({ isPanMode, now }) {
+    return isPanMode ? now : 0;
+  }
+
   function shouldStartPanDrag({ elapsedMs, distancePx, longPressMs, moveThresholdPx }) {
     return elapsedMs >= longPressMs || distancePx >= moveThresholdPx;
   }
@@ -164,6 +168,7 @@
     createViewportFrame,
     createDefaultState,
     createTransformStyle,
+    getViewportControlsActivityAfterPanToggle,
     getRotationFitScale,
     normalizeRotation,
     shouldInterceptPanWheel,

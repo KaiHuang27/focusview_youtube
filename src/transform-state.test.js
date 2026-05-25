@@ -11,6 +11,7 @@ const {
   createTransformStyle,
   getRotationFitScale,
   normalizeRotation,
+  getViewportControlsActivityAfterPanToggle,
   shouldReapplyTransformAfterMutation,
   shouldInterceptPanWheel,
   shouldResetForVideoKey,
@@ -178,6 +179,11 @@ test("shouldShowTransientViewportControls keeps controls visible during activity
     shouldShowTransientViewportControls({ isPanMode: true, isDragging: false, lastActivityAt: 0, now: 1000, delayMs: 3000 }),
     false
   );
+});
+
+test("getViewportControlsActivityAfterPanToggle starts activity only when Pan turns on", () => {
+  assert.equal(getViewportControlsActivityAfterPanToggle({ isPanMode: true, now: 5000 }), 5000);
+  assert.equal(getViewportControlsActivityAfterPanToggle({ isPanMode: false, now: 5000 }), 0);
 });
 
 test("shouldStartPanDrag starts only after long press or intentional movement", () => {

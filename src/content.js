@@ -6,6 +6,7 @@ const {
   createViewportFrame,
   createDefaultState,
   createTransformStyle,
+  getViewportControlsActivityAfterPanToggle,
   shouldInterceptPanWheel,
   shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
@@ -447,12 +448,18 @@ function createToggle(label, active, onClick) {
 
 function togglePanMode() {
   state.panMode = !state.panMode;
+  viewportControlsLastActivityAt = getViewportControlsActivityAfterPanToggle({
+    isPanMode: state.panMode,
+    now: Date.now(),
+  });
+
   if (!state.panMode) {
     cancelPanGesture();
     clearTimeout(viewportControlsHideTimer);
     viewportControlsHideTimer = 0;
-    viewportControlsLastActivityAt = 0;
     isMenuOpen = false;
+  } else {
+    scheduleViewportControlsHide();
   }
   renderToolbar();
   applyTransform();

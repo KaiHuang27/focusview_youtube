@@ -20,8 +20,8 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 2. The content script finds `.html5-video-player` and `video.html5-main-video`.
 3. The zoom trigger is prepended to `.ytp-right-controls` so it appears at the left edge of YouTube's right-side native control group. If the native host is missing, it falls back to a floating top-right trigger.
 4. The zoom trigger renders as a native-sized `ytp-button` magnifier icon at rest, then switches to centered percentage text while Pan mode is on or zoom is not 100%.
-5. Clicking the zoom trigger toggles Pan mode directly. Turning Pan off closes the transform menu and hides transient position controls. Double-clicking the trigger resets only zoom and pan to the centered 100% view.
-6. During Pan dragging or Pan-mode wheel zoom, the top-right position map and centered settings button appear. Mouse movement keeps them visible briefly, and they hide after the activity delay. Clicking the settings button opens a compact YouTube-settings-style gray menu anchored beside that settings area. The menu contains zoom, rotation, horizontal mirror, and reset controls; Pan remains controlled by the toolbar trigger and shortcut.
+5. Clicking the zoom trigger toggles Pan mode directly. Turning Pan on starts the transient position-control activity window; turning Pan off closes the transform menu and hides transient position controls. Double-clicking the trigger resets only zoom and pan to the centered 100% view.
+6. When Pan turns on, during Pan dragging, or during Pan-mode wheel zoom, the top-right position map and centered settings button appear. Mouse movement keeps them visible briefly, and they hide after the activity delay. Clicking the settings button opens a compact YouTube-settings-style gray menu anchored beside that settings area. The menu contains zoom, rotation, horizontal mirror, and reset controls; Pan remains controlled by the toolbar trigger and shortcut.
 7. `Alt/Option + Shift + P` toggles Pan mode at window/document capture time, but only outside editable fields and without `Ctrl` or `Cmd` modifiers.
 8. In Pan mode, pointer down starts a pending gesture instead of immediately blocking YouTube. A quick single click is left for native play/pause; a long press or intentional movement activates frame dragging and suppresses that gesture's following native click.
 9. In Pan mode, player-level capture wheel events are intercepted before YouTube can handle them; they update zoom in 5% steps and clamp it to 100%-500%. Wheel events that start inside the menu are blocked without changing zoom.
@@ -63,6 +63,7 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm the magnifier is visible at 100% with Pan off, then hidden when Pan is enabled so only compact centered zoom text remains.
 - Confirm double-clicking the trigger resets zoom to 100%.
 - Confirm clicking the zoom button toggles Pan mode on and off without opening the menu.
+- Confirm turning Pan mode on from the zoom button shows the position map and settings button immediately, then lets them hide after the normal inactivity delay.
 - Confirm turning Pan mode off from the zoom button hides the position map, settings button, and transform menu immediately.
 - Confirm Pan-mode quick single clicks still trigger YouTube native play/pause.
 - Confirm Pan-mode long press or drag moves the frame and does not trigger YouTube native play/pause when released.
