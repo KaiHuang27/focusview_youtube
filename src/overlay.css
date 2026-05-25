@@ -118,8 +118,8 @@
   z-index: 2147483647;
   right: 18px;
   top: 118px;
-  width: min(252px, calc(100vw - 36px));
-  padding: 7px 0 6px;
+  width: min(232px, calc(100vw - 36px));
+  padding: 6px 0;
   color: rgb(255, 255, 255);
   background: rgba(28, 28, 28, 0.9);
   border-radius: 12px;
@@ -147,13 +147,13 @@
 }
 
 .ytvt-zoom-panel {
-  padding: 0 14px 7px;
+  padding: 0 12px 6px;
 }
 
 .ytvt-zoom-value {
-  padding: 0 42px 8px;
+  padding: 0 40px 6px;
   color: rgba(255, 255, 255, 0.96);
-  font: 500 18px/24px Roboto, Arial, sans-serif;
+  font: 500 16px/22px Roboto, Arial, sans-serif;
   text-align: center;
   font-variant-numeric: tabular-nums;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.38);
@@ -161,23 +161,23 @@
 
 .ytvt-zoom-controls {
   display: grid;
-  grid-template-columns: 30px minmax(0, 1fr) 30px;
+  grid-template-columns: 26px minmax(0, 1fr) 26px;
   align-items: center;
-  column-gap: 9px;
+  column-gap: 8px;
   touch-action: none;
 }
 
 .ytvt-zoom-step {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   padding: 0;
   color: rgb(255, 255, 255);
   background: rgba(255, 255, 255, 0.18);
   border: 0;
   border-radius: 50%;
-  font: 700 22px/1 Roboto, Arial, sans-serif;
+  font: 700 20px/1 Roboto, Arial, sans-serif;
   cursor: pointer;
 }
 
@@ -190,10 +190,10 @@
   grid-template-columns: minmax(0, 1fr) auto;
   grid-template-areas: "label control";
   align-items: center;
-  column-gap: 16px;
-  min-height: 38px;
+  column-gap: 12px;
+  min-height: 34px;
   margin: 0 6px;
-  padding: 3px 12px;
+  padding: 2px 10px;
   border-radius: 10px;
 }
 
@@ -203,6 +203,10 @@
 
 .ytvt-menu-row:has(.ytvt-segment):hover {
   background: transparent;
+}
+
+.ytvt-menu-row:has(.ytvt-segment) {
+  column-gap: 8px;
 }
 
 .ytvt-menu-label {
@@ -234,7 +238,7 @@
 }
 
 .ytvt-menu-control:has(.ytvt-segment) {
-  width: 170px;
+  width: 136px;
 }
 
 .ytvt-slider {
@@ -262,9 +266,9 @@
 }
 
 .ytvt-slider::-webkit-slider-thumb {
-  width: 18px;
-  height: 18px;
-  margin-top: -7px;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
   background: rgb(255, 255, 255);
   border: 0;
   border-radius: 50%;
@@ -286,8 +290,8 @@
 }
 
 .ytvt-slider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   background: rgb(255, 255, 255);
   border: 0;
   border-radius: 50%;
@@ -303,7 +307,7 @@
 
 .ytvt-button {
   min-width: 42px;
-  height: 26px;
+  height: 24px;
   padding: 0 8px;
   color: inherit;
   background: transparent;
@@ -330,8 +334,8 @@
 
 .ytvt-toggle {
   position: relative;
-  width: 40px;
-  height: 24px;
+  width: 36px;
+  height: 20px;
   padding: 0;
   background: rgba(255, 255, 255, 0.3);
   border: 0;
@@ -341,10 +345,10 @@
 
 .ytvt-toggle span {
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 18px;
-  height: 18px;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
   background: rgb(255, 255, 255);
   border-radius: 50%;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.32);
@@ -397,6 +401,6 @@
   .ytvt-menu {
     right: 8px;
     top: 106px;
-    width: min(248px, calc(100vw - 16px));
+    width: min(232px, calc(100vw - 16px));
   }
 }
