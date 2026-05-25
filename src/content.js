@@ -559,17 +559,11 @@ function renderMenu() {
     reset,
     createZoomPanel(),
     createMenuRow("Rotation", rotationGroup),
-    createMenuRow("Mirror H", createToggle("Mirror horizontally", state.flipX, () => {
+    createMenuRow("Mirror", createToggle("Mirror horizontally", state.flipX, () => {
       state.flipX = !state.flipX;
       renderToolbar();
       applyTransform();
-    })),
-    createMenuRow("Mirror V", createToggle("Mirror vertically", state.flipY, () => {
-      state.flipY = !state.flipY;
-      renderToolbar();
-      applyTransform();
-    })),
-    createMenuRow("Pan", createToggle("Pan mode", state.panMode, togglePanMode))
+    }))
   );
 
 }
