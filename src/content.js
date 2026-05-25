@@ -11,6 +11,7 @@ const {
   shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
   shouldStartPanDrag,
+  shouldShowZoomTriggerActive,
   shouldShowZoomTriggerText,
   shouldShowTransientViewportControls,
   shouldTogglePanShortcut,
@@ -491,8 +492,9 @@ function renderToolbar() {
 
   const trigger = document.createElement("button");
   const shouldShowText = shouldShowZoomTriggerText(state);
+  const shouldShowActive = shouldShowZoomTriggerActive(state);
   trigger.type = "button";
-  trigger.className = state.panMode ? "ytvt-trigger ytp-button is-active" : "ytvt-trigger ytp-button";
+  trigger.className = shouldShowActive ? "ytvt-trigger ytp-button is-active" : "ytvt-trigger ytp-button";
   trigger.classList.toggle("is-text", shouldShowText);
   trigger.setAttribute("aria-pressed", String(state.panMode));
   trigger.setAttribute("aria-label", getTriggerTitle());

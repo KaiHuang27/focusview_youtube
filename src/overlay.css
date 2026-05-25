@@ -37,6 +37,7 @@
   text-align: center;
   cursor: pointer;
   opacity: 0.9;
+  transition: background-color 0.12s ease, opacity 0.12s ease;
 }
 
 .ytvt-toolbar.is-native .ytvt-trigger {
@@ -57,6 +58,10 @@
   pointer-events: none;
 }
 
+.ytvt-trigger.is-active .ytvt-trigger-label {
+  font-weight: 600;
+}
+
 .ytvt-trigger-icon {
   position: absolute;
   top: 50%;
@@ -73,11 +78,22 @@
 }
 
 .ytvt-trigger:hover,
-.ytvt-trigger.is-active,
-.ytvt-toolbar.is-native .ytvt-trigger:hover,
-.ytvt-toolbar.is-native .ytvt-trigger.is-active {
-  background: transparent;
+.ytvt-toolbar.is-native .ytvt-trigger:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
   opacity: 1;
+}
+
+.ytvt-trigger.is-active,
+.ytvt-toolbar.is-native .ytvt-trigger.is-active {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 24px;
+  opacity: 1;
+}
+
+.ytvt-trigger.is-active:hover,
+.ytvt-toolbar.is-native .ytvt-trigger.is-active:hover {
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .ytvt-trigger:disabled {

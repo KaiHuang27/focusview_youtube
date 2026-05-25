@@ -16,6 +16,7 @@ const {
   shouldInterceptPanWheel,
   shouldResetForVideoKey,
   shouldStartPanDrag,
+  shouldShowZoomTriggerActive,
   shouldShowZoomTriggerText,
   shouldShowTransientViewportControls,
   shouldTogglePanShortcut,
@@ -196,6 +197,12 @@ test("shouldShowZoomTriggerText shows text only when Pan is on or zoom changed",
   assert.equal(shouldShowZoomTriggerText({ ...createDefaultState(), zoom: 100, panMode: false }), false);
   assert.equal(shouldShowZoomTriggerText({ ...createDefaultState(), zoom: 100, panMode: true }), true);
   assert.equal(shouldShowZoomTriggerText({ ...createDefaultState(), zoom: 125, panMode: false }), true);
+});
+
+test("shouldShowZoomTriggerActive shows active state only while Pan is on", () => {
+  assert.equal(shouldShowZoomTriggerActive({ ...createDefaultState(), zoom: 100, panMode: false }), false);
+  assert.equal(shouldShowZoomTriggerActive({ ...createDefaultState(), zoom: 180, panMode: false }), false);
+  assert.equal(shouldShowZoomTriggerActive({ ...createDefaultState(), zoom: 100, panMode: true }), true);
 });
 
 test("shouldTogglePanShortcut accepts only Alt Shift P outside editable targets", () => {

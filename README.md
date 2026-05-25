@@ -4,7 +4,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 
 ## Features
 
-- Single native-style magnifier zoom button. It switches to zoom text while Pan mode is on or the video is zoomed.
+- Single native-style magnifier zoom button. It switches to zoom text while Pan mode is on or the video is zoomed, and uses an active background only while Pan mode is on.
 - Toolbar zoom button toggles Pan mode directly.
 - Settings button appears below the top-right position map when Pan mode turns on or during recent Pan activity, and opens the YouTube-native-style transform menu.
 - Rotate video by 0, 90, 180, or 270 degrees, fitting 90/270-degree rotations inside the player frame first.
@@ -26,7 +26,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 
 ## Controls
 
-The zoom button is placed in YouTube's native right-side control bar, at the left edge of the right control group. It uses a YouTube-style magnifier icon by default, then switches to compact zoom text when Pan mode is on or the video is zoomed. Click it to turn Pan mode on or off, or double-click it to reset zoom to 100%. If YouTube's native controls are unavailable, the extension falls back to a floating top-right button.
+The zoom button is placed in YouTube's native right-side control bar, at the left edge of the right control group. It uses a YouTube-style magnifier icon by default, then switches to compact zoom text when Pan mode is on or the video is zoomed. While Pan mode is on, the text becomes slightly heavier and the button uses a subtle YouTube-style active background. Click it to turn Pan mode on or off, or double-click it to reset zoom to 100%. If YouTube's native controls are unavailable, the extension falls back to a floating top-right button.
 
 The transform menu opens next to the settings button centered below the top-right position map while the transient Pan controls are visible. It follows YouTube's settings-menu density: rounded gray panel, compact centered text rows, a compact top `- / slider / +` zoom control, and a small red `Reset` action in the top-right corner.
 

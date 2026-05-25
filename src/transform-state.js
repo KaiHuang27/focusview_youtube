@@ -107,6 +107,10 @@
     return state.panMode === true || state.zoom !== 100;
   }
 
+  function shouldShowZoomTriggerActive(state) {
+    return state.panMode === true;
+  }
+
   function isEditableShortcutTarget(target) {
     const tagName = target?.tagName?.toUpperCase();
     return (
@@ -175,6 +179,7 @@
     shouldReapplyTransformAfterMutation,
     shouldResetForVideoKey,
     shouldStartPanDrag,
+    shouldShowZoomTriggerActive,
     shouldShowZoomTriggerText,
     shouldShowTransientViewportControls,
     shouldTogglePanShortcut,
