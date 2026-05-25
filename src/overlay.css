@@ -22,6 +22,9 @@
 }
 
 .ytvt-trigger {
+  --ytvt-trigger-active-bg: rgba(255, 255, 255, 0.18);
+  --ytvt-trigger-hover-bg: rgba(255, 255, 255, 0.22);
+
   position: relative;
   isolation: isolate;
   width: 48px;
@@ -106,12 +109,12 @@
 
 .ytvt-trigger:hover::before,
 .ytvt-toolbar.is-native .ytvt-trigger:hover::before {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--ytvt-trigger-hover-bg);
 }
 
 .ytvt-trigger.is-active::before,
 .ytvt-toolbar.is-native .ytvt-trigger.is-active::before {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--ytvt-trigger-active-bg);
 }
 
 .ytvt-trigger.is-active:hover,
@@ -121,7 +124,7 @@
 
 .ytvt-trigger.is-active:hover::before,
 .ytvt-toolbar.is-native .ytvt-trigger.is-active:hover::before {
-  background: rgba(255, 255, 255, 0.34);
+  background: var(--ytvt-trigger-hover-bg);
 }
 
 .ytvt-trigger:disabled {

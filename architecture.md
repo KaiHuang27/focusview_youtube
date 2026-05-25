@@ -61,7 +61,7 @@ Manual Edge acceptance covers browser-specific behavior:
 - Load unpacked extension in `edge://extensions`.
 - Confirm only one magnifier zoom button appears at the left edge of YouTube's native right-side control group on a normal YouTube watch page.
 - Confirm the magnifier is visible at 100% with Pan off, then hidden when Pan is enabled so only compact centered zoom text remains.
-- Confirm Pan on shows a filled active background with the same size and shape as hover, plus heavier percentage text, while Pan off with zoom above 100% shows percentage text without the active background.
+- Confirm Pan on shows an active background with the same size and shape as hover but slightly lower opacity, plus heavier percentage text, while Pan off with zoom above 100% shows percentage text without the active background.
 - Confirm double-clicking the trigger resets zoom to 100%.
 - Confirm clicking the zoom button toggles Pan mode on and off without opening the menu.
 - Confirm turning Pan mode on from the zoom button shows the position map and settings button immediately, then lets them hide after the normal inactivity delay.
