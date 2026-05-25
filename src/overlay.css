@@ -88,7 +88,7 @@
 .ytvt-settings {
   position: absolute;
   z-index: 2147483647;
-  top: calc(22px + (144px * 9 / 16) + 8px);
+  top: calc(50px + (144px * 9 / 16) + 8px);
   right: calc(22px + (144px / 2) - 14px);
   display: grid;
   place-items: center;
@@ -117,7 +117,7 @@
   position: absolute;
   z-index: 2147483647;
   right: 22px;
-  top: 147px;
+  top: 175px;
   width: min(232px, calc(100vw - 36px));
   padding: 6px 0;
   color: rgb(255, 255, 255);
@@ -366,7 +366,7 @@
 .ytvt-map {
   position: absolute;
   z-index: 2147483646;
-  top: 22px;
+  top: 50px;
   right: 22px;
   width: 144px;
   aspect-ratio: 16 / 9;
@@ -400,7 +400,7 @@
 
   .ytvt-menu {
     right: 8px;
-    top: 147px;
+    top: 175px;
     width: min(232px, calc(100vw - 16px));
   }
 }

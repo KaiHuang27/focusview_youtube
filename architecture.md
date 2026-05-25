@@ -65,7 +65,7 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm clicking the zoom button toggles Pan mode on and off without opening the menu.
 - Confirm Pan-mode quick single clicks still trigger YouTube native play/pause.
 - Confirm Pan-mode long press or drag moves the frame and does not trigger YouTube native play/pause when released.
-- Confirm the top-right position map and centered settings button appear while dragging or wheel-zooming in Pan mode, stay visible during nearby mouse movement, then hide after the activity delay.
+- Confirm the top-right position map appears below the YouTube title area while dragging or wheel-zooming in Pan mode, stays visible during nearby mouse movement, then hides after the activity delay.
 - Confirm clicking the settings button centered below the top-right position map while dragging opens and closes the YouTube-style transform menu beside the settings area, with dark translucent rounded panel, native-like smaller gray controls, rounded inset row hover states, compact top zoom control with white progress and gray remaining track, red top-right Reset action, text rows, and right-aligned controls that stay inside the panel.
 - Confirm menu Zoom, Rotation, horizontal mirror, vertical mirror, combined mirror, Pan, and Reset.
 - Confirm `Alt/Option + Shift + P` toggles Pan mode while focus is on the video page, and does nothing while typing in YouTube search or comments.
