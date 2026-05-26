@@ -423,10 +423,11 @@
   width: 144px;
   aspect-ratio: 16 / 9;
   pointer-events: none;
-  background: rgba(0, 0, 0, 0.42);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.24);
   border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.34);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
 }
 
 .ytvt-map-frame {
@@ -434,8 +435,8 @@
   box-sizing: border-box;
   border: 2px solid rgb(255, 255, 255);
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.22);
 }
 
 @media (max-width: 720px) {
