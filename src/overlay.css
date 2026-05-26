@@ -23,9 +23,6 @@
 
 .ytvt-trigger {
   --ytvt-trigger-active-bg: rgba(255, 255, 255, 0.18);
-  --ytvt-trigger-active-hover-bg: rgba(255, 255, 255, 0.2);
-  --ytvt-trigger-hover-bg: rgba(255, 255, 255, 0.22);
-
   position: relative;
   isolation: isolate;
   width: 56px;
@@ -43,12 +40,6 @@
   cursor: pointer;
   opacity: 0.9;
   transition: opacity 0.12s ease;
-}
-
-.ytvt-trigger.ytp-button,
-.ytvt-trigger.ytp-button:hover,
-.ytvt-trigger.ytp-button:focus {
-  background: transparent !important;
 }
 
 .ytvt-toolbar.is-native .ytvt-trigger {
@@ -114,11 +105,6 @@
   opacity: 1;
 }
 
-.ytvt-trigger:hover .ytvt-trigger-bg,
-.ytvt-toolbar.is-native .ytvt-trigger:hover .ytvt-trigger-bg {
-  background: var(--ytvt-trigger-hover-bg);
-}
-
 .ytvt-trigger.is-active .ytvt-trigger-bg,
 .ytvt-toolbar.is-native .ytvt-trigger.is-active .ytvt-trigger-bg {
   background: var(--ytvt-trigger-active-bg);
@@ -131,7 +117,7 @@
 
 .ytvt-trigger.is-active:hover .ytvt-trigger-bg,
 .ytvt-toolbar.is-native .ytvt-trigger.is-active:hover .ytvt-trigger-bg {
-  background: var(--ytvt-trigger-active-hover-bg);
+  background: transparent;
 }
 
 .ytvt-trigger:disabled {
