@@ -169,7 +169,7 @@
   right: 22px;
   top: 175px;
   width: min(232px, calc(100vw - 36px));
-  padding: 6px 0;
+  padding: 8px 0 6px;
   color: rgb(255, 255, 255);
   background: rgba(0, 0, 0, 0.6);
   border-radius: 12px;
@@ -179,7 +179,7 @@
 
 .ytvt-menu-reset {
   position: absolute;
-  top: 7px;
+  top: 10px;
   right: 12px;
   padding: 0;
   color: rgb(255, 77, 77);
@@ -195,11 +195,11 @@
 }
 
 .ytvt-zoom-panel {
-  padding: 0 12px 6px;
+  padding: 4px 12px 6px;
 }
 
 .ytvt-zoom-value {
-  padding: 0 40px 6px;
+  padding: 0 40px 8px;
   color: rgba(255, 255, 255, 0.96);
   font: 500 16px/22px Roboto, Arial, sans-serif;
   text-align: center;
