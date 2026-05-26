@@ -9,7 +9,7 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 ## Components
 
 - `manifest.json`: declares the MV3 extension and injects CSS plus content scripts on YouTube at `document_start`.
-- `src/transform-state.js`: shared transform and shortcut helpers exposed on `globalThis.YTVTTransform` so they can run as a classic content script and still be tested with Node.
+- `src/transform-state.js`: shared transform, viewport-map, and shortcut helpers exposed on `globalThis.YTVTTransform` so they can run as a classic content script and still be tested with Node.
 - `src/content.js`: detects the YouTube player, inserts the zoom trigger into `.ytp-right-controls` when available, toggles Pan mode from that trigger, renders a settings button centered below the top-right position map during recent Pan activity, renders the YouTube-style menu beside that settings button, updates transform state, renders the position map during recent Pan activity, handles pan dragging, handles Pan-mode wheel zoom, handles the Pan keyboard shortcut, reapplies transforms after fullscreen/style mutations, and resets state on YouTube SPA navigation.
 - `src/overlay.css`: native-control-bar zoom trigger using compact fixed YouTube-style sizing, magnifier icon, native `ytp-button` hover styling, a dedicated compact active background layer, compact conditional percentage text, Roboto/Arial typography, floating fallback trigger, top-right native-style settings icon button, compact YouTube-settings-style gray menu, toggle, segment, YouTube-style slider track, and position-map styling.
 - `src/transform-state.test.js`: Node test coverage for reset state, zoom scale conversion, rotation fit scaling, zoom and pan clamping, Pan-mode wheel interception, transient viewport-control visibility, Pan shortcut detection, transform reapply detection, viewport-map math, rotation validation, and mirror composition.
@@ -29,7 +29,7 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 11. `clampPanState` bounds pan to the current scaled and rotated video size before transforms are applied.
 12. `createTransformStyle` converts state into a CSS `transform`.
 13. The transform is applied directly to the video element.
-14. `createViewportFrame` maps zoom and pan into a normalized visible rectangle inside the top-right position map during recent Pan activity.
+14. `createViewportMapSize` sizes the top-right position map from the video's intrinsic aspect ratio within min/max bounds, and `createViewportFrame` maps the current player viewport, zoom, and pan into a normalized visible rectangle.
 15. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform, clamped pan, and position controls are reapplied or reparented to the current player root.
 16. Fullscreen events and video style mutations schedule repeated `requestAnimationFrame` reapplication so YouTube style rewrites are corrected quickly.
 17. When leaving the watch page or switching videos, transient overlays, timers, and transform state are cleared before the next player binding.
@@ -68,7 +68,7 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm turning Pan mode off from the zoom button hides the position map, settings button, and transform menu immediately.
 - Confirm Pan-mode quick single clicks still trigger YouTube native play/pause.
 - Confirm Pan-mode long press or drag moves the frame and does not trigger YouTube native play/pause when released, even if the pointer is held still briefly before release.
-- Confirm the top-right position map appears below the YouTube title area while dragging or wheel-zooming in Pan mode, uses a low-emphasis translucent background with a clear white viewport frame, stays visible during nearby mouse movement, then hides after the activity delay.
+- Confirm the top-right position map appears below the YouTube title area while dragging or wheel-zooming in Pan mode, uses the source video aspect ratio for the outer map and the current player viewport ratio for the inner frame, stays visible during nearby mouse movement, then hides after the activity delay.
 - Confirm the top-right position map and settings button remain visible while the transform menu is open, even after the activity delay.
 - Confirm the settings button centered below the top-right position map uses a native-style SVG gear icon with low-emphasis default background, subtle hover, and active state when the menu is open. Confirm clicking it opens and closes the YouTube-style transform menu beside the settings area, with dark translucent rounded panel, native-like smaller gray controls, rounded inset row hover states, compact top zoom control with white progress and gray remaining track, red top-right Reset action, text rows, and right-aligned controls that stay inside the panel.
 - Confirm menu Zoom, Rotation, horizontal Mirror, and Reset. Confirm clicking either the Mirror switch or the full Mirror row toggles mirror once. Confirm the menu does not show Mirror V or Pan rows.

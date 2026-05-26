@@ -4,6 +4,7 @@ const {
   applyZoomDelta,
   clampPanState,
   createViewportFrame,
+  createViewportMapSize,
   createDefaultState,
   createTransformStyle,
   getViewportControlsActivityAfterPanToggle,
@@ -241,8 +242,17 @@ function renderViewportMap() {
   settingsButton.setAttribute("aria-expanded", String(isMenuOpen));
 
   const shouldShowControls = areViewportControlsVisible();
-  const frame = createViewportFrame(state, video.clientWidth, video.clientHeight);
+  const sourceWidth = video.videoWidth || video.clientWidth;
+  const sourceHeight = video.videoHeight || video.clientHeight;
+  const viewportWidth = player.clientWidth || video.clientWidth;
+  const viewportHeight = player.clientHeight || video.clientHeight;
+  const mapSize = createViewportMapSize(sourceWidth, sourceHeight);
+  const frame = createViewportFrame(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
   const frameElement = viewportMap.querySelector(".ytvt-map-frame");
+  viewportMap.style.width = `${mapSize.width}px`;
+  viewportMap.style.height = `${mapSize.height}px`;
+  settingsButton.style.top = `${50 + mapSize.height + 8}px`;
+  settingsButton.style.right = `${22 + mapSize.width / 2 - 16}px`;
   frameElement.style.left = `${frame.x * 100}%`;
   frameElement.style.top = `${frame.y * 100}%`;
   frameElement.style.width = `${frame.width * 100}%`;

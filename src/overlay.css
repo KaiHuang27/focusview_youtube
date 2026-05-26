@@ -420,8 +420,8 @@
   z-index: 2147483646;
   top: 50px;
   right: 22px;
-  width: 144px;
-  aspect-ratio: 16 / 9;
+  width: 160px;
+  height: 90px;
   pointer-events: none;
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.3);

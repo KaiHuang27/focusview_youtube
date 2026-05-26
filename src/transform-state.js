@@ -3,6 +3,16 @@
   const ZOOM_STEP = 5;
   const MIN_ZOOM = 100;
   const MAX_ZOOM = 500;
+  const DEFAULT_VIEWPORT_MAP_SIZE = {
+    width: 160,
+    height: 90,
+  };
+  const VIEWPORT_MAP_BOUNDS = {
+    maxWidth: 160,
+    maxHeight: 96,
+    minWidth: 44,
+    minHeight: 44,
+  };
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
@@ -162,16 +172,36 @@
     );
   }
 
-  function createViewportFrame(state, width, height) {
+  function createViewportMapSize(width, height) {
+    if (width <= 0 || height <= 0) {
+      return DEFAULT_VIEWPORT_MAP_SIZE;
+    }
+
+    const aspect = width / height;
+    let mapWidth = VIEWPORT_MAP_BOUNDS.maxWidth;
+    let mapHeight = mapWidth / aspect;
+
+    if (mapHeight > VIEWPORT_MAP_BOUNDS.maxHeight) {
+      mapHeight = VIEWPORT_MAP_BOUNDS.maxHeight;
+      mapWidth = mapHeight * aspect;
+    }
+
+    return {
+      width: Math.round(clamp(mapWidth, VIEWPORT_MAP_BOUNDS.minWidth, VIEWPORT_MAP_BOUNDS.maxWidth)),
+      height: Math.round(clamp(mapHeight, VIEWPORT_MAP_BOUNDS.minHeight, VIEWPORT_MAP_BOUNDS.maxHeight)),
+    };
+  }
+
+  function createViewportFrame(state, width, height, viewportWidth = width, viewportHeight = height) {
     const scale = state.zoom / 100;
-    if (scale <= 1 || width <= 0 || height <= 0) {
+    if (scale <= 1 || width <= 0 || height <= 0 || viewportWidth <= 0 || viewportHeight <= 0) {
       return { x: 0, y: 0, width: 1, height: 1 };
     }
 
-    const frameWidth = 1 / scale;
+    const frameWidth = clamp((viewportWidth / viewportHeight) / (width / height) / scale, 0, 1);
     const frameHeight = 1 / scale;
-    const x = clamp(0.5 - state.panX / (scale * width) - frameWidth / 2, 0, 1 - frameWidth);
-    const y = clamp(0.5 - state.panY / (scale * height) - frameHeight / 2, 0, 1 - frameHeight);
+    const x = clamp(0.5 - state.panX / (scale * viewportWidth) - frameWidth / 2, 0, 1 - frameWidth);
+    const y = clamp(0.5 - state.panY / (scale * viewportHeight) - frameHeight / 2, 0, 1 - frameHeight);
 
     return {
       x: Number(x.toFixed(4)),
@@ -185,6 +215,7 @@
     applyZoomDelta,
     clampPanState,
     createViewportFrame,
+    createViewportMapSize,
     createDefaultState,
     createTransformStyle,
     getViewportControlsActivityAfterPanToggle,

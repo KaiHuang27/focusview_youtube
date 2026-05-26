@@ -7,6 +7,7 @@ const {
   applyZoomDelta,
   clampPanState,
   createViewportFrame,
+  createViewportMapSize,
   createDefaultState,
   createTransformStyle,
   getRotationFitScale,
@@ -112,6 +113,41 @@ test("createViewportFrame maps zoom and pan into normalized original-video coord
       height: 0.5,
     }
   );
+});
+
+test("createViewportMapSize follows source video ratio within min and max bounds", () => {
+  assert.deepEqual(createViewportMapSize(1920, 1080), { width: 160, height: 90 });
+  assert.deepEqual(createViewportMapSize(1920, 1200), { width: 154, height: 96 });
+  assert.deepEqual(createViewportMapSize(2560, 1080), { width: 160, height: 68 });
+  assert.deepEqual(createViewportMapSize(1080, 1920), { width: 54, height: 96 });
+  assert.deepEqual(createViewportMapSize(100, 1000), { width: 44, height: 96 });
+  assert.deepEqual(createViewportMapSize(0, 0), { width: 160, height: 90 });
+});
+
+test("createViewportFrame changes frame ratio with viewport ratio", () => {
+  assert.deepEqual(
+    createViewportFrame({ ...createDefaultState(), zoom: 200 }, 1920, 1080, 1920, 1080),
+    { x: 0.25, y: 0.25, width: 0.5, height: 0.5 }
+  );
+  assert.deepEqual(
+    createViewportFrame({ ...createDefaultState(), zoom: 200 }, 1920, 1080, 2560, 1080),
+    { x: 0.1667, y: 0.25, width: 0.6667, height: 0.5 }
+  );
+});
+
+test("createViewportFrame falls back to full frame for invalid dimensions", () => {
+  assert.deepEqual(createViewportFrame({ ...createDefaultState(), zoom: 200 }, 0, 0, 1920, 1080), {
+    x: 0,
+    y: 0,
+    width: 1,
+    height: 1,
+  });
+  assert.deepEqual(createViewportFrame({ ...createDefaultState(), zoom: 200 }, 1920, 1080, 0, 0), {
+    x: 0,
+    y: 0,
+    width: 1,
+    height: 1,
+  });
 });
 
 test("clampPanState centers pan at 100 percent zoom", () => {
