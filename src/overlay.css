@@ -21,6 +21,10 @@
   pointer-events: auto;
 }
 
+.ytvt-toolbar.is-native.is-text {
+  width: 64px;
+}
+
 .ytvt-trigger {
   --ytvt-trigger-active-bg: rgba(255, 255, 255, 0.18);
   --ytvt-trigger-active-hover-bg: rgba(255, 255, 255, 0.2);
@@ -43,6 +47,12 @@
   cursor: pointer;
   opacity: 0.9;
   transition: opacity 0.12s ease;
+}
+
+.ytvt-trigger.ytp-button,
+.ytvt-trigger.ytp-button:hover,
+.ytvt-trigger.ytp-button:focus {
+  background: transparent !important;
 }
 
 .ytvt-toolbar.is-native .ytvt-trigger {
@@ -80,6 +90,10 @@
   transform: translate(-50%, -50%);
   transition: background-color 0.12s ease;
   pointer-events: none;
+}
+
+.ytvt-trigger.is-text .ytvt-trigger-bg {
+  width: calc(100% - 8px);
 }
 
 .ytvt-trigger-icon {

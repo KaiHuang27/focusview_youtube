@@ -493,6 +493,7 @@ function renderToolbar() {
   const trigger = document.createElement("button");
   const shouldShowText = shouldShowZoomTriggerText(state);
   const shouldShowActive = shouldShowZoomTriggerActive(state);
+  toolbar.classList.toggle("is-text", shouldShowText);
   trigger.type = "button";
   trigger.className = shouldShowActive ? "ytvt-trigger ytp-button is-active" : "ytvt-trigger ytp-button";
   trigger.classList.toggle("is-text", shouldShowText);
