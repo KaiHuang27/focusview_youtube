@@ -33,7 +33,7 @@ The transform menu opens next to the settings button centered below the top-righ
 - `Zoom`: changes zoom between 100% and 500%.
 - Zoom slider drag uses pointer capture on the whole zoom control row: after pressing the slider area, keep holding and move horizontally to adjust zoom even if the cursor is no longer directly above the track.
 - `Rotation`: rotates the video by `0`, `90`, `180`, or `270` degrees.
-- `Mirror`: mirrors the video horizontally.
+- `Mirror`: mirrors the video horizontally. Click either the switch or anywhere on the Mirror row.
 - Pan mode is controlled from the native toolbar zoom button. Quick single clicks still use YouTube's native play/pause behavior; long press or intentional drag moves the video frame and suppresses that drag's native click. While enabled, the mouse wheel changes zoom in 5% steps and is blocked from YouTube's native fullscreen controls.
 - `Alt/Option + Shift + P`: toggles Pan mode without using YouTube's single-key shortcuts or Chrome/Edge `Ctrl`/`Cmd` shortcuts. The shortcut listener loads early and runs at capture time so YouTube does not consume it first. It is ignored while typing in inputs, comments, search, or other editable fields.
 - `Reset`: restores zoom, rotation, mirror, and pan to the default state and closes the menu.

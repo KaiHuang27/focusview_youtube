@@ -15,6 +15,7 @@ const {
   shouldShowZoomTriggerText,
   shouldShowTransientViewportControls,
   shouldTogglePanShortcut,
+  toggleMirrorState,
 } = globalThis.YTVTTransform;
 const VIEWPORT_CONTROLS_HIDE_DELAY_MS = 3000;
 const PAN_LONG_PRESS_MS = 220;
@@ -437,15 +438,31 @@ function createMenuRow(label, control, value = "") {
   return row;
 }
 
+function createClickableMenuRow(label, control, onClick) {
+  const row = createMenuRow(label, control);
+  row.classList.add("is-clickable");
+  row.addEventListener("click", onClick);
+  return row;
+}
+
 function createToggle(label, active, onClick) {
   const button = document.createElement("button");
   button.type = "button";
   button.className = active ? "ytvt-toggle is-active" : "ytvt-toggle";
   button.setAttribute("aria-label", label);
   button.setAttribute("aria-pressed", String(active));
-  button.addEventListener("click", onClick);
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    onClick();
+  });
   button.append(document.createElement("span"));
   return button;
+}
+
+function toggleMirror() {
+  state = toggleMirrorState(state);
+  renderToolbar();
+  applyTransform();
 }
 
 function togglePanMode() {
@@ -579,11 +596,7 @@ function renderMenu() {
     reset,
     createZoomPanel(),
     createMenuRow("Rotation", rotationGroup),
-    createMenuRow("Mirror", createToggle("Mirror horizontally", state.flipX, () => {
-      state.flipX = !state.flipX;
-      renderToolbar();
-      applyTransform();
-    }))
+    createClickableMenuRow("Mirror", createToggle("Mirror horizontally", state.flipX, toggleMirror), toggleMirror)
   );
 
 }

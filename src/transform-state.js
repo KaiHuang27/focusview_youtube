@@ -115,6 +115,13 @@
     return state.panMode === true;
   }
 
+  function toggleMirrorState(state) {
+    return {
+      ...state,
+      flipX: !state.flipX,
+    };
+  }
+
   function isEditableShortcutTarget(target) {
     const tagName = target?.tagName?.toUpperCase();
     return (
@@ -187,5 +194,6 @@
     shouldShowZoomTriggerText,
     shouldShowTransientViewportControls,
     shouldTogglePanShortcut,
+    toggleMirrorState,
   };
 })();

@@ -20,6 +20,7 @@ const {
   shouldShowZoomTriggerText,
   shouldShowTransientViewportControls,
   shouldTogglePanShortcut,
+  toggleMirrorState,
 } = globalThis.YTVTTransform;
 
 test("createDefaultState returns reset video transform values", () => {
@@ -207,6 +208,15 @@ test("shouldShowZoomTriggerActive shows active state only while Pan is on", () =
   assert.equal(shouldShowZoomTriggerActive({ ...createDefaultState(), zoom: 100, panMode: false }), false);
   assert.equal(shouldShowZoomTriggerActive({ ...createDefaultState(), zoom: 180, panMode: false }), false);
   assert.equal(shouldShowZoomTriggerActive({ ...createDefaultState(), zoom: 100, panMode: true }), true);
+});
+
+test("toggleMirrorState toggles horizontal mirror only", () => {
+  assert.deepEqual(toggleMirrorState(createDefaultState()), { ...createDefaultState(), flipX: true });
+  assert.deepEqual(toggleMirrorState({ ...createDefaultState(), flipX: true, flipY: true }), {
+    ...createDefaultState(),
+    flipX: false,
+    flipY: true,
+  });
 });
 
 test("shouldTogglePanShortcut accepts only Alt Shift P outside editable targets", () => {
