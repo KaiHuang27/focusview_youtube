@@ -115,6 +115,10 @@
     return state.panMode === true;
   }
 
+  function shouldSuppressClickAfterPanEnd({ wasDragging }) {
+    return wasDragging === true;
+  }
+
   function toggleMirrorState(state) {
     return {
       ...state,
@@ -193,6 +197,7 @@
     shouldShowZoomTriggerActive,
     shouldShowZoomTriggerText,
     shouldShowTransientViewportControls,
+    shouldSuppressClickAfterPanEnd,
     shouldTogglePanShortcut,
     toggleMirrorState,
   };

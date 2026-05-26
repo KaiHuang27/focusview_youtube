@@ -14,6 +14,7 @@ const {
   shouldShowZoomTriggerActive,
   shouldShowZoomTriggerText,
   shouldShowTransientViewportControls,
+  shouldSuppressClickAfterPanEnd,
   shouldTogglePanShortcut,
   toggleMirrorState,
 } = globalThis.YTVTTransform;
@@ -188,7 +189,6 @@ function startPanDrag() {
   }
 
   dragStart.isDragging = true;
-  suppressUpcomingVideoClick();
   if (!dragStart.video.hasPointerCapture?.(dragStart.pointerId)) {
     dragStart.video.setPointerCapture(dragStart.pointerId);
   }
@@ -771,7 +771,8 @@ function endDrag(event) {
     video.releasePointerCapture(event.pointerId);
   }
   video.style.cursor = state.panMode ? "grab" : "";
-  if (wasDragging) {
+  if (shouldSuppressClickAfterPanEnd({ wasDragging })) {
+    suppressUpcomingVideoClick();
     markViewportControlsActivity();
   }
 }

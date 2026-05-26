@@ -34,7 +34,7 @@ The transform menu opens next to the settings button centered below the top-righ
 - Zoom slider drag uses pointer capture on the whole zoom control row: after pressing the slider area, keep holding and move horizontally to adjust zoom even if the cursor is no longer directly above the track.
 - `Rotation`: rotates the video by `0`, `90`, `180`, or `270` degrees.
 - `Mirror`: mirrors the video horizontally. Click either the switch or anywhere on the Mirror row.
-- Pan mode is controlled from the native toolbar zoom button. Quick single clicks still use YouTube's native play/pause behavior; long press or intentional drag moves the video frame and suppresses that drag's native click. While enabled, the mouse wheel changes zoom in 5% steps and is blocked from YouTube's native fullscreen controls.
+- Pan mode is controlled from the native toolbar zoom button. Quick single clicks still use YouTube's native play/pause behavior; long press or intentional drag moves the video frame and suppresses the native click after that drag ends. While enabled, the mouse wheel changes zoom in 5% steps and is blocked from YouTube's native fullscreen controls.
 - `Alt/Option + Shift + P`: toggles Pan mode without using YouTube's single-key shortcuts or Chrome/Edge `Ctrl`/`Cmd` shortcuts. The shortcut listener loads early and runs at capture time so YouTube does not consume it first. It is ignored while typing in inputs, comments, search, or other editable fields.
 - `Reset`: restores zoom, rotation, mirror, and pan to the default state and closes the menu.
 
@@ -44,7 +44,7 @@ When rotating 90 or 270 degrees, 100% zoom means the rotated video is first scal
 
 When Pan mode turns on, while dragging, or while using the mouse wheel to zoom in Pan mode, a position map appears in the top-right corner of the player. The white rectangle shows which part of the original video frame is currently visible. The position map and settings button stay visible briefly after the last Pan activity or mouse movement, then hide like YouTube's native controls. If the transform menu is open, the position map and settings button remain visible until the menu closes.
 
-When Pan is off, clicking the video keeps YouTube's normal play and pause behavior, and the mouse wheel is not intercepted by the extension. When Pan is on, quick video clicks still play or pause normally, while long-press drag gestures move the frame without triggering play or pause. The extension intercepts wheel events at the player level to avoid triggering YouTube's native fullscreen recommendations or extra controls.
+When Pan is off, clicking the video keeps YouTube's normal play and pause behavior, and the mouse wheel is not intercepted by the extension. When Pan is on, quick video clicks still play or pause normally, while long-press drag gestures move the frame and suppress the click generated when the pointer is released. The extension intercepts wheel events at the player level to avoid triggering YouTube's native fullscreen recommendations or extra controls.
 
 Wheel events inside the transform menu are blocked from YouTube so the menu does not accidentally trigger native player behavior.
 

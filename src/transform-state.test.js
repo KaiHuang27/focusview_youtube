@@ -19,6 +19,7 @@ const {
   shouldShowZoomTriggerActive,
   shouldShowZoomTriggerText,
   shouldShowTransientViewportControls,
+  shouldSuppressClickAfterPanEnd,
   shouldTogglePanShortcut,
   toggleMirrorState,
 } = globalThis.YTVTTransform;
@@ -208,6 +209,11 @@ test("shouldShowZoomTriggerActive shows active state only while Pan is on", () =
   assert.equal(shouldShowZoomTriggerActive({ ...createDefaultState(), zoom: 100, panMode: false }), false);
   assert.equal(shouldShowZoomTriggerActive({ ...createDefaultState(), zoom: 180, panMode: false }), false);
   assert.equal(shouldShowZoomTriggerActive({ ...createDefaultState(), zoom: 100, panMode: true }), true);
+});
+
+test("shouldSuppressClickAfterPanEnd suppresses only completed drag gestures", () => {
+  assert.equal(shouldSuppressClickAfterPanEnd({ wasDragging: false }), false);
+  assert.equal(shouldSuppressClickAfterPanEnd({ wasDragging: true }), true);
 });
 
 test("toggleMirrorState toggles horizontal mirror only", () => {
