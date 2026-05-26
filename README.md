@@ -6,7 +6,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 
 - Single native-style magnifier zoom button. It switches to zoom text while Pan mode is on or the video is zoomed, and uses an active background only while Pan mode is on.
 - Toolbar zoom button toggles Pan mode directly.
-- Settings button appears below the top-right position map when Pan mode turns on or during recent Pan activity, and opens the YouTube-native-style transform menu.
+- YouTube-native-style settings icon button appears below the top-right position map when Pan mode turns on or during recent Pan activity, and opens the transform menu.
 - Rotate video by 0, 90, 180, or 270 degrees, fitting 90/270-degree rotations inside the player frame first.
 - Mirror horizontally.
 - Pan mode for dragging a zoomed video and using the mouse wheel to zoom without adding extra black borders.
@@ -28,7 +28,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 
 The zoom button is placed in YouTube's native right-side control bar, at the left edge of the right control group. It uses a YouTube-style magnifier icon by default, then switches to compact zoom text when Pan mode is on or the video is zoomed. Hover uses YouTube's native `ytp-button` styling. Pan mode adds a matching compact active background when the button is not hovered. Click it to turn Pan mode on or off, or double-click it to reset zoom to 100%. If YouTube's native controls are unavailable, the extension falls back to a floating top-right button.
 
-The transform menu opens next to the settings button centered below the top-right position map while the transient Pan controls are visible. It follows YouTube's settings-menu density: rounded gray panel, compact centered text rows, a compact top `- / slider / +` zoom control, and a small red `Reset` action in the top-right corner.
+The transform menu opens next to the native-style settings icon button centered below the top-right position map while the transient Pan controls are visible. It follows YouTube's settings-menu density: rounded gray panel, compact centered text rows, a compact top `- / slider / +` zoom control, and a small red `Reset` action in the top-right corner.
 
 - `Zoom`: changes zoom between 100% and 500%.
 - Zoom slider drag uses pointer capture on the whole zoom control row: after pressing the slider area, keep holding and move horizontally to adjust zoom even if the cursor is no longer directly above the track.

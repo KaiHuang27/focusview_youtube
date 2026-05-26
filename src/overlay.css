@@ -129,28 +129,38 @@
   position: absolute;
   z-index: 2147483647;
   top: calc(50px + (144px * 9 / 16) + 8px);
-  right: calc(22px + (144px / 2) - 14px);
+  right: calc(22px + (144px / 2) - 16px);
   display: grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   padding: 0;
-  color: rgba(255, 255, 255, 0.94);
-  background: rgba(0, 0, 0, 0.42);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.34);
-  font: 500 15px/1 Roboto, Arial, sans-serif;
+  color: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.04);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: none;
   cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
 }
 
-.ytvt-settings:hover,
+.ytvt-settings:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .ytvt-settings.is-active {
   background: rgba(255, 255, 255, 0.18);
 }
 
-.ytvt-settings span {
-  transform: translateY(-0.5px);
+.ytvt-settings-icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
 }
 
 .ytvt-menu {

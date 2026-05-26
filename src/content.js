@@ -217,7 +217,12 @@ function renderViewportMap() {
     settingsButton.className = "ytvt-settings";
     settingsButton.title = "Zoom settings";
     settingsButton.setAttribute("aria-label", "Zoom settings");
-    settingsButton.innerHTML = '<span aria-hidden="true">⚙</span>';
+    settingsButton.innerHTML = `
+      <svg class="ytvt-settings-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19.4 13.5c.1-.5.1-1 .1-1.5s0-1-.1-1.5l2-1.5-2-3.4-2.4 1a7.4 7.4 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.6A7.4 7.4 0 0 0 7 6.6l-2.4-1-2 3.4 2 1.5A8.8 8.8 0 0 0 4.5 12c0 .5 0 1 .1 1.5l-2 1.5 2 3.4 2.4-1a7.4 7.4 0 0 0 2.6 1.5l.4 2.6h4l.4-2.6a7.4 7.4 0 0 0 2.6-1.5l2.4 1 2-3.4-2-1.5Z"></path>
+        <circle cx="12" cy="12" r="3.2"></circle>
+      </svg>
+    `;
     settingsButton.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
