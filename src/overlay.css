@@ -21,10 +21,6 @@
   pointer-events: auto;
 }
 
-.ytvt-toolbar.is-native.is-text {
-  width: 64px;
-}
-
 .ytvt-trigger {
   --ytvt-trigger-active-bg: rgba(255, 255, 255, 0.18);
   --ytvt-trigger-active-hover-bg: rgba(255, 255, 255, 0.2);
@@ -90,10 +86,6 @@
   transform: translate(-50%, -50%);
   transition: background-color 0.12s ease;
   pointer-events: none;
-}
-
-.ytvt-trigger.is-text .ytvt-trigger-bg {
-  width: calc(100% - 8px);
 }
 
 .ytvt-trigger-icon {

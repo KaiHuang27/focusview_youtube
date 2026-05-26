@@ -26,7 +26,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 
 ## Controls
 
-The zoom button is placed in YouTube's native right-side control bar, at the left edge of the right control group. It uses a YouTube-style magnifier icon by default, then switches to compact zoom text when Pan mode is on or the video is zoomed. In text mode, the button expands enough for the percentage label, and Pan mode uses the same background size and shape as hover with slightly lower opacity. Click it to turn Pan mode on or off, or double-click it to reset zoom to 100%. If YouTube's native controls are unavailable, the extension falls back to a floating top-right button.
+The zoom button is placed in YouTube's native right-side control bar, at the left edge of the right control group. It uses a YouTube-style magnifier icon by default, then switches to compact zoom text when Pan mode is on or the video is zoomed. The button keeps the same native 48px slot and 40px circular background whether it shows the icon or percentage text. Pan mode uses that same background shape as hover with slightly lower opacity. Click it to turn Pan mode on or off, or double-click it to reset zoom to 100%. If YouTube's native controls are unavailable, the extension falls back to a floating top-right button.
 
 The transform menu opens next to the settings button centered below the top-right position map while the transient Pan controls are visible. It follows YouTube's settings-menu density: rounded gray panel, compact centered text rows, a compact top `- / slider / +` zoom control, and a small red `Reset` action in the top-right corner.
 
