@@ -165,6 +165,10 @@ test("shouldShowTransientViewportControls keeps controls visible during activity
     false
   );
   assert.equal(
+    shouldShowTransientViewportControls({ isPanMode: true, isMenuOpen: true, isDragging: false, lastActivityAt: 0, now: 5000, delayMs: 3000 }),
+    true
+  );
+  assert.equal(
     shouldShowTransientViewportControls({ isPanMode: true, isDragging: true, lastActivityAt: 0, now: 5000, delayMs: 3000 }),
     true
   );

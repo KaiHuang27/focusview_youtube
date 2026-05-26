@@ -140,6 +140,7 @@ function clearClickSuppression() {
 function areViewportControlsVisible() {
   return shouldShowTransientViewportControls({
     isPanMode: state.panMode,
+    isMenuOpen,
     isDragging: Boolean(dragStart?.isDragging),
     lastActivityAt: viewportControlsLastActivityAt,
     now: Date.now(),
@@ -600,6 +601,7 @@ function closeMenuOnOutsidePointer(event) {
 
   isMenuOpen = false;
   renderToolbar();
+  renderViewportMap();
 }
 
 function closeMenuOnEscape(event) {
@@ -609,6 +611,7 @@ function closeMenuOnEscape(event) {
 
   isMenuOpen = false;
   renderToolbar();
+  renderViewportMap();
 }
 
 function onShortcutKeyDown(event) {
