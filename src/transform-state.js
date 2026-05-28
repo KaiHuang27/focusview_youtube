@@ -215,19 +215,20 @@
   function createViewportOverlayLayout({
     mapSize,
     indicator,
+    anchorIndicator = indicator,
     anchorTop = 50,
     anchorRight = 22,
     settingsButtonSize = 32,
     settingsGap = 8,
   }) {
-    const indicatorLeft = indicator.x * mapSize.width;
-    const indicatorTop = indicator.y * mapSize.height;
-    const indicatorRight = (indicator.x + indicator.width) * mapSize.width;
-    const indicatorBottom = (indicator.y + indicator.height) * mapSize.height;
+    const indicatorLeft = anchorIndicator.x * mapSize.width;
+    const indicatorTop = anchorIndicator.y * mapSize.height;
+    const indicatorRight = (anchorIndicator.x + anchorIndicator.width) * mapSize.width;
+    const indicatorBottom = (anchorIndicator.y + anchorIndicator.height) * mapSize.height;
     const overflowTop = Math.max(0, -indicatorTop);
     const overflowRight = Math.max(0, indicatorRight - mapSize.width);
     const overlayBottom = Math.max(mapSize.height, indicatorBottom);
-    const indicatorCenterX = indicatorLeft + (indicator.width * mapSize.width) / 2;
+    const indicatorCenterX = indicatorLeft + (anchorIndicator.width * mapSize.width) / 2;
 
     const mapTop = Math.ceil(anchorTop + overflowTop);
     const mapRight = Math.ceil(anchorRight + overflowRight);

@@ -193,6 +193,20 @@ test("createViewportOverlayLayout keeps a taller viewport indicator inside the t
   );
 });
 
+test("createViewportOverlayLayout can anchor position while the viewport indicator zooms", () => {
+  const anchorIndicator = createViewportIndicator(createDefaultState(), 1080, 1920, 1920, 1080);
+  const zoomedIndicator = createViewportIndicator({ ...createDefaultState(), zoom: 200 }, 1080, 1920, 1920, 1080);
+
+  assert.deepEqual(
+    createViewportOverlayLayout({
+      mapSize: { width: 54, height: 96 },
+      indicator: zoomedIndicator,
+      anchorIndicator,
+    }),
+    { mapTop: 50, mapRight: 81, settingsTop: 154, settingsRight: 92 }
+  );
+});
+
 test("clampPanState centers pan at 100 percent zoom", () => {
   assert.deepEqual(
     clampPanState({ ...createDefaultState(), panX: 240, panY: -120 }, 1280, 720),

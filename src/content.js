@@ -249,7 +249,14 @@ function renderViewportMap() {
   const viewportHeight = player.clientHeight || video.clientHeight;
   const mapSize = createViewportMapSize(sourceWidth, sourceHeight);
   const indicator = createViewportIndicator(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
-  const overlayLayout = createViewportOverlayLayout({ mapSize, indicator });
+  const anchorIndicator = createViewportIndicator(
+    { ...state, zoom: 100, panX: 0, panY: 0 },
+    sourceWidth,
+    sourceHeight,
+    viewportWidth,
+    viewportHeight
+  );
+  const overlayLayout = createViewportOverlayLayout({ mapSize, indicator, anchorIndicator });
   const indicatorElement = viewportMap.querySelector(".ytvt-viewport-indicator");
   viewportMap.style.top = `${overlayLayout.mapTop}px`;
   viewportMap.style.right = `${overlayLayout.mapRight}px`;
