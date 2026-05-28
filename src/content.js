@@ -373,6 +373,8 @@ function createZoomPanel() {
   const panel = document.createElement("div");
   panel.className = "ytvt-zoom-panel";
   let isSliderDragging = false;
+  let activeSliderPointerId = null;
+  let ignoreSliderMouseUpUntil = 0;
 
   const value = document.createElement("div");
   value.className = "ytvt-zoom-value";
@@ -430,7 +432,17 @@ function createZoomPanel() {
   };
 
   const onSliderMouseMove = (event) => {
-    if (!isSliderDragging) {
+    if (!isSliderDragging || activeSliderPointerId !== null) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    updateZoomFromPointer(event);
+  };
+
+  const onSliderPointerMove = (event) => {
+    if (!isSliderDragging || event.pointerId !== activeSliderPointerId) {
       return;
     }
 
@@ -444,15 +456,41 @@ function createZoomPanel() {
       return;
     }
 
+    if (event.type === "mouseup" && Date.now() < ignoreSliderMouseUpUntil) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
     isSliderDragging = false;
+    activeSliderPointerId = null;
+    document.removeEventListener("pointermove", onSliderPointerMove, true);
+    document.removeEventListener("pointerup", stopSliderDrag, true);
+    document.removeEventListener("pointercancel", onSliderPointerCancel, true);
     document.removeEventListener("mousemove", onSliderMouseMove, true);
     document.removeEventListener("mouseup", stopSliderDrag, true);
     document.removeEventListener("selectstart", blockSliderGesture, true);
     document.removeEventListener("dragstart", blockSliderGesture, true);
     document.removeEventListener("contextmenu", blockSliderGesture, true);
     syncZoomControls();
+  };
+
+  const onSliderPointerCancel = (event) => {
+    if (!isSliderDragging || event.pointerId !== activeSliderPointerId) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    activeSliderPointerId = null;
+    ignoreSliderMouseUpUntil = Date.now() + 200;
+    document.removeEventListener("pointermove", onSliderPointerMove, true);
+    document.removeEventListener("pointerup", stopSliderDrag, true);
+    document.removeEventListener("pointercancel", onSliderPointerCancel, true);
+    document.addEventListener("mousemove", onSliderMouseMove, true);
+    document.addEventListener("mouseup", stopSliderDrag, true);
   };
 
   const blockSliderGesture = (event) => {
@@ -464,8 +502,26 @@ function createZoomPanel() {
     event.stopPropagation();
   };
 
+  sliderHitArea.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0 || isSliderDragging) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    isSliderDragging = true;
+    activeSliderPointerId = event.pointerId;
+    document.addEventListener("pointermove", onSliderPointerMove, true);
+    document.addEventListener("pointerup", stopSliderDrag, true);
+    document.addEventListener("pointercancel", onSliderPointerCancel, true);
+    document.addEventListener("selectstart", blockSliderGesture, true);
+    document.addEventListener("dragstart", blockSliderGesture, true);
+    document.addEventListener("contextmenu", blockSliderGesture, true);
+    updateZoomFromPointer(event);
+  });
+
   sliderHitArea.addEventListener("mousedown", (event) => {
-    if (event.button !== 0) {
+    if (event.button !== 0 || isSliderDragging) {
       return;
     }
 
