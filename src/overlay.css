@@ -215,6 +215,14 @@
   touch-action: none;
 }
 
+.ytvt-slider-hit-area {
+  display: grid;
+  align-items: center;
+  min-height: 32px;
+  cursor: pointer;
+  touch-action: none;
+}
+
 .ytvt-zoom-step {
   display: grid;
   place-items: center;

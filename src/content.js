@@ -429,23 +429,23 @@ function createZoomPanel() {
     syncZoomControls();
   };
 
-  controls.addEventListener("pointerdown", (event) => {
-    if (event.button !== 0) {
-      return;
-    }
+  const sliderHitArea = document.createElement("div");
+  sliderHitArea.className = "ytvt-slider-hit-area";
+  sliderHitArea.append(zoom);
 
-    if (event.target.closest(".ytvt-zoom-step")) {
+  sliderHitArea.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) {
       return;
     }
 
     event.preventDefault();
     event.stopPropagation();
     activeSliderPointerId = event.pointerId;
-    controls.setPointerCapture?.(event.pointerId);
+    sliderHitArea.setPointerCapture?.(event.pointerId);
     updateZoomFromPointer(event);
   });
 
-  controls.addEventListener("pointermove", (event) => {
+  sliderHitArea.addEventListener("pointermove", (event) => {
     if (event.pointerId !== activeSliderPointerId) {
       return;
     }
@@ -463,12 +463,12 @@ function createZoomPanel() {
     event.preventDefault();
     event.stopPropagation();
     activeSliderPointerId = null;
-    controls.releasePointerCapture?.(event.pointerId);
+    sliderHitArea.releasePointerCapture?.(event.pointerId);
     renderToolbar();
   };
 
-  controls.addEventListener("pointerup", endSliderDrag);
-  controls.addEventListener("pointercancel", endSliderDrag);
+  sliderHitArea.addEventListener("pointerup", endSliderDrag);
+  sliderHitArea.addEventListener("pointercancel", endSliderDrag);
 
   const zoomIn = document.createElement("button");
   zoomIn.type = "button";
@@ -478,7 +478,7 @@ function createZoomPanel() {
   zoomIn.setAttribute("aria-label", "Zoom in");
   zoomIn.addEventListener("click", () => setZoom(state.zoom + 5));
 
-  controls.append(zoomOut, zoom, zoomIn);
+  controls.append(zoomOut, sliderHitArea, zoomIn);
   panel.append(value, controls);
   return panel;
 }

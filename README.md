@@ -31,7 +31,7 @@ The zoom button is placed in YouTube's native right-side control bar, at the lef
 The transform menu opens next to the native-style settings icon button centered below the top-right position map while the transient Pan controls are visible. It follows YouTube's settings-menu density: rounded gray panel, compact centered text rows, a compact top `- / slider / +` zoom control, and a small red `Reset` action in the top-right corner.
 
 - `Zoom`: changes zoom between 100% and 500%.
-- Zoom slider drag uses pointer capture on the whole zoom control row: after pressing the slider area, keep holding and move horizontally to adjust zoom even if the cursor is no longer directly above the track.
+- Zoom slider drag uses pointer capture on the wider slider hit area around the track: after pressing that area, keep holding and move horizontally to adjust zoom even if the cursor is no longer directly above the thin track.
 - `Rotation`: rotates the video by `0`, `90`, `180`, or `270` degrees.
 - `Mirror`: mirrors the video horizontally. Click either the switch or anywhere on the Mirror row.
 - Pan mode is controlled from the native toolbar zoom button. Quick single clicks still use YouTube's native play/pause behavior; long press or intentional drag moves the video frame and suppresses the native click after that drag ends. While enabled, the mouse wheel changes zoom in 5% steps and is blocked from YouTube's native fullscreen controls.

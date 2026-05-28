@@ -11,7 +11,7 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 - `manifest.json`: declares the MV3 extension and injects CSS plus content scripts on YouTube at `document_start`.
 - `src/transform-state.js`: shared transform, viewport-map, and shortcut helpers exposed on `globalThis.YTVTTransform` so they can run as a classic content script and still be tested with Node.
 - `src/content.js`: detects the YouTube player, inserts the zoom trigger into `.ytp-right-controls` when available, toggles Pan mode from that trigger, renders a settings button centered below the top-right position map during recent Pan activity, renders the YouTube-style menu beside that settings button, updates transform state, renders the position map during recent Pan activity, handles pan dragging, handles Pan-mode wheel zoom, handles the Pan keyboard shortcut, reapplies transforms after fullscreen/style mutations, and resets state on YouTube SPA navigation.
-- `src/overlay.css`: native-control-bar zoom trigger using compact fixed YouTube-style sizing, magnifier icon, native `ytp-button` hover styling, a dedicated compact active background layer, compact conditional percentage text, Roboto/Arial typography, floating fallback trigger, top-right native-style settings icon button, compact YouTube-settings-style gray menu, toggle, segment, YouTube-style slider track, and position-map styling.
+- `src/overlay.css`: native-control-bar zoom trigger using compact fixed YouTube-style sizing, magnifier icon, native `ytp-button` hover styling, a dedicated compact active background layer, compact conditional percentage text, Roboto/Arial typography, floating fallback trigger, top-right native-style settings icon button, compact YouTube-settings-style gray menu, toggle, segment, wider slider hit area with YouTube-style slider track, and position-map styling.
 - `src/transform-state.test.js`: Node test coverage for reset state, zoom scale conversion, rotation fit scaling, zoom and viewport-aware pan clamping, Pan-mode wheel interception, transient viewport-control visibility, Pan shortcut detection, transform reapply detection, viewport-map math, rotation validation, and mirror composition.
 
 ## Data Flow
@@ -74,7 +74,7 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm menu Zoom, Rotation, horizontal Mirror, and Reset. Confirm clicking either the Mirror switch or the full Mirror row toggles mirror once. Confirm the menu does not show Mirror V or Pan rows.
 - Confirm `Alt/Option + Shift + P` toggles Pan mode while focus is on the video page, and does nothing while typing in YouTube search or comments.
 - Confirm slider changes and Pan-mode wheel zoom update the zoom button text.
-- Confirm pressing and holding the zoom slider keeps dragging while the cursor moves above or below the track, matching YouTube's native slider behavior.
+- Confirm pressing and holding the wider zoom slider hit area, not only the thin track, starts dragging and keeps dragging while the cursor moves above or below the track.
 - Confirm the Rotation row itself does not show a row hover background; only the `0 / 90 / 180 / 270` buttons show their own hover or active state.
 - Confirm 90/270-degree rotation fits the rotated video inside the player frame at 100% zoom without cropping the rotated top/bottom or left/right edges.
 - Confirm panning stops at video-content edges and does not create extra black borders.
