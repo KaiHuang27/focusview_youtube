@@ -372,7 +372,7 @@ function setZoom(zoom, shouldRender = true) {
 function createZoomPanel() {
   const panel = document.createElement("div");
   panel.className = "ytvt-zoom-panel";
-  let activeSliderPointerId = null;
+  let isSliderDragging = false;
 
   const value = document.createElement("div");
   value.className = "ytvt-zoom-value";
@@ -429,8 +429,8 @@ function createZoomPanel() {
     syncZoomControls();
   };
 
-  const onSliderPointerMove = (event) => {
-    if (event.pointerId !== activeSliderPointerId) {
+  const onSliderMouseMove = (event) => {
+    if (!isSliderDragging) {
       return;
     }
 
@@ -440,32 +440,43 @@ function createZoomPanel() {
   };
 
   const stopSliderDrag = (event) => {
-    if (event.pointerId !== activeSliderPointerId) {
+    if (!isSliderDragging) {
       return;
     }
 
     event.preventDefault();
     event.stopPropagation();
-    sliderHitArea.releasePointerCapture?.(event.pointerId);
-    activeSliderPointerId = null;
-    document.removeEventListener("pointermove", onSliderPointerMove, true);
-    document.removeEventListener("pointerup", stopSliderDrag, true);
-    document.removeEventListener("pointercancel", stopSliderDrag, true);
+    isSliderDragging = false;
+    document.removeEventListener("mousemove", onSliderMouseMove, true);
+    document.removeEventListener("mouseup", stopSliderDrag, true);
+    document.removeEventListener("selectstart", blockSliderGesture, true);
+    document.removeEventListener("dragstart", blockSliderGesture, true);
+    document.removeEventListener("contextmenu", blockSliderGesture, true);
     syncZoomControls();
   };
 
-  sliderHitArea.addEventListener("pointerdown", (event) => {
+  const blockSliderGesture = (event) => {
+    if (!isSliderDragging) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  sliderHitArea.addEventListener("mousedown", (event) => {
     if (event.button !== 0) {
       return;
     }
 
     event.preventDefault();
     event.stopPropagation();
-    activeSliderPointerId = event.pointerId;
-    sliderHitArea.setPointerCapture?.(event.pointerId);
-    document.addEventListener("pointermove", onSliderPointerMove, true);
-    document.addEventListener("pointerup", stopSliderDrag, true);
-    document.addEventListener("pointercancel", stopSliderDrag, true);
+    isSliderDragging = true;
+    document.addEventListener("mousemove", onSliderMouseMove, true);
+    document.addEventListener("mouseup", stopSliderDrag, true);
+    document.addEventListener("selectstart", blockSliderGesture, true);
+    document.addEventListener("dragstart", blockSliderGesture, true);
+    document.addEventListener("contextmenu", blockSliderGesture, true);
     updateZoomFromPointer(event);
   });
 

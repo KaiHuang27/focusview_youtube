@@ -175,6 +175,8 @@
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
   font: 400 14px/1.25 Roboto, Arial, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .ytvt-menu-reset {
@@ -221,6 +223,8 @@
   min-height: 32px;
   cursor: pointer;
   touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .ytvt-slider-track {
