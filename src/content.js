@@ -3,7 +3,7 @@ const TOOLBAR_SELECTOR = '[data-ytvt-toolbar="true"]';
 const {
   applyZoomDelta,
   clampPanState,
-  createViewportFrame,
+  createViewportIndicator,
   createViewportMapSize,
   createDefaultState,
   createTransformStyle,
@@ -205,8 +205,8 @@ function renderViewportMap() {
   if (!viewportMap) {
     viewportMap = document.createElement("div");
     viewportMap.className = "ytvt-map";
-    viewportMap.setAttribute("aria-label", "Visible area inside original video");
-    viewportMap.innerHTML = '<div class="ytvt-map-frame"></div>';
+    viewportMap.setAttribute("aria-label", "Source map and viewport indicator");
+    viewportMap.innerHTML = '<div class="ytvt-viewport-indicator"></div>';
     player.append(viewportMap);
   } else if (viewportMap.parentElement !== player) {
     player.append(viewportMap);
@@ -247,16 +247,16 @@ function renderViewportMap() {
   const viewportWidth = player.clientWidth || video.clientWidth;
   const viewportHeight = player.clientHeight || video.clientHeight;
   const mapSize = createViewportMapSize(sourceWidth, sourceHeight);
-  const frame = createViewportFrame(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
-  const frameElement = viewportMap.querySelector(".ytvt-map-frame");
+  const indicator = createViewportIndicator(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
+  const indicatorElement = viewportMap.querySelector(".ytvt-viewport-indicator");
   viewportMap.style.width = `${mapSize.width}px`;
   viewportMap.style.height = `${mapSize.height}px`;
   settingsButton.style.top = `${50 + mapSize.height + 8}px`;
   settingsButton.style.right = `${22 + mapSize.width / 2 - 16}px`;
-  frameElement.style.left = `${frame.x * 100}%`;
-  frameElement.style.top = `${frame.y * 100}%`;
-  frameElement.style.width = `${frame.width * 100}%`;
-  frameElement.style.height = `${frame.height * 100}%`;
+  indicatorElement.style.left = `${indicator.x * 100}%`;
+  indicatorElement.style.top = `${indicator.y * 100}%`;
+  indicatorElement.style.width = `${indicator.width * 100}%`;
+  indicatorElement.style.height = `${indicator.height * 100}%`;
   viewportMap.hidden = !shouldShowControls;
   settingsButton.hidden = !shouldShowControls;
 }

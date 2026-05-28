@@ -192,29 +192,30 @@
     };
   }
 
-  function createViewportFrame(state, width, height, viewportWidth = width, viewportHeight = height) {
+  function createViewportIndicator(state, width, height, viewportWidth = width, viewportHeight = height) {
     const scale = state.zoom / 100;
-    if (scale <= 1 || width <= 0 || height <= 0 || viewportWidth <= 0 || viewportHeight <= 0) {
+    if (scale <= 0 || width <= 0 || height <= 0 || viewportWidth <= 0 || viewportHeight <= 0) {
       return { x: 0, y: 0, width: 1, height: 1 };
     }
 
-    const frameWidth = clamp((viewportWidth / viewportHeight) / (width / height) / scale, 0, 1);
-    const frameHeight = 1 / scale;
-    const x = clamp(0.5 - state.panX / (scale * viewportWidth) - frameWidth / 2, 0, 1 - frameWidth);
-    const y = clamp(0.5 - state.panY / (scale * viewportHeight) - frameHeight / 2, 0, 1 - frameHeight);
+    const viewportToSourceAspect = (viewportWidth / viewportHeight) / (width / height);
+    const indicatorWidth = (viewportToSourceAspect >= 1 ? viewportToSourceAspect : 1) / scale;
+    const indicatorHeight = (viewportToSourceAspect >= 1 ? 1 : 1 / viewportToSourceAspect) / scale;
+    const x = 0.5 - state.panX / (scale * viewportWidth) - indicatorWidth / 2;
+    const y = 0.5 - state.panY / (scale * viewportHeight) - indicatorHeight / 2;
 
     return {
       x: Number(x.toFixed(4)),
       y: Number(y.toFixed(4)),
-      width: Number(frameWidth.toFixed(4)),
-      height: Number(frameHeight.toFixed(4)),
+      width: Number(indicatorWidth.toFixed(4)),
+      height: Number(indicatorHeight.toFixed(4)),
     };
   }
 
   globalThis.YTVTTransform = {
     applyZoomDelta,
     clampPanState,
-    createViewportFrame,
+    createViewportIndicator,
     createViewportMapSize,
     createDefaultState,
     createTransformStyle,

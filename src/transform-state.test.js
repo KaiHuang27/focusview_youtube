@@ -6,7 +6,7 @@ await import("./transform-state.js");
 const {
   applyZoomDelta,
   clampPanState,
-  createViewportFrame,
+  createViewportIndicator,
   createViewportMapSize,
   createDefaultState,
   createTransformStyle,
@@ -94,8 +94,8 @@ test("shouldResetForVideoKey resets only when an existing video key changes", ()
   assert.equal(shouldResetForVideoKey("abc123", "def456"), true);
 });
 
-test("createViewportFrame returns full frame when video is not zoomed in", () => {
-  assert.deepEqual(createViewportFrame(createDefaultState(), 1280, 720), {
+test("createViewportIndicator returns full source map when video is not zoomed in", () => {
+  assert.deepEqual(createViewportIndicator(createDefaultState(), 1280, 720), {
     x: 0,
     y: 0,
     width: 1,
@@ -103,9 +103,9 @@ test("createViewportFrame returns full frame when video is not zoomed in", () =>
   });
 });
 
-test("createViewportFrame maps zoom and pan into normalized original-video coordinates", () => {
+test("createViewportIndicator maps zoom and pan into normalized source-video coordinates", () => {
   assert.deepEqual(
-    createViewportFrame({ ...createDefaultState(), zoom: 200, panX: 160, panY: -90 }, 1280, 720),
+    createViewportIndicator({ ...createDefaultState(), zoom: 200, panX: 160, panY: -90 }, 1280, 720),
     {
       x: 0.1875,
       y: 0.3125,
@@ -124,25 +124,47 @@ test("createViewportMapSize follows source video ratio within min and max bounds
   assert.deepEqual(createViewportMapSize(0, 0), { width: 160, height: 90 });
 });
 
-test("createViewportFrame changes frame ratio with viewport ratio", () => {
+test("createViewportIndicator can exceed the source map for wider or taller player viewports", () => {
   assert.deepEqual(
-    createViewportFrame({ ...createDefaultState(), zoom: 200 }, 1920, 1080, 1920, 1080),
-    { x: 0.25, y: 0.25, width: 0.5, height: 0.5 }
+    createViewportIndicator(createDefaultState(), 1920, 1080, 1920, 1080),
+    { x: 0, y: 0, width: 1, height: 1 }
   );
   assert.deepEqual(
-    createViewportFrame({ ...createDefaultState(), zoom: 200 }, 1920, 1080, 2560, 1080),
-    { x: 0.1667, y: 0.25, width: 0.6667, height: 0.5 }
+    createViewportIndicator(createDefaultState(), 1920, 1080, 2560, 1080),
+    { x: -0.1667, y: 0, width: 1.3333, height: 1 }
+  );
+  assert.deepEqual(
+    createViewportIndicator(createDefaultState(), 1920, 1080, 1080, 1920),
+    { x: 0, y: -1.0802, width: 1, height: 3.1605 }
+  );
+  assert.deepEqual(
+    createViewportIndicator(createDefaultState(), 1080, 1920, 1920, 1080),
+    { x: -1.0802, y: 0, width: 3.1605, height: 1 }
   );
 });
 
-test("createViewportFrame falls back to full frame for invalid dimensions", () => {
-  assert.deepEqual(createViewportFrame({ ...createDefaultState(), zoom: 200 }, 0, 0, 1920, 1080), {
+test("createViewportIndicator scales with zoom and keeps out-of-source-map areas visible", () => {
+  assert.deepEqual(
+    createViewportIndicator({ ...createDefaultState(), zoom: 200 }, 1080, 1920, 1920, 1080),
+    { x: -0.2901, y: 0.25, width: 1.5802, height: 0.5 }
+  );
+});
+
+test("createViewportIndicator pan is not clamped back into the source map", () => {
+  assert.deepEqual(
+    createViewportIndicator({ ...createDefaultState(), zoom: 200, panX: 540, panY: -270 }, 1920, 1080),
+    { x: 0.1094, y: 0.375, width: 0.5, height: 0.5 }
+  );
+});
+
+test("createViewportIndicator falls back to full source map for invalid dimensions", () => {
+  assert.deepEqual(createViewportIndicator({ ...createDefaultState(), zoom: 200 }, 0, 0, 1920, 1080), {
     x: 0,
     y: 0,
     width: 1,
     height: 1,
   });
-  assert.deepEqual(createViewportFrame({ ...createDefaultState(), zoom: 200 }, 1920, 1080, 0, 0), {
+  assert.deepEqual(createViewportIndicator({ ...createDefaultState(), zoom: 200 }, 1920, 1080, 0, 0), {
     x: 0,
     y: 0,
     width: 1,
@@ -185,10 +207,10 @@ test("clampPanState clamps pan to smaller bounds after zooming out", () => {
   );
 });
 
-test("createViewportFrame keeps extreme pan inside original-video coordinates", () => {
+test("createViewportIndicator preserves extreme pan instead of clamping to source-map bounds", () => {
   assert.deepEqual(
-    createViewportFrame({ ...createDefaultState(), zoom: 200, panX: 5000, panY: -5000 }, 1280, 720),
-    { x: 0, y: 0.5, width: 0.5, height: 0.5 }
+    createViewportIndicator({ ...createDefaultState(), zoom: 200, panX: 5000, panY: -5000 }, 1280, 720),
+    { x: -1.7031, y: 3.7222, width: 0.5, height: 0.5 }
   );
 });
 

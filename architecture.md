@@ -29,7 +29,7 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 11. `clampPanState` bounds pan to the current scaled and rotated video size before transforms are applied.
 12. `createTransformStyle` converts state into a CSS `transform`.
 13. The transform is applied directly to the video element.
-14. `createViewportMapSize` sizes the top-right position map from the video's intrinsic aspect ratio within min/max bounds, and `createViewportFrame` maps the current player viewport, zoom, and pan into a normalized visible rectangle.
+14. `createViewportMapSize` sizes the Source Map from the video's intrinsic aspect ratio within min/max bounds, and `createViewportIndicator` maps the current Player Viewport, zoom, and pan into a normalized indicator that may extend outside the Source Map.
 15. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform, clamped pan, and position controls are reapplied or reparented to the current player root.
 16. Fullscreen events and video style mutations schedule repeated `requestAnimationFrame` reapplication so YouTube style rewrites are corrected quickly.
 17. When leaving the watch page or switching videos, transient overlays, timers, and transform state are cleared before the next player binding.
@@ -68,7 +68,7 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm turning Pan mode off from the zoom button hides the position map, settings button, and transform menu immediately.
 - Confirm Pan-mode quick single clicks still trigger YouTube native play/pause.
 - Confirm Pan-mode long press or drag moves the frame and does not trigger YouTube native play/pause when released, even if the pointer is held still briefly before release.
-- Confirm the top-right position map appears below the YouTube title area while dragging or wheel-zooming in Pan mode, uses the source video aspect ratio for the outer map and the current player viewport ratio for the inner frame, stays visible during nearby mouse movement, then hides after the activity delay.
+- Confirm the top-right Source Map appears below the YouTube title area while dragging or wheel-zooming in Pan mode, uses the Source Video aspect ratio, and shows a Viewport Indicator using the current Player Viewport ratio. Confirm the indicator can extend outside the Source Map when the Player Viewport includes letterbox or pillarbox space.
 - Confirm the top-right position map and settings button remain visible while the transform menu is open, even after the activity delay.
 - Confirm the settings button centered below the top-right position map uses a native-style SVG gear icon with low-emphasis default background, subtle hover, and active state when the menu is open. Confirm clicking it opens and closes the YouTube-style transform menu beside the settings area, with dark translucent rounded panel, native-like smaller gray controls, rounded inset row hover states, compact top zoom control with white progress and gray remaining track, red top-right Reset action, text rows, and right-aligned controls that stay inside the panel.
 - Confirm menu Zoom, Rotation, horizontal Mirror, and Reset. Confirm clicking either the Mirror switch or the full Mirror row toggles mirror once. Confirm the menu does not show Mirror V or Pan rows.
