@@ -48,7 +48,7 @@ When Pan is off, clicking the video keeps YouTube's normal play and pause behavi
 
 Wheel events inside the transform menu are blocked from YouTube so the menu does not accidentally trigger native player behavior.
 
-During fullscreen changes, YouTube may rewrite the video element's inline style. The extension watches for those style changes and reapplies the current transform across the next few animation frames to reduce flicker.
+During fullscreen changes, YouTube may rewrite the video element's inline style. The extension keeps the active transform in its own `!important` stylesheet rule and still reapplies across the next few animation frames, so fullscreen transitions do not briefly fall back to the original video size.
 
 ## Development
 

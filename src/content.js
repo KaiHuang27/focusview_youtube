@@ -1,5 +1,7 @@
 const ROTATIONS = [0, 90, 180, 270];
 const TOOLBAR_SELECTOR = '[data-ytvt-toolbar="true"]';
+const TRANSFORM_STYLE_ID = "ytvt-transform-style";
+const TRANSFORM_SELECTOR = "video.html5-main-video";
 const {
   applyZoomDelta,
   clampPanStateToViewport,
@@ -7,7 +9,7 @@ const {
   createViewportOverlayLayout,
   createViewportMapSize,
   createDefaultState,
-  createTransformStyle,
+  createImportantTransformCssText,
   getViewportControlsActivityAfterPanToggle,
   shouldInterceptPanWheel,
   shouldReapplyTransformAfterMutation,
@@ -44,6 +46,33 @@ let viewportControlsLastActivityAt = 0;
 let viewportControlsHideTimer = 0;
 let ignoreNextStyleMutation = false;
 let isMenuOpen = false;
+
+function getTransformStyleElement() {
+  let styleElement = document.getElementById(TRANSFORM_STYLE_ID);
+  if (!styleElement) {
+    styleElement = document.createElement("style");
+    styleElement.id = TRANSFORM_STYLE_ID;
+    document.documentElement.append(styleElement);
+  }
+
+  return styleElement;
+}
+
+function updateTransformRule() {
+  if (!video) {
+    return;
+  }
+
+  getTransformStyleElement().textContent =
+    `${TRANSFORM_SELECTOR} { ${createImportantTransformCssText(state, video.clientWidth, video.clientHeight)} }`;
+}
+
+function clearTransformRule() {
+  const styleElement = document.getElementById(TRANSFORM_STYLE_ID);
+  if (styleElement) {
+    styleElement.textContent = "";
+  }
+}
 
 function resetState() {
   state = createDefaultState();
@@ -98,10 +127,8 @@ function applyTransform() {
   }
 
   clampCurrentPanState();
-  const style = createTransformStyle(state, video.clientWidth, video.clientHeight);
+  updateTransformRule();
   ignoreNextStyleMutation = true;
-  video.style.transform = style.transform;
-  video.style.transformOrigin = style.transformOrigin;
   video.style.cursor = state.panMode ? "grab" : "";
   renderViewportMap();
 }
@@ -127,6 +154,7 @@ function scheduleTransformReapply(frames = 6) {
 
 function clearTransform() {
   if (video) {
+    clearTransformRule();
     video.style.transform = "";
     video.style.transformOrigin = "";
     video.style.cursor = "";

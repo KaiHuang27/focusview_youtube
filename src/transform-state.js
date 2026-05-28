@@ -62,6 +62,11 @@
     };
   }
 
+  function createImportantTransformCssText(state, width = 0, height = 0) {
+    const style = createTransformStyle(state, width, height);
+    return `transform: ${style.transform} !important; transform-origin: ${style.transformOrigin} !important;`;
+  }
+
   function applyZoomDelta(zoom, direction) {
     return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + direction * ZOOM_STEP));
   }
@@ -278,6 +283,7 @@
     createViewportOverlayLayout,
     createViewportMapSize,
     createDefaultState,
+    createImportantTransformCssText,
     createTransformStyle,
     getViewportControlsActivityAfterPanToggle,
     getRotationFitScale,

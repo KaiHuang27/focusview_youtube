@@ -11,6 +11,7 @@ const {
   createViewportOverlayLayout,
   createViewportMapSize,
   createDefaultState,
+  createImportantTransformCssText,
   createTransformStyle,
   getRotationFitScale,
   normalizeRotation,
@@ -72,6 +73,13 @@ test("createTransformStyle applies rotation fit before user zoom", () => {
   assert.equal(
     createTransformStyle({ ...createDefaultState(), rotation: 90 }, 1920, 1080).transform,
     "translate(0px, 0px) rotate(90deg) scale(0.5625, 0.5625)"
+  );
+});
+
+test("createImportantTransformCssText makes transform override YouTube inline rewrites", () => {
+  assert.equal(
+    createImportantTransformCssText({ ...createDefaultState(), zoom: 150 }, 1280, 720),
+    "transform: translate(0px, 0px) rotate(0deg) scale(1.5, 1.5) !important; transform-origin: center center !important;"
   );
 });
 

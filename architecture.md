@@ -27,11 +27,11 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 9. In Pan mode, player-level capture wheel events are intercepted before YouTube can handle them; they update zoom in 5% steps and clamp it to 100%-500%. Wheel events that start inside the menu are blocked without changing zoom.
 10. `getRotationFitScale` computes the fit scale for 90/270-degree rotations so the rotated bounding box fits inside the player frame before user zoom is applied.
 11. `clampPanStateToViewport` bounds pan to the scaled Source Video content after it is contain-fit into the current Player Viewport. Directions that are still black-border-only stay centered until zoom fills that side of the viewport.
-12. `createTransformStyle` converts state into a CSS `transform`.
-13. The transform is applied directly to the video element.
+12. `createTransformStyle` converts state into a CSS `transform`, and `createImportantTransformCssText` serializes it for the extension-owned transform rule.
+13. The transform is applied through an extension stylesheet rule with `!important`, so YouTube fullscreen inline-style rewrites do not briefly override the active zoom.
 14. `createViewportMapSize` sizes the Source Map from the video's intrinsic aspect ratio within min/max bounds, `createViewportIndicator` maps the current Player Viewport, zoom, and pan through the same contain-fit source geometry into a normalized indicator that may extend outside the Source Map, and `createViewportOverlayLayout` positions the Source Map plus settings button from a 100% zoom anchor indicator so zooming and panning do not move the overlay.
 15. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform, clamped pan, and position controls are reapplied or reparented to the current player root.
-16. Fullscreen events and video style mutations schedule repeated `requestAnimationFrame` reapplication so YouTube style rewrites are corrected quickly.
+16. Fullscreen events and video style mutations schedule repeated `requestAnimationFrame` reapplication so geometry, pan clamp, and overlay placement stay current while the stylesheet rule keeps the transform visible.
 17. When leaving the watch page or switching videos, transient overlays, timers, and transform state are cleared before the next player binding.
 
 ## State Model
