@@ -12,6 +12,7 @@ const {
   createViewportMapSize,
   createDefaultState,
   createImportantTransformCssText,
+  getZoomFromPointerPosition,
   createTransformStyle,
   getRotationFitScale,
   normalizeRotation,
@@ -96,6 +97,18 @@ test("applyZoomDelta changes zoom and clamps it to the supported range", () => {
   assert.equal(applyZoomDelta(100, -1), 100);
   assert.equal(applyZoomDelta(496, 1), 500);
   assert.equal(applyZoomDelta(104, -1), 100);
+});
+
+test("getZoomFromPointerPosition maps pointer x into the supported zoom range", () => {
+  assert.equal(getZoomFromPointerPosition({ left: 100, width: 200 }, 50), 100);
+  assert.equal(getZoomFromPointerPosition({ left: 100, width: 200 }, 100), 100);
+  assert.equal(getZoomFromPointerPosition({ left: 100, width: 200 }, 200), 300);
+  assert.equal(getZoomFromPointerPosition({ left: 100, width: 200 }, 300), 500);
+  assert.equal(getZoomFromPointerPosition({ left: 100, width: 200 }, 350), 500);
+});
+
+test("getZoomFromPointerPosition keeps current zoom for invalid slider geometry", () => {
+  assert.equal(getZoomFromPointerPosition({ left: 100, width: 0 }, 200, 175), 175);
 });
 
 test("shouldResetForVideoKey resets only when an existing video key changes", () => {

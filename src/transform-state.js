@@ -71,6 +71,15 @@
     return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + direction * ZOOM_STEP));
   }
 
+  function getZoomFromPointerPosition(rect, clientX, fallbackZoom = MIN_ZOOM) {
+    if (!rect || rect.width <= 0) {
+      return fallbackZoom;
+    }
+
+    const ratio = clamp((clientX - rect.left) / rect.width, 0, 1);
+    return Math.round(MIN_ZOOM + ratio * (MAX_ZOOM - MIN_ZOOM));
+  }
+
   function createFittedSourceSize(sourceWidth, sourceHeight, viewportWidth, viewportHeight) {
     if (sourceWidth <= 0 || sourceHeight <= 0 || viewportWidth <= 0 || viewportHeight <= 0) {
       return null;
@@ -287,6 +296,7 @@
     createTransformStyle,
     getViewportControlsActivityAfterPanToggle,
     getRotationFitScale,
+    getZoomFromPointerPosition,
     normalizeRotation,
     shouldInterceptPanWheel,
     shouldReapplyTransformAfterMutation,

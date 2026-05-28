@@ -11,6 +11,7 @@ const {
   createDefaultState,
   createImportantTransformCssText,
   getViewportControlsActivityAfterPanToggle,
+  getZoomFromPointerPosition,
   shouldInterceptPanWheel,
   shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
@@ -355,16 +356,6 @@ function getSliderProgress() {
   return `${((state.zoom - 100) / 400) * 100}%`;
 }
 
-function getZoomFromPointer(slider, clientX) {
-  const rect = slider.getBoundingClientRect();
-  if (rect.width <= 0) {
-    return state.zoom;
-  }
-
-  const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
-  return Math.round(100 + ratio * 400);
-}
-
 function setZoom(zoom, shouldRender = true) {
   if (!video) {
     return;
@@ -388,8 +379,11 @@ function createZoomPanel() {
   value.textContent = formatZoomScale();
 
   const syncZoomControls = () => {
-    zoom.value = String(state.zoom);
-    zoom.style.setProperty("--ytvt-slider-progress", getSliderProgress());
+    const progress = getSliderProgress();
+    sliderFill.style.width = progress;
+    sliderThumb.style.left = progress;
+    sliderHitArea.setAttribute("aria-valuenow", String(state.zoom));
+    sliderHitArea.setAttribute("aria-valuetext", formatZoomScale());
     value.textContent = formatZoomScale();
 
     const triggerLabel = toolbar.querySelector(".ytvt-trigger-label");
@@ -409,23 +403,29 @@ function createZoomPanel() {
   zoomOut.setAttribute("aria-label", "Zoom out");
   zoomOut.addEventListener("click", () => setZoom(state.zoom - 5));
 
-  const zoom = document.createElement("input");
-  zoom.className = "ytvt-slider";
-  zoom.type = "range";
-  zoom.min = "100";
-  zoom.max = "500";
-  zoom.step = "1";
-  zoom.value = String(state.zoom);
-  zoom.title = "Zoom";
-  zoom.style.setProperty("--ytvt-slider-progress", getSliderProgress());
-  zoom.addEventListener("input", () => {
-    setZoom(Number(zoom.value), false);
-    syncZoomControls();
-  });
-  zoom.addEventListener("change", renderToolbar);
+  const sliderHitArea = document.createElement("div");
+  sliderHitArea.className = "ytvt-slider-hit-area";
+  sliderHitArea.setAttribute("role", "slider");
+  sliderHitArea.setAttribute("aria-label", "Zoom");
+  sliderHitArea.setAttribute("aria-valuemin", "100");
+  sliderHitArea.setAttribute("aria-valuemax", "500");
+
+  const sliderTrack = document.createElement("div");
+  sliderTrack.className = "ytvt-slider-track";
+
+  const sliderFill = document.createElement("div");
+  sliderFill.className = "ytvt-slider-fill";
+  sliderFill.style.width = getSliderProgress();
+
+  const sliderThumb = document.createElement("div");
+  sliderThumb.className = "ytvt-slider-thumb";
+  sliderThumb.style.left = getSliderProgress();
+
+  sliderTrack.append(sliderFill, sliderThumb);
+  sliderHitArea.append(sliderTrack);
 
   const updateZoomFromPointer = (event) => {
-    setZoom(getZoomFromPointer(zoom, event.clientX), false);
+    setZoom(getZoomFromPointerPosition(sliderHitArea.getBoundingClientRect(), event.clientX, state.zoom), false);
     syncZoomControls();
   };
 
@@ -451,12 +451,8 @@ function createZoomPanel() {
     document.removeEventListener("pointermove", onSliderPointerMove, true);
     document.removeEventListener("pointerup", stopSliderDrag, true);
     document.removeEventListener("pointercancel", stopSliderDrag, true);
-    renderToolbar();
+    syncZoomControls();
   };
-
-  const sliderHitArea = document.createElement("div");
-  sliderHitArea.className = "ytvt-slider-hit-area";
-  sliderHitArea.append(zoom);
 
   sliderHitArea.addEventListener("pointerdown", (event) => {
     if (event.button !== 0) {
@@ -482,6 +478,7 @@ function createZoomPanel() {
   zoomIn.addEventListener("click", () => setZoom(state.zoom + 5));
 
   controls.append(zoomOut, sliderHitArea, zoomIn);
+  syncZoomControls();
   panel.append(value, controls);
   return panel;
 }
