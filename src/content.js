@@ -429,6 +429,31 @@ function createZoomPanel() {
     syncZoomControls();
   };
 
+  const onSliderPointerMove = (event) => {
+    if (event.pointerId !== activeSliderPointerId) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    updateZoomFromPointer(event);
+  };
+
+  const stopSliderDrag = (event) => {
+    if (event.pointerId !== activeSliderPointerId) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    sliderHitArea.releasePointerCapture?.(event.pointerId);
+    activeSliderPointerId = null;
+    document.removeEventListener("pointermove", onSliderPointerMove, true);
+    document.removeEventListener("pointerup", stopSliderDrag, true);
+    document.removeEventListener("pointercancel", stopSliderDrag, true);
+    renderToolbar();
+  };
+
   const sliderHitArea = document.createElement("div");
   sliderHitArea.className = "ytvt-slider-hit-area";
   sliderHitArea.append(zoom);
@@ -442,33 +467,11 @@ function createZoomPanel() {
     event.stopPropagation();
     activeSliderPointerId = event.pointerId;
     sliderHitArea.setPointerCapture?.(event.pointerId);
+    document.addEventListener("pointermove", onSliderPointerMove, true);
+    document.addEventListener("pointerup", stopSliderDrag, true);
+    document.addEventListener("pointercancel", stopSliderDrag, true);
     updateZoomFromPointer(event);
   });
-
-  sliderHitArea.addEventListener("pointermove", (event) => {
-    if (event.pointerId !== activeSliderPointerId) {
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-    updateZoomFromPointer(event);
-  });
-
-  const endSliderDrag = (event) => {
-    if (event.pointerId !== activeSliderPointerId) {
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-    activeSliderPointerId = null;
-    sliderHitArea.releasePointerCapture?.(event.pointerId);
-    renderToolbar();
-  };
-
-  sliderHitArea.addEventListener("pointerup", endSliderDrag);
-  sliderHitArea.addEventListener("pointercancel", endSliderDrag);
 
   const zoomIn = document.createElement("button");
   zoomIn.type = "button";
