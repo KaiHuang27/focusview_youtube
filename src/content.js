@@ -4,6 +4,7 @@ const {
   applyZoomDelta,
   clampPanState,
   createViewportIndicator,
+  createViewportOverlayLayout,
   createViewportMapSize,
   createDefaultState,
   createTransformStyle,
@@ -248,11 +249,14 @@ function renderViewportMap() {
   const viewportHeight = player.clientHeight || video.clientHeight;
   const mapSize = createViewportMapSize(sourceWidth, sourceHeight);
   const indicator = createViewportIndicator(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
+  const overlayLayout = createViewportOverlayLayout({ mapSize, indicator });
   const indicatorElement = viewportMap.querySelector(".ytvt-viewport-indicator");
+  viewportMap.style.top = `${overlayLayout.mapTop}px`;
+  viewportMap.style.right = `${overlayLayout.mapRight}px`;
   viewportMap.style.width = `${mapSize.width}px`;
   viewportMap.style.height = `${mapSize.height}px`;
-  settingsButton.style.top = `${50 + mapSize.height + 8}px`;
-  settingsButton.style.right = `${22 + mapSize.width / 2 - 16}px`;
+  settingsButton.style.top = `${overlayLayout.settingsTop}px`;
+  settingsButton.style.right = `${overlayLayout.settingsRight}px`;
   indicatorElement.style.left = `${indicator.x * 100}%`;
   indicatorElement.style.top = `${indicator.y * 100}%`;
   indicatorElement.style.width = `${indicator.width * 100}%`;

@@ -7,6 +7,7 @@ const {
   applyZoomDelta,
   clampPanState,
   createViewportIndicator,
+  createViewportOverlayLayout,
   createViewportMapSize,
   createDefaultState,
   createTransformStyle,
@@ -170,6 +171,26 @@ test("createViewportIndicator falls back to full source map for invalid dimensio
     width: 1,
     height: 1,
   });
+});
+
+test("createViewportOverlayLayout keeps a wider viewport indicator inside the right edge", () => {
+  assert.deepEqual(
+    createViewportOverlayLayout({
+      mapSize: { width: 160, height: 90 },
+      indicator: { x: -0.1667, y: 0, width: 1.3333, height: 1 },
+    }),
+    { mapTop: 50, mapRight: 49, settingsTop: 148, settingsRight: 113 }
+  );
+});
+
+test("createViewportOverlayLayout keeps a taller viewport indicator inside the top edge", () => {
+  assert.deepEqual(
+    createViewportOverlayLayout({
+      mapSize: { width: 160, height: 90 },
+      indicator: { x: 0, y: -1.0802, width: 1, height: 3.1605 },
+    }),
+    { mapTop: 148, mapRight: 22, settingsTop: 344, settingsRight: 86 }
+  );
 });
 
 test("clampPanState centers pan at 100 percent zoom", () => {

@@ -212,10 +212,39 @@
     };
   }
 
+  function createViewportOverlayLayout({
+    mapSize,
+    indicator,
+    anchorTop = 50,
+    anchorRight = 22,
+    settingsButtonSize = 32,
+    settingsGap = 8,
+  }) {
+    const indicatorLeft = indicator.x * mapSize.width;
+    const indicatorTop = indicator.y * mapSize.height;
+    const indicatorRight = (indicator.x + indicator.width) * mapSize.width;
+    const indicatorBottom = (indicator.y + indicator.height) * mapSize.height;
+    const overflowTop = Math.max(0, -indicatorTop);
+    const overflowRight = Math.max(0, indicatorRight - mapSize.width);
+    const overlayBottom = Math.max(mapSize.height, indicatorBottom);
+    const indicatorCenterX = indicatorLeft + (indicator.width * mapSize.width) / 2;
+
+    const mapTop = Math.ceil(anchorTop + overflowTop);
+    const mapRight = Math.ceil(anchorRight + overflowRight);
+
+    return {
+      mapTop,
+      mapRight,
+      settingsTop: Math.ceil(mapTop + overlayBottom + settingsGap),
+      settingsRight: Math.round(mapRight + mapSize.width - indicatorCenterX - settingsButtonSize / 2),
+    };
+  }
+
   globalThis.YTVTTransform = {
     applyZoomDelta,
     clampPanState,
     createViewportIndicator,
+    createViewportOverlayLayout,
     createViewportMapSize,
     createDefaultState,
     createTransformStyle,
