@@ -71,6 +71,19 @@
     return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + direction * ZOOM_STEP));
   }
 
+  function formatZoomPercent(zoom) {
+    return `${Math.round(zoom)}%`;
+  }
+
+  function parseZoomPercentInput(value, fallbackZoom) {
+    const parsed = Number.parseFloat(String(value).replace("%", "").trim());
+    if (!Number.isFinite(parsed)) {
+      return fallbackZoom;
+    }
+
+    return Math.round(clamp(parsed, MIN_ZOOM, MAX_ZOOM));
+  }
+
   function getZoomFromPointerPosition(rect, clientX, fallbackZoom = MIN_ZOOM) {
     if (!rect || rect.width <= 0) {
       return fallbackZoom;
@@ -294,10 +307,12 @@
     createDefaultState,
     createImportantTransformCssText,
     createTransformStyle,
+    formatZoomPercent,
     getViewportControlsActivityAfterPanToggle,
     getRotationFitScale,
     getZoomFromPointerPosition,
     normalizeRotation,
+    parseZoomPercentInput,
     shouldInterceptPanWheel,
     shouldReapplyTransformAfterMutation,
     shouldResetForVideoKey,

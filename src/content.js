@@ -10,8 +10,10 @@ const {
   createViewportMapSize,
   createDefaultState,
   createImportantTransformCssText,
+  formatZoomPercent,
   getViewportControlsActivityAfterPanToggle,
   getZoomFromPointerPosition,
+  parseZoomPercentInput,
   shouldInterceptPanWheel,
   shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
@@ -348,10 +350,6 @@ function createSegment(value) {
   );
 }
 
-function formatZoomScale() {
-  return `${(state.zoom / 100).toFixed(2)}x`;
-}
-
 function getSliderProgress() {
   return `${((state.zoom - 100) / 400) * 100}%`;
 }
@@ -376,23 +374,49 @@ function createZoomPanel() {
   let activeSliderPointerId = null;
   let ignoreSliderMouseUpUntil = 0;
 
-  const value = document.createElement("div");
+  const value = document.createElement("input");
   value.className = "ytvt-zoom-value";
-  value.textContent = formatZoomScale();
+  value.type = "text";
+  value.inputMode = "numeric";
+  value.autocomplete = "off";
+  value.spellcheck = false;
+  value.value = formatZoomPercent(state.zoom);
+  value.setAttribute("aria-label", "Zoom percentage");
 
   const syncZoomControls = () => {
     const progress = getSliderProgress();
     sliderFill.style.width = progress;
     sliderThumb.style.left = progress;
     sliderHitArea.setAttribute("aria-valuenow", String(state.zoom));
-    sliderHitArea.setAttribute("aria-valuetext", formatZoomScale());
-    value.textContent = formatZoomScale();
+    sliderHitArea.setAttribute("aria-valuetext", formatZoomPercent(state.zoom));
+    if (document.activeElement !== value) {
+      value.value = formatZoomPercent(state.zoom);
+    }
 
     const triggerLabel = toolbar.querySelector(".ytvt-trigger-label");
     if (triggerLabel) {
       triggerLabel.textContent = `${state.zoom}%`;
     }
   };
+
+  const commitZoomInput = () => {
+    setZoom(parseZoomPercentInput(value.value, state.zoom), false);
+    value.value = formatZoomPercent(state.zoom);
+    syncZoomControls();
+  };
+
+  value.addEventListener("change", commitZoomInput);
+  value.addEventListener("blur", commitZoomInput);
+  value.addEventListener("keydown", (event) => {
+    event.stopPropagation();
+    if (event.key === "Enter") {
+      event.preventDefault();
+      commitZoomInput();
+      value.blur();
+    }
+  });
+  value.addEventListener("pointerdown", (event) => event.stopPropagation());
+  value.addEventListener("click", (event) => event.stopPropagation());
 
   const controls = document.createElement("div");
   controls.className = "ytvt-zoom-controls";
