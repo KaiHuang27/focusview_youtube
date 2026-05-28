@@ -12,7 +12,7 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 - `src/transform-state.js`: shared transform, viewport-map, and shortcut helpers exposed on `globalThis.YTVTTransform` so they can run as a classic content script and still be tested with Node.
 - `src/content.js`: detects the YouTube player, inserts the zoom trigger into `.ytp-right-controls` when available, toggles Pan mode from that trigger, renders a settings button centered below the top-right position map during recent Pan activity, renders the YouTube-style menu beside that settings button, updates transform state, renders the position map during recent Pan activity, handles pan dragging, handles Pan-mode wheel zoom, handles the Pan keyboard shortcut, reapplies transforms after fullscreen/style mutations, and resets state on YouTube SPA navigation.
 - `src/overlay.css`: native-control-bar zoom trigger using compact fixed YouTube-style sizing, magnifier icon, native `ytp-button` hover styling, a dedicated compact active background layer, compact conditional percentage text, Roboto/Arial typography, floating fallback trigger, top-right native-style settings icon button, compact YouTube-settings-style gray menu, toggle, segment, YouTube-style slider track, and position-map styling.
-- `src/transform-state.test.js`: Node test coverage for reset state, zoom scale conversion, rotation fit scaling, zoom and pan clamping, Pan-mode wheel interception, transient viewport-control visibility, Pan shortcut detection, transform reapply detection, viewport-map math, rotation validation, and mirror composition.
+- `src/transform-state.test.js`: Node test coverage for reset state, zoom scale conversion, rotation fit scaling, zoom and viewport-aware pan clamping, Pan-mode wheel interception, transient viewport-control visibility, Pan shortcut detection, transform reapply detection, viewport-map math, rotation validation, and mirror composition.
 
 ## Data Flow
 
@@ -26,10 +26,10 @@ The extension keeps YouTube's native player behavior intact. It only applies CSS
 8. In Pan mode, pointer down starts a pending gesture instead of immediately blocking YouTube. A quick single click is left for native play/pause; a long press or intentional movement activates frame dragging, then the pointer-up path suppresses that gesture's following native click so suppression cannot expire while the user is still holding the mouse button.
 9. In Pan mode, player-level capture wheel events are intercepted before YouTube can handle them; they update zoom in 5% steps and clamp it to 100%-500%. Wheel events that start inside the menu are blocked without changing zoom.
 10. `getRotationFitScale` computes the fit scale for 90/270-degree rotations so the rotated bounding box fits inside the player frame before user zoom is applied.
-11. `clampPanState` bounds pan to the current scaled and rotated video size before transforms are applied.
+11. `clampPanStateToViewport` bounds pan to the scaled Source Video content after it is contain-fit into the current Player Viewport. Directions that are still black-border-only stay centered until zoom fills that side of the viewport.
 12. `createTransformStyle` converts state into a CSS `transform`.
 13. The transform is applied directly to the video element.
-14. `createViewportMapSize` sizes the Source Map from the video's intrinsic aspect ratio within min/max bounds, `createViewportIndicator` maps the current Player Viewport, zoom, and pan into a normalized indicator that may extend outside the Source Map, and `createViewportOverlayLayout` positions the Source Map plus settings button from a 100% zoom anchor indicator so zooming and panning do not move the overlay.
+14. `createViewportMapSize` sizes the Source Map from the video's intrinsic aspect ratio within min/max bounds, `createViewportIndicator` maps the current Player Viewport, zoom, and pan through the same contain-fit source geometry into a normalized indicator that may extend outside the Source Map, and `createViewportOverlayLayout` positions the Source Map plus settings button from a 100% zoom anchor indicator so zooming and panning do not move the overlay.
 15. URL, player, or fullscreen-related layout changes trigger `sync`; the current transform, clamped pan, and position controls are reapplied or reparented to the current player root.
 16. Fullscreen events and video style mutations schedule repeated `requestAnimationFrame` reapplication so YouTube style rewrites are corrected quickly.
 17. When leaving the watch page or switching videos, transient overlays, timers, and transform state are cleared before the next player binding.
@@ -78,6 +78,8 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm the Rotation row itself does not show a row hover background; only the `0 / 90 / 180 / 270` buttons show their own hover or active state.
 - Confirm 90/270-degree rotation fits the rotated video inside the player frame at 100% zoom without cropping the rotated top/bottom or left/right edges.
 - Confirm panning stops at video-content edges and does not create extra black borders.
+- Confirm vertical video in a landscape Player Viewport cannot pan left or right until zoom fills the viewport width, while vertical pan works once zoom creates extra source content above and below.
+- Confirm 16:9 video in a 21:9 Player Viewport cannot pan left or right until zoom fills the wider viewport.
 - Confirm returning to 100% zoom recenters the video.
 - Confirm the top-right position map updates while dragging and after Pan-mode wheel zoom.
 - Confirm mouse wheel zooms only while Pan is enabled.

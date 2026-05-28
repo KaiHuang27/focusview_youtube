@@ -66,6 +66,18 @@
     return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + direction * ZOOM_STEP));
   }
 
+  function createFittedSourceSize(sourceWidth, sourceHeight, viewportWidth, viewportHeight) {
+    if (sourceWidth <= 0 || sourceHeight <= 0 || viewportWidth <= 0 || viewportHeight <= 0) {
+      return null;
+    }
+
+    const fitScale = Math.min(viewportWidth / sourceWidth, viewportHeight / sourceHeight);
+    return {
+      width: sourceWidth * fitScale,
+      height: sourceHeight * fitScale,
+    };
+  }
+
   function clampPanState(state, width, height) {
     const scale = getEffectiveScale(state, width, height);
     if (scale <= 1 || width <= 0 || height <= 0) {
@@ -77,6 +89,23 @@
     const scaledHeight = (isSideways ? width : height) * scale;
     const maxPanX = Math.max(0, (scaledWidth - width) / 2);
     const maxPanY = Math.max(0, (scaledHeight - height) / 2);
+
+    return {
+      ...state,
+      panX: Math.round(clamp(state.panX, -maxPanX, maxPanX)),
+      panY: Math.round(clamp(state.panY, -maxPanY, maxPanY)),
+    };
+  }
+
+  function clampPanStateToViewport(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight) {
+    const scale = state.zoom / 100;
+    const fittedSource = createFittedSourceSize(sourceWidth, sourceHeight, viewportWidth, viewportHeight);
+    if (!fittedSource || scale <= 1) {
+      return { ...state, panX: 0, panY: 0 };
+    }
+
+    const maxPanX = Math.max(0, (fittedSource.width * scale - viewportWidth) / 2);
+    const maxPanY = Math.max(0, (fittedSource.height * scale - viewportHeight) / 2);
 
     return {
       ...state,
@@ -194,15 +223,15 @@
 
   function createViewportIndicator(state, width, height, viewportWidth = width, viewportHeight = height) {
     const scale = state.zoom / 100;
-    if (scale <= 0 || width <= 0 || height <= 0 || viewportWidth <= 0 || viewportHeight <= 0) {
+    const fittedSource = createFittedSourceSize(width, height, viewportWidth, viewportHeight);
+    if (scale <= 0 || !fittedSource) {
       return { x: 0, y: 0, width: 1, height: 1 };
     }
 
-    const viewportToSourceAspect = (viewportWidth / viewportHeight) / (width / height);
-    const indicatorWidth = (viewportToSourceAspect >= 1 ? viewportToSourceAspect : 1) / scale;
-    const indicatorHeight = (viewportToSourceAspect >= 1 ? 1 : 1 / viewportToSourceAspect) / scale;
-    const x = 0.5 - state.panX / (scale * viewportWidth) - indicatorWidth / 2;
-    const y = 0.5 - state.panY / (scale * viewportHeight) - indicatorHeight / 2;
+    const indicatorWidth = viewportWidth / (fittedSource.width * scale);
+    const indicatorHeight = viewportHeight / (fittedSource.height * scale);
+    const x = 0.5 - state.panX / (fittedSource.width * scale) - indicatorWidth / 2;
+    const y = 0.5 - state.panY / (fittedSource.height * scale) - indicatorHeight / 2;
 
     return {
       x: Number(x.toFixed(4)),
@@ -244,6 +273,7 @@
   globalThis.YTVTTransform = {
     applyZoomDelta,
     clampPanState,
+    clampPanStateToViewport,
     createViewportIndicator,
     createViewportOverlayLayout,
     createViewportMapSize,

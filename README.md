@@ -38,7 +38,7 @@ The transform menu opens next to the native-style settings icon button centered 
 - `Alt/Option + Shift + P`: toggles Pan mode without using YouTube's single-key shortcuts or Chrome/Edge `Ctrl`/`Cmd` shortcuts. The shortcut listener loads early and runs at capture time so YouTube does not consume it first. It is ignored while typing in inputs, comments, search, or other editable fields.
 - `Reset`: restores zoom, rotation, mirror, and pan to the default state and closes the menu.
 
-Pan movement is bounded by the current zoom level and video element size. When the video edge reaches the visible edge, the extension stops further movement in that direction. Returning to 100% zoom recenters the video.
+Pan movement is bounded by the current zoom level and the Source Video content area inside the Player Viewport. If YouTube is already showing side bars or letterbox space, that black-border direction stays locked until zoom is high enough for the Source Video to fill that side of the Player Viewport. When the video edge reaches the visible edge, the extension stops further movement in that direction. Returning to 100% zoom recenters the video.
 
 When rotating 90 or 270 degrees, 100% zoom means the rotated video is first scaled to fit inside the player frame. This prevents a landscape video from being cut off at the top and bottom after rotating to portrait orientation.
 
@@ -68,5 +68,5 @@ npm test
 
 - Version 1 targets normal YouTube watch pages only.
 - Shorts, embedded YouTube iframes, and special live-player layouts are out of scope.
-- The extension avoids extra black borders caused by panning too far, but it does not remove black borders already present because of vertical video or YouTube letterboxing.
+- The extension avoids extra black borders caused by panning too far. It does not remove black borders already present because of vertical video or YouTube letterboxing, but it prevents panning further into those black-border-only areas until zoom fills that direction.
 - The extension uses CSS transforms, not canvas video rendering, to keep performance and compatibility simple.

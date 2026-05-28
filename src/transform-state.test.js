@@ -6,6 +6,7 @@ await import("./transform-state.js");
 const {
   applyZoomDelta,
   clampPanState,
+  clampPanStateToViewport,
   createViewportIndicator,
   createViewportOverlayLayout,
   createViewportMapSize,
@@ -240,6 +241,105 @@ test("clampPanState clamps pan to smaller bounds after zooming out", () => {
     clampPanState({ ...createDefaultState(), zoom: 150, panX: 640, panY: 360 }, 1280, 720),
     { ...createDefaultState(), zoom: 150, panX: 320, panY: 180 }
   );
+});
+
+test("clampPanStateToViewport blocks horizontal pan while vertical source video still has side bars", () => {
+  assert.deepEqual(
+    clampPanStateToViewport(
+      { ...createDefaultState(), zoom: 200, panX: 500, panY: 800 },
+      1080,
+      1920,
+      1920,
+      1080
+    ),
+    { ...createDefaultState(), zoom: 200, panX: 0, panY: 540 }
+  );
+});
+
+test("clampPanStateToViewport allows horizontal pan after vertical source video fills the player width", () => {
+  assert.deepEqual(
+    clampPanStateToViewport(
+      { ...createDefaultState(), zoom: 400, panX: 500, panY: 2000 },
+      1080,
+      1920,
+      1920,
+      1080
+    ),
+    { ...createDefaultState(), zoom: 400, panX: 255, panY: 1620 }
+  );
+});
+
+test("clampPanStateToViewport blocks horizontal pan until a wide player is filled", () => {
+  assert.deepEqual(
+    clampPanStateToViewport(
+      { ...createDefaultState(), zoom: 125, panX: 300, panY: 300 },
+      1920,
+      1080,
+      2560,
+      1080
+    ),
+    { ...createDefaultState(), zoom: 125, panX: 0, panY: 135 }
+  );
+  assert.deepEqual(
+    clampPanStateToViewport(
+      { ...createDefaultState(), zoom: 150, panX: 300, panY: 300 },
+      1920,
+      1080,
+      2560,
+      1080
+    ),
+    { ...createDefaultState(), zoom: 150, panX: 160, panY: 270 }
+  );
+});
+
+test("clampPanStateToViewport blocks vertical pan until a tall player is filled", () => {
+  assert.deepEqual(
+    clampPanStateToViewport(
+      { ...createDefaultState(), zoom: 200, panX: 900, panY: 500 },
+      1920,
+      1080,
+      1080,
+      1920
+    ),
+    { ...createDefaultState(), zoom: 200, panX: 540, panY: 0 }
+  );
+});
+
+test("clampPanStateToViewport matches same-aspect pan bounds", () => {
+  assert.deepEqual(
+    clampPanStateToViewport(
+      { ...createDefaultState(), zoom: 200, panX: 900, panY: -500 },
+      1280,
+      720,
+      1280,
+      720
+    ),
+    { ...createDefaultState(), zoom: 200, panX: 640, panY: -360 }
+  );
+});
+
+test("clampPanStateToViewport centers pan for invalid viewport geometry", () => {
+  assert.deepEqual(
+    clampPanStateToViewport({ ...createDefaultState(), zoom: 200, panX: 500, panY: 500 }, 0, 0, 1920, 1080),
+    { ...createDefaultState(), zoom: 200, panX: 0, panY: 0 }
+  );
+});
+
+test("createViewportIndicator reflects viewport-aware clamped pan", () => {
+  const clamped = clampPanStateToViewport(
+    { ...createDefaultState(), zoom: 200, panX: 500, panY: 800 },
+    1080,
+    1920,
+    1920,
+    1080
+  );
+
+  assert.deepEqual(createViewportIndicator(clamped, 1080, 1920, 1920, 1080), {
+    x: -0.2901,
+    y: 0,
+    width: 1.5802,
+    height: 0.5,
+  });
 });
 
 test("createViewportIndicator preserves extreme pan instead of clamping to source-map bounds", () => {

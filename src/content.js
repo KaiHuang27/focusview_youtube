@@ -2,7 +2,7 @@ const ROTATIONS = [0, 90, 180, 270];
 const TOOLBAR_SELECTOR = '[data-ytvt-toolbar="true"]';
 const {
   applyZoomDelta,
-  clampPanState,
+  clampPanStateToViewport,
   createViewportIndicator,
   createViewportOverlayLayout,
   createViewportMapSize,
@@ -72,6 +72,20 @@ function findControlsHost() {
   return player?.querySelector(".ytp-right-controls") || null;
 }
 
+function getViewportGeometry() {
+  return {
+    sourceWidth: video?.videoWidth || video?.clientWidth || 0,
+    sourceHeight: video?.videoHeight || video?.clientHeight || 0,
+    viewportWidth: player?.clientWidth || video?.clientWidth || 0,
+    viewportHeight: player?.clientHeight || video?.clientHeight || 0,
+  };
+}
+
+function clampCurrentPanState() {
+  const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
+  state = clampPanStateToViewport(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
+}
+
 function blockYouTubeWheel(event) {
   event.preventDefault();
   event.stopPropagation();
@@ -83,7 +97,7 @@ function applyTransform() {
     return;
   }
 
-  state = clampPanState(state, video.clientWidth, video.clientHeight);
+  clampCurrentPanState();
   const style = createTransformStyle(state, video.clientWidth, video.clientHeight);
   ignoreNextStyleMutation = true;
   video.style.transform = style.transform;
@@ -243,10 +257,7 @@ function renderViewportMap() {
   settingsButton.setAttribute("aria-expanded", String(isMenuOpen));
 
   const shouldShowControls = areViewportControlsVisible();
-  const sourceWidth = video.videoWidth || video.clientWidth;
-  const sourceHeight = video.videoHeight || video.clientHeight;
-  const viewportWidth = player.clientWidth || video.clientWidth;
-  const viewportHeight = player.clientHeight || video.clientHeight;
+  const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
   const mapSize = createViewportMapSize(sourceWidth, sourceHeight);
   const indicator = createViewportIndicator(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
   const anchorIndicator = createViewportIndicator(
@@ -332,7 +343,7 @@ function setZoom(zoom, shouldRender = true) {
   }
 
   state.zoom = Math.min(500, Math.max(100, zoom));
-  state = clampPanState(state, video.clientWidth, video.clientHeight);
+  clampCurrentPanState();
   if (shouldRender) {
     renderToolbar();
   }
@@ -747,7 +758,7 @@ function onPointerMove(event) {
 
   state.panX = Math.round(dragStart.panX + event.clientX - dragStart.x);
   state.panY = Math.round(dragStart.panY + event.clientY - dragStart.y);
-  state = clampPanState(state, video.clientWidth, video.clientHeight);
+  clampCurrentPanState();
   viewportControlsLastActivityAt = Date.now();
   applyTransform();
   event.preventDefault();
@@ -779,7 +790,7 @@ function onWheel(event) {
   blockYouTubeWheel(event);
   const direction = event.deltaY < 0 ? 1 : -1;
   state.zoom = applyZoomDelta(state.zoom, direction);
-  state = clampPanState(state, video.clientWidth, video.clientHeight);
+  clampCurrentPanState();
   markViewportControlsActivity();
   renderToolbar();
   applyTransform();
