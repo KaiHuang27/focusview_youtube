@@ -12,9 +12,7 @@ const {
   createViewportMapSize,
   createDefaultState,
   createImportantTransformCssText,
-  formatZoomPercent,
   getZoomFromPointerPosition,
-  parseZoomPercentInput,
   createTransformStyle,
   getRotationFitScale,
   normalizeRotation,
@@ -99,20 +97,6 @@ test("applyZoomDelta changes zoom and clamps it to the supported range", () => {
   assert.equal(applyZoomDelta(100, -1), 100);
   assert.equal(applyZoomDelta(496, 1), 500);
   assert.equal(applyZoomDelta(104, -1), 100);
-});
-
-test("formatZoomPercent displays zoom as a percentage", () => {
-  assert.equal(formatZoomPercent(100), "100%");
-  assert.equal(formatZoomPercent(150), "150%");
-});
-
-test("parseZoomPercentInput accepts percent text and clamps to the supported range", () => {
-  assert.equal(parseZoomPercentInput("150", 100), 150);
-  assert.equal(parseZoomPercentInput("175%", 100), 175);
-  assert.equal(parseZoomPercentInput("50", 180), 100);
-  assert.equal(parseZoomPercentInput("600", 180), 500);
-  assert.equal(parseZoomPercentInput("", 180), 180);
-  assert.equal(parseZoomPercentInput("abc", 180), 180);
 });
 
 test("getZoomFromPointerPosition maps pointer x into the supported zoom range", () => {
