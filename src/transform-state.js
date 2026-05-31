@@ -71,6 +71,21 @@
     return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + direction * ZOOM_STEP));
   }
 
+  function createViewportCenteredZoomState(state, zoom) {
+    const nextZoom = clamp(zoom, MIN_ZOOM, MAX_ZOOM);
+    if (nextZoom === MIN_ZOOM || state.zoom <= 0) {
+      return { ...state, zoom: nextZoom, panX: 0, panY: 0 };
+    }
+
+    const scaleChange = nextZoom / state.zoom;
+    return {
+      ...state,
+      zoom: nextZoom,
+      panX: Math.round(state.panX * scaleChange),
+      panY: Math.round(state.panY * scaleChange),
+    };
+  }
+
   function formatZoomPercent(zoom) {
     return `${Math.round(zoom)}%`;
   }
@@ -331,6 +346,7 @@
     clampPanState,
     clampPanStateToViewport,
     createDisplayedSourceSize,
+    createViewportCenteredZoomState,
     createViewportIndicator,
     createViewportOverlayLayout,
     createViewportMapSize,

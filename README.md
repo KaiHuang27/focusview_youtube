@@ -9,7 +9,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 - YouTube-native-style settings icon button appears below the top-right position map when Pan mode turns on or during recent Pan activity, and opens the transform menu.
 - Rotate video by 0, 90, 180, or 270 degrees, fitting 90/270-degree rotations inside the player frame first.
 - Mirror horizontally.
-- Pan mode for dragging a zoomed video and using the mouse wheel to zoom without adding extra black borders.
+- Pan mode for dragging a zoomed video and using the mouse wheel to zoom around the current Player Viewport center without adding extra black borders.
 - Top-right position map when Pan mode turns on or during recent Pan activity, showing the visible area inside the rotated video frame.
 - Reset transform state when switching to another YouTube video.
 
@@ -39,7 +39,7 @@ The transform menu opens `8px` below the native-style settings icon button while
 - `Alt/Option + Shift + P`: toggles Pan mode without using YouTube's single-key shortcuts or Chrome/Edge `Ctrl`/`Cmd` shortcuts. The shortcut listener loads early and runs at capture time so YouTube does not consume it first. It is ignored while typing in inputs, comments, search, or other editable fields.
 - `Reset`: restores zoom, rotation, mirror, and pan to the default state and closes the menu.
 
-Pan movement is bounded by the current zoom level and the Source Video content area inside the Player Viewport. If YouTube is already showing side bars or letterbox space, that black-border direction stays locked until zoom is high enough for the Source Video to fill that side of the Player Viewport. When the video edge reaches the visible edge, the extension stops further movement in that direction. Returning to 100% zoom recenters the video.
+Zoom changes preserve the Source Video content currently shown at the Player Viewport center. This applies to the menu slider, `-` / `+` buttons, manual percentage input, and Pan-mode mouse wheel. Pan movement is bounded by the current zoom level and the Source Video content area inside the Player Viewport. If YouTube is already showing side bars or letterbox space, that black-border direction stays locked until zoom is high enough for the Source Video to fill that side of the Player Viewport. When the video edge reaches the visible edge, the extension stops further movement in that direction. Returning to 100% zoom recenters the video.
 
 When rotating 90 or 270 degrees, 100% zoom means the rotated video is first scaled to fit inside the player frame. This prevents a landscape video from being cut off at the top and bottom after rotating to portrait orientation.
 

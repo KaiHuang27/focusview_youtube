@@ -6,6 +6,7 @@ const {
   applyZoomDelta,
   clampPanStateToViewport,
   createViewportIndicator,
+  createViewportCenteredZoomState,
   createViewportOverlayLayout,
   createViewportMapSize,
   createTransformMenuTop,
@@ -376,7 +377,7 @@ function setZoom(zoom, shouldRender = true) {
     return;
   }
 
-  state.zoom = Math.min(500, Math.max(100, zoom));
+  state = createViewportCenteredZoomState(state, zoom);
   clampCurrentPanState();
   if (shouldRender) {
     renderToolbar();
@@ -946,11 +947,8 @@ function onWheel(event) {
 
   blockYouTubeWheel(event);
   const direction = event.deltaY < 0 ? 1 : -1;
-  state.zoom = applyZoomDelta(state.zoom, direction);
-  clampCurrentPanState();
   markViewportControlsActivity();
-  renderToolbar();
-  applyTransform();
+  setZoom(applyZoomDelta(state.zoom, direction));
 }
 
 function endDrag(event) {

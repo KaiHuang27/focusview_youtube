@@ -8,6 +8,7 @@ const {
   clampPanState,
   clampPanStateToViewport,
   createDisplayedSourceSize,
+  createViewportCenteredZoomState,
   createViewportIndicator,
   createViewportOverlayLayout,
   createViewportMapSize,
@@ -104,6 +105,27 @@ test("applyZoomDelta changes zoom and clamps it to the supported range", () => {
   assert.equal(applyZoomDelta(100, -1), 100);
   assert.equal(applyZoomDelta(496, 1), 500);
   assert.equal(applyZoomDelta(104, -1), 100);
+});
+
+test("createViewportCenteredZoomState preserves the viewport-center content while zooming", () => {
+  assert.deepEqual(
+    createViewportCenteredZoomState({ ...createDefaultState(), zoom: 200, panX: 160, panY: -90 }, 300),
+    { ...createDefaultState(), zoom: 300, panX: 240, panY: -135 }
+  );
+});
+
+test("createViewportCenteredZoomState recenters when returning to 100 percent", () => {
+  assert.deepEqual(
+    createViewportCenteredZoomState({ ...createDefaultState(), zoom: 200, panX: 160, panY: -90 }, 100),
+    createDefaultState()
+  );
+});
+
+test("createViewportCenteredZoomState preserves the viewport-center content while zooming out", () => {
+  assert.deepEqual(
+    createViewportCenteredZoomState({ ...createDefaultState(), zoom: 300, panX: 240, panY: -135 }, 200),
+    { ...createDefaultState(), zoom: 200, panX: 160, panY: -90 }
+  );
 });
 
 test("formatZoomPercent displays zoom as a percentage", () => {
