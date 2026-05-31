@@ -16,6 +16,7 @@ const {
   parseZoomPercentInput,
   shouldBlockYouTubeShortcutForZoomInput,
   shouldInterceptPanWheel,
+  shouldRenderMenuOnToolbarEnsure,
   shouldRenderToolbarOnEnsure,
   shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
@@ -661,7 +662,7 @@ function getTriggerTitle() {
   return state.panMode ? "Pan mode on" : "Pan mode off";
 }
 
-function renderToolbar() {
+function renderToolbar({ shouldRenderMenu = true } = {}) {
   if (!toolbar) {
     return;
   }
@@ -713,7 +714,9 @@ function renderToolbar() {
   });
 
   toolbar.append(trigger);
-  renderMenu();
+  if (shouldRenderMenu) {
+    renderMenu();
+  }
 }
 
 function renderMenu() {
@@ -820,6 +823,7 @@ function ensureToolbar() {
   const toolbarHost = controlsHost || player;
   const existing = document.querySelector(TOOLBAR_SELECTOR);
   const shouldRenderToolbar = shouldRenderToolbarOnEnsure({ hasExistingToolbar: Boolean(existing) });
+  const shouldRenderMenu = shouldRenderMenuOnToolbarEnsure({ hasExistingMenu: Boolean(transformMenu) });
   toolbar = existing || document.createElement("div");
   toolbar.dataset.ytvtToolbar = "true";
   toolbar.className = controlsHost ? "ytvt-toolbar is-native" : "ytvt-toolbar is-floating";
@@ -849,7 +853,7 @@ function ensureToolbar() {
   }
 
   if (shouldRenderToolbar) {
-    renderToolbar();
+    renderToolbar({ shouldRenderMenu });
   }
 }
 

@@ -92,6 +92,10 @@
     return !hasExistingToolbar;
   }
 
+  function shouldRenderMenuOnToolbarEnsure({ hasExistingMenu }) {
+    return !hasExistingMenu;
+  }
+
   function getZoomFromPointerPosition(rect, clientX, fallbackZoom = MIN_ZOOM) {
     if (!rect || rect.width <= 0) {
       return fallbackZoom;
@@ -323,6 +327,7 @@
     parseZoomPercentInput,
     shouldBlockYouTubeShortcutForZoomInput,
     shouldInterceptPanWheel,
+    shouldRenderMenuOnToolbarEnsure,
     shouldRenderToolbarOnEnsure,
     shouldReapplyTransformAfterMutation,
     shouldResetForVideoKey,

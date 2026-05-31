@@ -28,6 +28,7 @@ const {
   shouldShowTransientViewportControls,
   shouldSuppressClickAfterPanEnd,
   shouldBlockYouTubeShortcutForZoomInput,
+  shouldRenderMenuOnToolbarEnsure,
   shouldRenderToolbarOnEnsure,
   shouldTogglePanShortcut,
   toggleMirrorState,
@@ -129,6 +130,11 @@ test("shouldBlockYouTubeShortcutForZoomInput blocks shortcuts only while zoom in
 test("shouldRenderToolbarOnEnsure renders only when toolbar is newly created", () => {
   assert.equal(shouldRenderToolbarOnEnsure({ hasExistingToolbar: false }), true);
   assert.equal(shouldRenderToolbarOnEnsure({ hasExistingToolbar: true }), false);
+});
+
+test("shouldRenderMenuOnToolbarEnsure preserves an existing menu during toolbar remount", () => {
+  assert.equal(shouldRenderMenuOnToolbarEnsure({ hasExistingMenu: false }), true);
+  assert.equal(shouldRenderMenuOnToolbarEnsure({ hasExistingMenu: true }), false);
 });
 
 test("getZoomFromPointerPosition maps pointer x into the supported zoom range", () => {
