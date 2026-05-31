@@ -14,6 +14,7 @@ const {
   getViewportControlsActivityAfterPanToggle,
   getZoomFromPointerPosition,
   parseZoomPercentInput,
+  shouldBlockYouTubeShortcutForZoomInput,
   shouldInterceptPanWheel,
   shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
@@ -797,6 +798,18 @@ function onShortcutKeyDown(event) {
   togglePanMode();
 }
 
+function blockYouTubeShortcutFromZoomInput(event) {
+  if (!shouldBlockYouTubeShortcutForZoomInput({ target: event.target, activeElement: document.activeElement })) {
+    return;
+  }
+
+  event.stopImmediatePropagation();
+  if (event.type === "keydown" && event.key === "Enter") {
+    event.preventDefault();
+    event.target.blur();
+  }
+}
+
 function ensureToolbar() {
   if (!player) {
     return;
@@ -1055,6 +1068,9 @@ function start() {
   setInterval(sync, 800);
   window.addEventListener("yt-navigate-finish", sync);
   window.addEventListener("popstate", sync);
+  window.addEventListener("keydown", blockYouTubeShortcutFromZoomInput, true);
+  window.addEventListener("keyup", blockYouTubeShortcutFromZoomInput, true);
+  window.addEventListener("keypress", blockYouTubeShortcutFromZoomInput, true);
   window.addEventListener("keydown", onShortcutKeyDown, true);
   document.addEventListener("keydown", onShortcutKeyDown, true);
   document.addEventListener("pointerdown", closeMenuOnOutsidePointer, true);

@@ -27,6 +27,7 @@ const {
   shouldShowZoomTriggerText,
   shouldShowTransientViewportControls,
   shouldSuppressClickAfterPanEnd,
+  shouldBlockYouTubeShortcutForZoomInput,
   shouldTogglePanShortcut,
   toggleMirrorState,
 } = globalThis.YTVTTransform;
@@ -113,6 +114,15 @@ test("parseZoomPercentInput accepts numeric percent input and clamps it", () => 
   assert.equal(parseZoomPercentInput("600", 180), 500);
   assert.equal(parseZoomPercentInput("", 180), 180);
   assert.equal(parseZoomPercentInput("abc", 180), 180);
+});
+
+test("shouldBlockYouTubeShortcutForZoomInput blocks shortcuts only while zoom input is active", () => {
+  const zoomInput = { classList: { contains: (name) => name === "ytvt-zoom-value" } };
+  const otherInput = { classList: { contains: () => false } };
+
+  assert.equal(shouldBlockYouTubeShortcutForZoomInput({ target: zoomInput, activeElement: zoomInput }), true);
+  assert.equal(shouldBlockYouTubeShortcutForZoomInput({ target: zoomInput, activeElement: otherInput }), false);
+  assert.equal(shouldBlockYouTubeShortcutForZoomInput({ target: otherInput, activeElement: zoomInput }), false);
 });
 
 test("getZoomFromPointerPosition maps pointer x into the supported zoom range", () => {

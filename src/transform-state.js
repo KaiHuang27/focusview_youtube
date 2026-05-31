@@ -84,6 +84,10 @@
     return Math.round(clamp(parsed, MIN_ZOOM, MAX_ZOOM));
   }
 
+  function shouldBlockYouTubeShortcutForZoomInput({ target, activeElement }) {
+    return target === activeElement && target?.classList?.contains("ytvt-zoom-value") === true;
+  }
+
   function getZoomFromPointerPosition(rect, clientX, fallbackZoom = MIN_ZOOM) {
     if (!rect || rect.width <= 0) {
       return fallbackZoom;
@@ -313,6 +317,7 @@
     getZoomFromPointerPosition,
     normalizeRotation,
     parseZoomPercentInput,
+    shouldBlockYouTubeShortcutForZoomInput,
     shouldInterceptPanWheel,
     shouldReapplyTransformAfterMutation,
     shouldResetForVideoKey,
