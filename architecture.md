@@ -75,6 +75,7 @@ Manual Edge acceptance covers browser-specific behavior:
 - Confirm `Alt/Option + Shift + P` toggles Pan mode while focus is on the video page, and does nothing while typing in YouTube search or comments.
 - Confirm slider changes and Pan-mode wheel zoom update the zoom button text.
 - Confirm pressing and holding the wider zoom slider hit area, not only the thin track, starts dragging and keeps dragging until pointer release, even when the cursor moves above or below the track.
+- Confirm periodic YouTube DOM checks do not rebuild an already-mounted toolbar or menu while editing the Zoom value or dragging the slider.
 - Confirm the Rotation row itself does not show a row hover background; only the `0 / 90 / 180 / 270` buttons show their own hover or active state.
 - Confirm 90/270-degree rotation fits the rotated video inside the player frame at 100% zoom without cropping the rotated top/bottom or left/right edges.
 - Confirm panning stops at video-content edges and does not create extra black borders.

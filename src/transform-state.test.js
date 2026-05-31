@@ -28,6 +28,7 @@ const {
   shouldShowTransientViewportControls,
   shouldSuppressClickAfterPanEnd,
   shouldBlockYouTubeShortcutForZoomInput,
+  shouldRenderToolbarOnEnsure,
   shouldTogglePanShortcut,
   toggleMirrorState,
 } = globalThis.YTVTTransform;
@@ -123,6 +124,11 @@ test("shouldBlockYouTubeShortcutForZoomInput blocks shortcuts only while zoom in
   assert.equal(shouldBlockYouTubeShortcutForZoomInput({ target: zoomInput, activeElement: zoomInput }), true);
   assert.equal(shouldBlockYouTubeShortcutForZoomInput({ target: zoomInput, activeElement: otherInput }), false);
   assert.equal(shouldBlockYouTubeShortcutForZoomInput({ target: otherInput, activeElement: zoomInput }), false);
+});
+
+test("shouldRenderToolbarOnEnsure renders only when toolbar is newly created", () => {
+  assert.equal(shouldRenderToolbarOnEnsure({ hasExistingToolbar: false }), true);
+  assert.equal(shouldRenderToolbarOnEnsure({ hasExistingToolbar: true }), false);
 });
 
 test("getZoomFromPointerPosition maps pointer x into the supported zoom range", () => {

@@ -88,6 +88,10 @@
     return target === activeElement && target?.classList?.contains("ytvt-zoom-value") === true;
   }
 
+  function shouldRenderToolbarOnEnsure({ hasExistingToolbar }) {
+    return !hasExistingToolbar;
+  }
+
   function getZoomFromPointerPosition(rect, clientX, fallbackZoom = MIN_ZOOM) {
     if (!rect || rect.width <= 0) {
       return fallbackZoom;
@@ -319,6 +323,7 @@
     parseZoomPercentInput,
     shouldBlockYouTubeShortcutForZoomInput,
     shouldInterceptPanWheel,
+    shouldRenderToolbarOnEnsure,
     shouldReapplyTransformAfterMutation,
     shouldResetForVideoKey,
     shouldStartPanDrag,

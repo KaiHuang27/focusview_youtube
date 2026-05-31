@@ -16,6 +16,7 @@ const {
   parseZoomPercentInput,
   shouldBlockYouTubeShortcutForZoomInput,
   shouldInterceptPanWheel,
+  shouldRenderToolbarOnEnsure,
   shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
   shouldStartPanDrag,
@@ -818,6 +819,7 @@ function ensureToolbar() {
   const controlsHost = findControlsHost();
   const toolbarHost = controlsHost || player;
   const existing = document.querySelector(TOOLBAR_SELECTOR);
+  const shouldRenderToolbar = shouldRenderToolbarOnEnsure({ hasExistingToolbar: Boolean(existing) });
   toolbar = existing || document.createElement("div");
   toolbar.dataset.ytvtToolbar = "true";
   toolbar.className = controlsHost ? "ytvt-toolbar is-native" : "ytvt-toolbar is-floating";
@@ -846,7 +848,9 @@ function ensureToolbar() {
     toolbarHost.append(toolbar);
   }
 
-  renderToolbar();
+  if (shouldRenderToolbar) {
+    renderToolbar();
+  }
 }
 
 function onPointerDown(event) {
