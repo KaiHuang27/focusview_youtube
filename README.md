@@ -10,7 +10,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 - Rotate video by 0, 90, 180, or 270 degrees, fitting 90/270-degree rotations inside the player frame first.
 - Mirror horizontally.
 - Pan mode for dragging a zoomed video and using the mouse wheel to zoom without adding extra black borders.
-- Top-right position map when Pan mode turns on or during recent Pan activity, showing the visible area inside the original video frame.
+- Top-right position map when Pan mode turns on or during recent Pan activity, showing the visible area inside the rotated video frame.
 - Reset transform state when switching to another YouTube video.
 
 ## Test in Microsoft Edge
@@ -43,7 +43,7 @@ Pan movement is bounded by the current zoom level and the Source Video content a
 
 When rotating 90 or 270 degrees, 100% zoom means the rotated video is first scaled to fit inside the player frame. This prevents a landscape video from being cut off at the top and bottom after rotating to portrait orientation.
 
-When Pan mode turns on, while dragging, or while using the mouse wheel to zoom in Pan mode, a low-emphasis Source Map appears in the top-right corner of the player. The Source Map follows the Source Video aspect ratio, while the white Viewport Indicator follows the current Player Viewport, zoom, and pan. The Viewport Indicator can extend outside the Source Map to show visible letterbox or pillarbox space. The overlay position is anchored from the 100% Player Viewport bounds so zooming and panning update only the indicator, not the Source Map or settings button position. The position map and settings button stay visible briefly after the last Pan activity or mouse movement, then hide like YouTube's native controls. If the transform menu is open, the position map and settings button remain visible until the menu closes.
+When Pan mode turns on, while dragging, or while using the mouse wheel to zoom in Pan mode, a low-emphasis Source Map appears in the top-right corner of the player. The Source Map follows the displayed Source Video aspect ratio: 90- and 270-degree rotations swap its width and height. The white Viewport Indicator follows the same rotated geometry plus the current Player Viewport, zoom, and pan. The Viewport Indicator can extend outside the Source Map to show visible letterbox or pillarbox space. The overlay position is anchored from the 100% Player Viewport bounds so zooming and panning update only the indicator, not the Source Map or settings button position. The position map and settings button stay visible briefly after the last Pan activity or mouse movement, then hide like YouTube's native controls. If the transform menu is open, the position map and settings button remain visible until the menu closes.
 
 When Pan is off, clicking the video keeps YouTube's normal play and pause behavior, and the mouse wheel is not intercepted by the extension. When Pan is on, quick video clicks still play or pause normally, while long-press drag gestures move the frame and suppress the click generated when the pointer is released. The extension intercepts wheel events at the player level to avoid triggering YouTube's native fullscreen recommendations or extra controls.
 

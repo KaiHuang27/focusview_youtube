@@ -117,6 +117,16 @@
     };
   }
 
+  function createDisplayedSourceSize(sourceWidth, sourceHeight, rotation = 0) {
+    const normalizedRotation = normalizeRotation(rotation);
+    const isSideways = normalizedRotation === 90 || normalizedRotation === 270;
+
+    return {
+      width: isSideways ? sourceHeight : sourceWidth,
+      height: isSideways ? sourceWidth : sourceHeight,
+    };
+  }
+
   function clampPanState(state, width, height) {
     const scale = getEffectiveScale(state, width, height);
     if (scale <= 1 || width <= 0 || height <= 0) {
@@ -138,7 +148,8 @@
 
   function clampPanStateToViewport(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight) {
     const scale = state.zoom / 100;
-    const fittedSource = createFittedSourceSize(sourceWidth, sourceHeight, viewportWidth, viewportHeight);
+    const displayedSource = createDisplayedSourceSize(sourceWidth, sourceHeight, state.rotation);
+    const fittedSource = createFittedSourceSize(displayedSource.width, displayedSource.height, viewportWidth, viewportHeight);
     if (!fittedSource || scale <= 1) {
       return { ...state, panX: 0, panY: 0 };
     }
@@ -240,12 +251,13 @@
     );
   }
 
-  function createViewportMapSize(width, height) {
+  function createViewportMapSize(width, height, rotation = 0) {
     if (width <= 0 || height <= 0) {
       return DEFAULT_VIEWPORT_MAP_SIZE;
     }
 
-    const aspect = width / height;
+    const displayedSource = createDisplayedSourceSize(width, height, rotation);
+    const aspect = displayedSource.width / displayedSource.height;
     let mapWidth = VIEWPORT_MAP_BOUNDS.maxWidth;
     let mapHeight = mapWidth / aspect;
 
@@ -262,7 +274,8 @@
 
   function createViewportIndicator(state, width, height, viewportWidth = width, viewportHeight = height) {
     const scale = state.zoom / 100;
-    const fittedSource = createFittedSourceSize(width, height, viewportWidth, viewportHeight);
+    const displayedSource = createDisplayedSourceSize(width, height, state.rotation);
+    const fittedSource = createFittedSourceSize(displayedSource.width, displayedSource.height, viewportWidth, viewportHeight);
     if (scale <= 0 || !fittedSource) {
       return { x: 0, y: 0, width: 1, height: 1 };
     }
@@ -317,6 +330,7 @@
     applyZoomDelta,
     clampPanState,
     clampPanStateToViewport,
+    createDisplayedSourceSize,
     createViewportIndicator,
     createViewportOverlayLayout,
     createViewportMapSize,

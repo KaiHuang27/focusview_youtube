@@ -293,7 +293,7 @@ function renderViewportMap() {
 
   const shouldShowControls = areViewportControlsVisible();
   const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
-  const mapSize = createViewportMapSize(sourceWidth, sourceHeight);
+  const mapSize = createViewportMapSize(sourceWidth, sourceHeight, state.rotation);
   const indicator = createViewportIndicator(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
   const anchorIndicator = createViewportIndicator(
     { ...state, zoom: 100, panX: 0, panY: 0 },

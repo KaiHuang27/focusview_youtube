@@ -7,6 +7,7 @@ const {
   applyZoomDelta,
   clampPanState,
   clampPanStateToViewport,
+  createDisplayedSourceSize,
   createViewportIndicator,
   createViewportOverlayLayout,
   createViewportMapSize,
@@ -186,6 +187,20 @@ test("createViewportMapSize follows source video ratio within min and max bounds
   assert.deepEqual(createViewportMapSize(0, 0), { width: 160, height: 90 });
 });
 
+test("createDisplayedSourceSize swaps source dimensions for sideways rotation", () => {
+  assert.deepEqual(createDisplayedSourceSize(1920, 1080, 0), { width: 1920, height: 1080 });
+  assert.deepEqual(createDisplayedSourceSize(1920, 1080, 90), { width: 1080, height: 1920 });
+  assert.deepEqual(createDisplayedSourceSize(1920, 1080, 180), { width: 1920, height: 1080 });
+  assert.deepEqual(createDisplayedSourceSize(1920, 1080, 270), { width: 1080, height: 1920 });
+});
+
+test("createViewportMapSize follows the rotated source-video ratio", () => {
+  assert.deepEqual(createViewportMapSize(1920, 1080, 0), { width: 160, height: 90 });
+  assert.deepEqual(createViewportMapSize(1920, 1080, 90), { width: 54, height: 96 });
+  assert.deepEqual(createViewportMapSize(1920, 1080, 180), { width: 160, height: 90 });
+  assert.deepEqual(createViewportMapSize(1920, 1080, 270), { width: 54, height: 96 });
+});
+
 test("createViewportIndicator can exceed the source map for wider or taller player viewports", () => {
   assert.deepEqual(
     createViewportIndicator(createDefaultState(), 1920, 1080, 1920, 1080),
@@ -201,6 +216,13 @@ test("createViewportIndicator can exceed the source map for wider or taller play
   );
   assert.deepEqual(
     createViewportIndicator(createDefaultState(), 1080, 1920, 1920, 1080),
+    { x: -1.0802, y: 0, width: 3.1605, height: 1 }
+  );
+});
+
+test("createViewportIndicator uses rotated source geometry", () => {
+  assert.deepEqual(
+    createViewportIndicator({ ...createDefaultState(), rotation: 90 }, 1920, 1080, 1920, 1080),
     { x: -1.0802, y: 0, width: 3.1605, height: 1 }
   );
 });
@@ -268,6 +290,32 @@ test("createViewportOverlayLayout can anchor position while the viewport indicat
   );
 });
 
+test("createViewportOverlayLayout keeps the settings gap stable for rotated source geometry", () => {
+  const anchorIndicator = createViewportIndicator(
+    { ...createDefaultState(), rotation: 90 },
+    1920,
+    1080,
+    1920,
+    1080
+  );
+  const zoomedIndicator = createViewportIndicator(
+    { ...createDefaultState(), rotation: 90, zoom: 200 },
+    1920,
+    1080,
+    1920,
+    1080
+  );
+
+  assert.deepEqual(
+    createViewportOverlayLayout({
+      mapSize: createViewportMapSize(1920, 1080, 90),
+      indicator: zoomedIndicator,
+      anchorIndicator,
+    }),
+    { mapTop: 50, mapRight: 81, settingsTop: 154, settingsRight: 92 }
+  );
+});
+
 test("createTransformMenuTop positions the menu eight pixels below the settings button", () => {
   assert.equal(createTransformMenuTop({ settingsTop: 148, settingsButtonHeight: 32 }), 188);
 });
@@ -317,6 +365,19 @@ test("clampPanStateToViewport blocks horizontal pan while vertical source video 
       1080
     ),
     { ...createDefaultState(), zoom: 200, panX: 0, panY: 540 }
+  );
+});
+
+test("clampPanStateToViewport blocks pan into black borders after sideways rotation", () => {
+  assert.deepEqual(
+    clampPanStateToViewport(
+      { ...createDefaultState(), rotation: 90, zoom: 200, panX: 500, panY: 500 },
+      1920,
+      1080,
+      1920,
+      1080
+    ),
+    { ...createDefaultState(), rotation: 90, zoom: 200, panX: 0, panY: 500 }
   );
 });
 
