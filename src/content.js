@@ -8,6 +8,7 @@ const {
   createViewportIndicator,
   createViewportOverlayLayout,
   createViewportMapSize,
+  createTransformMenuTop,
   createDefaultState,
   createImportantTransformCssText,
   formatZoomPercent,
@@ -309,12 +310,25 @@ function renderViewportMap() {
   viewportMap.style.height = `${mapSize.height}px`;
   settingsButton.style.top = `${overlayLayout.settingsTop}px`;
   settingsButton.style.right = `${overlayLayout.settingsRight}px`;
+  positionTransformMenu();
   indicatorElement.style.left = `${indicator.x * 100}%`;
   indicatorElement.style.top = `${indicator.y * 100}%`;
   indicatorElement.style.width = `${indicator.width * 100}%`;
   indicatorElement.style.height = `${indicator.height * 100}%`;
   viewportMap.hidden = !shouldShowControls;
   settingsButton.hidden = !shouldShowControls;
+}
+
+function positionTransformMenu() {
+  if (!player || !settingsButton || !transformMenu) {
+    return;
+  }
+
+  const menuTop = createTransformMenuTop({
+    settingsTop: settingsButton.offsetTop,
+    settingsButtonHeight: settingsButton.offsetHeight,
+  });
+  transformMenu.style.top = `${menuTop}px`;
 }
 
 function syncSettingsButtonState() {
@@ -762,7 +776,7 @@ function renderMenu() {
     createMenuRow("Rotation", rotationGroup),
     createClickableMenuRow("Mirror", createToggle("Mirror horizontally", state.flipX, toggleMirror), toggleMirror)
   );
-
+  positionTransformMenu();
 }
 
 function closeMenuOnOutsidePointer(event) {

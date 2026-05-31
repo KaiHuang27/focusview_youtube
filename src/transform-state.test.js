@@ -10,6 +10,7 @@ const {
   createViewportIndicator,
   createViewportOverlayLayout,
   createViewportMapSize,
+  createTransformMenuTop,
   createDefaultState,
   createImportantTransformCssText,
   formatZoomPercent,
@@ -265,6 +266,10 @@ test("createViewportOverlayLayout can anchor position while the viewport indicat
     }),
     { mapTop: 50, mapRight: 81, settingsTop: 154, settingsRight: 92 }
   );
+});
+
+test("createTransformMenuTop positions the menu eight pixels below the settings button", () => {
+  assert.equal(createTransformMenuTop({ settingsTop: 148, settingsButtonHeight: 32 }), 188);
 });
 
 test("clampPanState centers pan at 100 percent zoom", () => {

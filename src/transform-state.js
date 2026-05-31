@@ -309,6 +309,10 @@
     };
   }
 
+  function createTransformMenuTop({ settingsTop, settingsButtonHeight, menuGap = 8 }) {
+    return Math.ceil(settingsTop + settingsButtonHeight + menuGap);
+  }
+
   globalThis.YTVTTransform = {
     applyZoomDelta,
     clampPanState,
@@ -316,6 +320,7 @@
     createViewportIndicator,
     createViewportOverlayLayout,
     createViewportMapSize,
+    createTransformMenuTop,
     createDefaultState,
     createImportantTransformCssText,
     createTransformStyle,
