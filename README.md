@@ -30,7 +30,7 @@ The zoom button is placed in YouTube's native right-side control bar, at the lef
 
 The transform menu opens next to the native-style settings icon button centered below the top-right position map while the transient Pan controls are visible. It follows YouTube's settings-menu density: rounded gray panel, compact centered text rows, a compact top `- / slider / +` zoom control, and a small red `Reset` action in the top-right corner.
 
-- `Zoom`: changes zoom between 100% and 500%.
+- `Zoom`: changes zoom between 100% and 500%. Click the percentage value to select all text, type a number such as `150` or `150%`, then press Enter or leave the field.
 - Zoom slider drag uses a custom slider with a wider hit area around the track and keeps tracking pointer or mouse movement at the document level until release. If the browser cancels a pointer stream during a trackpad long press, it falls back to mouse tracking instead of stopping the drag.
 - `Rotation`: rotates the video by `0`, `90`, `180`, or `270` degrees.
 - `Mirror`: mirrors the video horizontally. Click either the switch or anywhere on the Mirror row.
