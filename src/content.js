@@ -54,6 +54,7 @@ let viewportControlsLastActivityAt = 0;
 let viewportControlsHideTimer = 0;
 let isMenuOpen = false;
 let lastTransformCssText = "";
+let cleanupActiveSliderDrag = null;
 
 function getTransformStyleElement() {
   let styleElement = document.getElementById(TRANSFORM_STYLE_ID);
@@ -191,6 +192,7 @@ function clearTransform() {
 }
 
 function clearOverlayElements() {
+  cleanupSliderDrag();
   viewportMap?.remove();
   viewportMap = null;
   settingsButton?.remove();
@@ -206,6 +208,12 @@ function clearClickSuppression() {
   clearTimeout(suppressVideoClickTimer);
   suppressVideoClickTimer = 0;
   suppressNextVideoClick = false;
+}
+
+function cleanupSliderDrag() {
+  const cleanup = cleanupActiveSliderDrag;
+  cleanupActiveSliderDrag = null;
+  cleanup?.({ shouldSyncControls: false });
 }
 
 function areViewportControlsVisible() {
@@ -226,6 +234,9 @@ function clearPanLongPressTimer() {
 
 function cancelPanGesture() {
   clearPanLongPressTimer();
+  if (dragStart?.video?.hasPointerCapture?.(dragStart.pointerId)) {
+    dragStart.video.releasePointerCapture(dragStart.pointerId);
+  }
   dragStart = null;
 }
 
@@ -246,9 +257,12 @@ function scheduleViewportControlsHide() {
   }, VIEWPORT_CONTROLS_HIDE_DELAY_MS);
 }
 
-function markViewportControlsActivity() {
+function markViewportControlsActivity({ shouldRender = true } = {}) {
+  const controlsWereVisible = areViewportControlsVisible();
   viewportControlsLastActivityAt = Date.now();
-  renderViewportMap();
+  if (shouldRender || !controlsWereVisible) {
+    renderViewportMap();
+  }
   scheduleViewportControlsHide();
 }
 
@@ -523,6 +537,26 @@ function createZoomPanel() {
     updateZoomFromPointer(event);
   };
 
+  const cleanupDrag = ({ shouldSyncControls = true } = {}) => {
+    isSliderDragging = false;
+    activeSliderPointerId = null;
+    ignoreSliderMouseUpUntil = 0;
+    document.removeEventListener("pointermove", onSliderPointerMove, true);
+    document.removeEventListener("pointerup", stopSliderDrag, true);
+    document.removeEventListener("pointercancel", onSliderPointerCancel, true);
+    document.removeEventListener("mousemove", onSliderMouseMove, true);
+    document.removeEventListener("mouseup", stopSliderDrag, true);
+    document.removeEventListener("selectstart", blockSliderGesture, true);
+    document.removeEventListener("dragstart", blockSliderGesture, true);
+    document.removeEventListener("contextmenu", blockSliderGesture, true);
+    if (cleanupActiveSliderDrag === cleanupDrag) {
+      cleanupActiveSliderDrag = null;
+    }
+    if (shouldSyncControls) {
+      syncZoomControls();
+    }
+  };
+
   const stopSliderDrag = (event) => {
     if (!isSliderDragging) {
       return;
@@ -536,17 +570,7 @@ function createZoomPanel() {
 
     event.preventDefault();
     event.stopPropagation();
-    isSliderDragging = false;
-    activeSliderPointerId = null;
-    document.removeEventListener("pointermove", onSliderPointerMove, true);
-    document.removeEventListener("pointerup", stopSliderDrag, true);
-    document.removeEventListener("pointercancel", onSliderPointerCancel, true);
-    document.removeEventListener("mousemove", onSliderMouseMove, true);
-    document.removeEventListener("mouseup", stopSliderDrag, true);
-    document.removeEventListener("selectstart", blockSliderGesture, true);
-    document.removeEventListener("dragstart", blockSliderGesture, true);
-    document.removeEventListener("contextmenu", blockSliderGesture, true);
-    syncZoomControls();
+    cleanupDrag();
   };
 
   const onSliderPointerCancel = (event) => {
@@ -583,6 +607,7 @@ function createZoomPanel() {
     event.stopPropagation();
     isSliderDragging = true;
     activeSliderPointerId = event.pointerId;
+    cleanupActiveSliderDrag = cleanupDrag;
     document.addEventListener("pointermove", onSliderPointerMove, true);
     document.addEventListener("pointerup", stopSliderDrag, true);
     document.addEventListener("pointercancel", onSliderPointerCancel, true);
@@ -600,6 +625,7 @@ function createZoomPanel() {
     event.preventDefault();
     event.stopPropagation();
     isSliderDragging = true;
+    cleanupActiveSliderDrag = cleanupDrag;
     document.addEventListener("mousemove", onSliderMouseMove, true);
     document.addEventListener("mouseup", stopSliderDrag, true);
     document.addEventListener("selectstart", blockSliderGesture, true);
@@ -763,6 +789,7 @@ function renderToolbar({ shouldRenderMenu = true } = {}) {
 
 function renderMenu() {
   if (!isMenuOpen) {
+    cleanupSliderDrag();
     transformMenu?.remove();
     transformMenu = null;
     return;
@@ -798,6 +825,7 @@ function renderMenu() {
   rotationGroup.className = "ytvt-segment";
   ROTATIONS.forEach((rotation) => rotationGroup.append(createSegment(rotation)));
 
+  cleanupSliderDrag();
   transformMenu.replaceChildren(
     reset,
     createZoomPanel(),
@@ -950,11 +978,11 @@ function onPointerMove(event) {
 }
 
 function onPlayerPointerMove() {
-  if (!state.panMode || !areViewportControlsVisible()) {
+  if (!state.panMode) {
     return;
   }
 
-  markViewportControlsActivity();
+  markViewportControlsActivity({ shouldRender: false });
 }
 
 function onWheel(event) {
@@ -974,7 +1002,7 @@ function onWheel(event) {
 
   blockYouTubeWheel(event);
   const direction = event.deltaY < 0 ? 1 : -1;
-  markViewportControlsActivity();
+  markViewportControlsActivity({ shouldRender: false });
   setZoom(applyZoomDelta(state.zoom, direction));
 }
 
@@ -1009,23 +1037,30 @@ function onVideoClick(event) {
   suppressVideoClickTimer = 0;
 }
 
+function unbindVideo() {
+  cleanupSliderDrag();
+  cancelPanGesture();
+  clearClickSuppression();
+  if (video) {
+    video.removeEventListener("pointerdown", onPointerDown);
+    video.removeEventListener("pointermove", onPointerMove);
+    video.removeEventListener("pointerup", endDrag);
+    video.removeEventListener("pointercancel", endDrag);
+    video.removeEventListener("click", onVideoClick, true);
+    video.style.cursor = "";
+  }
+  videoStyleObserver?.disconnect();
+  videoStyleObserver = null;
+  video = null;
+}
+
 function bindVideo(nextVideo) {
   if (video === nextVideo) {
     applyTransform();
     return;
   }
 
-  if (video) {
-    cancelPanGesture();
-    video.removeEventListener("pointerdown", onPointerDown);
-    video.removeEventListener("pointermove", onPointerMove);
-    video.removeEventListener("pointerup", endDrag);
-    video.removeEventListener("pointercancel", endDrag);
-    video.removeEventListener("click", onVideoClick, true);
-    videoStyleObserver?.disconnect();
-    videoStyleObserver = null;
-  }
-
+  unbindVideo();
   video = nextVideo;
   video.addEventListener("pointerdown", onPointerDown);
   video.addEventListener("pointermove", onPointerMove);
@@ -1056,8 +1091,7 @@ function sync() {
     clearTransform();
     toolbar?.remove();
     toolbar = null;
-    videoStyleObserver?.disconnect();
-    videoStyleObserver = null;
+    unbindVideo();
     if (reapplyFrame) {
       cancelAnimationFrame(reapplyFrame);
       reapplyFrame = 0;
@@ -1068,6 +1102,7 @@ function sync() {
     state = createDefaultState();
     isMenuOpen = false;
     currentVideoKey = "";
+    player = null;
     return;
   }
 
