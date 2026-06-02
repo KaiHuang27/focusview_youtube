@@ -5,7 +5,6 @@ await import("./transform-state.js");
 
 const {
   applyZoomDelta,
-  clampPanState,
   clampPanStateToViewport,
   createDisplayedSourceSize,
   createViewportCenteredZoomState,
@@ -43,7 +42,6 @@ test("createDefaultState returns reset video transform values", () => {
     zoom: 100,
     rotation: 0,
     flipX: false,
-    flipY: false,
     panX: 0,
     panY: 0,
     panMode: false,
@@ -57,18 +55,17 @@ test("createTransformStyle converts zoom percentage to scale", () => {
   );
 });
 
-test("createTransformStyle combines pan, rotation, and flips", () => {
+test("createTransformStyle combines pan, rotation, and horizontal mirror", () => {
   assert.equal(
     createTransformStyle({
       ...createDefaultState(),
       zoom: 200,
       rotation: 90,
       flipX: true,
-      flipY: true,
       panX: 12,
       panY: -8,
     }).transform,
-    "translate(12px, -8px) rotate(90deg) scale(-2, -2)"
+    "translate(12px, -8px) rotate(90deg) scale(-2, 2)"
   );
 });
 
@@ -370,41 +367,6 @@ test("createTransformMenuTop positions the menu eight pixels below the settings 
   assert.equal(createTransformMenuTop({ settingsTop: 148, settingsButtonHeight: 32 }), 188);
 });
 
-test("clampPanState centers pan at 100 percent zoom", () => {
-  assert.deepEqual(
-    clampPanState({ ...createDefaultState(), panX: 240, panY: -120 }, 1280, 720),
-    createDefaultState()
-  );
-});
-
-test("clampPanState centers pan when rotated fit leaves empty side space", () => {
-  assert.deepEqual(
-    clampPanState({ ...createDefaultState(), rotation: 90, panX: 240, panY: -120 }, 1920, 1080),
-    { ...createDefaultState(), rotation: 90 }
-  );
-});
-
-test("clampPanState uses rotated bounds when zoomed after fit", () => {
-  assert.deepEqual(
-    clampPanState({ ...createDefaultState(), rotation: 90, zoom: 200, panX: 900, panY: -900 }, 1920, 1080),
-    { ...createDefaultState(), rotation: 90, zoom: 200, panX: 0, panY: -540 }
-  );
-});
-
-test("clampPanState limits pan to the scaled video bounds", () => {
-  assert.deepEqual(
-    clampPanState({ ...createDefaultState(), zoom: 200, panX: 900, panY: -500 }, 1280, 720),
-    { ...createDefaultState(), zoom: 200, panX: 640, panY: -360 }
-  );
-});
-
-test("clampPanState clamps pan to smaller bounds after zooming out", () => {
-  assert.deepEqual(
-    clampPanState({ ...createDefaultState(), zoom: 150, panX: 640, panY: 360 }, 1280, 720),
-    { ...createDefaultState(), zoom: 150, panX: 320, panY: 180 }
-  );
-});
-
 test("clampPanStateToViewport blocks horizontal pan while vertical source video still has side bars", () => {
   assert.deepEqual(
     clampPanStateToViewport(
@@ -586,11 +548,7 @@ test("shouldSuppressClickAfterPanEnd suppresses only completed drag gestures", (
 
 test("toggleMirrorState toggles horizontal mirror only", () => {
   assert.deepEqual(toggleMirrorState(createDefaultState()), { ...createDefaultState(), flipX: true });
-  assert.deepEqual(toggleMirrorState({ ...createDefaultState(), flipX: true, flipY: true }), {
-    ...createDefaultState(),
-    flipX: false,
-    flipY: true,
-  });
+  assert.deepEqual(toggleMirrorState({ ...createDefaultState(), flipX: true }), createDefaultState());
 });
 
 test("shouldTogglePanShortcut accepts only Alt Shift P outside editable targets", () => {

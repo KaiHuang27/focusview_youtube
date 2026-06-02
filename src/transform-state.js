@@ -23,7 +23,6 @@
       zoom: 100,
       rotation: 0,
       flipX: false,
-      flipY: false,
       panX: 0,
       panY: 0,
       panMode: false,
@@ -59,10 +58,9 @@
   function createTransformStyle(state, sourceWidth = 0, sourceHeight = 0, viewportWidth = sourceWidth, viewportHeight = sourceHeight) {
     const scale = getEffectiveScale(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
     const scaleX = state.flipX ? -scale : scale;
-    const scaleY = state.flipY ? -scale : scale;
 
     return {
-      transform: `translate(${state.panX}px, ${state.panY}px) rotate(${normalizeRotation(state.rotation)}deg) scale(${scaleX}, ${scaleY})`,
+      transform: `translate(${state.panX}px, ${state.panY}px) rotate(${normalizeRotation(state.rotation)}deg) scale(${scaleX}, ${scale})`,
       transformOrigin: "center center",
     };
   }
@@ -161,25 +159,6 @@
     return {
       width: isSideways ? sourceHeight : sourceWidth,
       height: isSideways ? sourceWidth : sourceHeight,
-    };
-  }
-
-  function clampPanState(state, width, height) {
-    const scale = getEffectiveScale(state, width, height);
-    if (scale <= 1 || width <= 0 || height <= 0) {
-      return { ...state, panX: 0, panY: 0 };
-    }
-
-    const isSideways = state.rotation === 90 || state.rotation === 270;
-    const scaledWidth = (isSideways ? height : width) * scale;
-    const scaledHeight = (isSideways ? width : height) * scale;
-    const maxPanX = Math.max(0, (scaledWidth - width) / 2);
-    const maxPanY = Math.max(0, (scaledHeight - height) / 2);
-
-    return {
-      ...state,
-      panX: Math.round(clamp(state.panX, -maxPanX, maxPanX)),
-      panY: Math.round(clamp(state.panY, -maxPanY, maxPanY)),
     };
   }
 
@@ -282,7 +261,6 @@
       state.zoom !== defaultState.zoom ||
       state.rotation !== defaultState.rotation ||
       state.flipX !== defaultState.flipX ||
-      state.flipY !== defaultState.flipY ||
       state.panX !== defaultState.panX ||
       state.panY !== defaultState.panY
     );
@@ -365,7 +343,6 @@
 
   globalThis.YTVTTransform = {
     applyZoomDelta,
-    clampPanState,
     clampPanStateToViewport,
     createDisplayedSourceSize,
     createViewportCenteredZoomState,

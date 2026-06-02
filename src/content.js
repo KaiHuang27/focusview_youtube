@@ -663,7 +663,7 @@ function createZoomPanel() {
   return panel;
 }
 
-function createMenuRow(label, control, value = "") {
+function createMenuRow(label, control) {
   const row = document.createElement("div");
   row.className = "ytvt-menu-row";
 
@@ -671,15 +671,11 @@ function createMenuRow(label, control, value = "") {
   labelElement.className = "ytvt-menu-label";
   labelElement.textContent = label;
 
-  const valueElement = document.createElement("span");
-  valueElement.className = "ytvt-menu-value";
-  valueElement.textContent = value;
-
   const controlWrap = document.createElement("div");
   controlWrap.className = "ytvt-menu-control";
   controlWrap.append(control);
 
-  row.append(labelElement, valueElement, controlWrap);
+  row.append(labelElement, controlWrap);
   return row;
 }
 
