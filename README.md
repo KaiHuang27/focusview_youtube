@@ -18,7 +18,7 @@ Microsoft Edge / Chrome extension for transforming the YouTube video frame witho
 1. Open `edge://extensions`.
 2. Turn on **Developer mode**.
 3. Click **Load unpacked**.
-4. Select this project folder: `/Users/kai/Documents/New project 2`.
+4. Select the folder that contains this project's `manifest.json`.
 5. Open a normal YouTube video page, such as `https://www.youtube.com/watch?v=...`.
 6. Click the magnifier button in YouTube's native control bar to turn Pan mode on or off.
 7. Turn on Pan mode, confirm the position map and settings button appear, then click the settings button below the map to open the transform menu.
@@ -32,6 +32,7 @@ The transform menu opens `8px` below the native-style settings icon button while
 
 - `Zoom`: changes zoom between 100% and 500%. Click the percentage value to select all text, type a number such as `150` or `150%`, then press Enter or leave the field. While this field is focused, keyboard input is blocked from YouTube's native number-key seek shortcuts.
 - Zoom slider drag uses a custom slider with a wider hit area around the track and keeps tracking pointer or mouse movement at the document level until release. If the browser cancels a pointer stream during a trackpad long press, it falls back to mouse tracking instead of stopping the drag.
+- Focus the Zoom slider and use arrow keys to change zoom in 5% steps. `Home` returns to 100%, and `End` moves to 500%. These keys are stopped before they reach YouTube's native player controls.
 - Periodic YouTube DOM checks preserve the mounted menu while it remains valid, including when YouTube rebuilds its native control bar and the extension remounts the toolbar button. Editing the zoom value and holding the slider are not interrupted.
 - `Rotation`: rotates the video by `0`, `90`, `180`, or `270` degrees.
 - `Mirror`: mirrors the video horizontally. Click either the switch or anywhere on the Mirror row.
@@ -43,13 +44,13 @@ Zoom changes preserve the Source Video content currently shown at the Player Vie
 
 When rotating 90 or 270 degrees, 100% zoom means the Source Video is first contain-fit into the Player Viewport, then the rotated content is scaled to fit the player frame. This prevents a landscape video from being cut off after rotating to portrait orientation and lets a portrait video expand correctly after rotating to landscape orientation.
 
-When Pan mode turns on, while dragging, or while using the mouse wheel to zoom in Pan mode, a low-emphasis Source Map appears in the top-right corner of the player. The Source Map follows the displayed Source Video aspect ratio: 90- and 270-degree rotations swap its width and height. The transparent white-outline Viewport Indicator follows the same rotated geometry plus the current Player Viewport, zoom, and pan. The Viewport Indicator can extend outside the Source Map to show visible letterbox or pillarbox space without making that black-border region look like Source Video content. The overlay position is anchored from the 100% Player Viewport bounds so zooming and panning update only the indicator, not the Source Map or settings button position. The position map and settings button stay visible briefly after the last Pan activity or mouse movement, then hide like YouTube's native controls. If the transform menu is open, the position map and settings button remain visible until the menu closes.
+When Pan mode turns on, while dragging, or while using the mouse wheel to zoom in Pan mode, a low-emphasis Source Map appears in the top-right corner of the player. The Source Map follows the displayed Source Video aspect ratio: 90- and 270-degree rotations swap its width and height. The transparent white-outline Viewport Indicator follows the same rotated geometry plus the current Player Viewport, zoom, and pan. The Viewport Indicator can extend outside the Source Map to show visible letterbox or pillarbox space without making that black-border region look like Source Video content. The overlay position is anchored from the 100% Player Viewport bounds so zooming and panning update only the indicator, not the Source Map or settings button position. The position map and settings button stay visible briefly after the last Pan activity or mouse movement, then hide like YouTube's native controls. Moving the pointer inside the player shows them again while Pan mode remains active. If the transform menu is open, the position map and settings button remain visible until the menu closes.
 
 When Pan is off, clicking the video keeps YouTube's normal play and pause behavior, and the mouse wheel is not intercepted by the extension. When Pan is on, quick video clicks still play or pause normally, while long-press drag gestures move the frame and suppress the click generated when the pointer is released. The extension intercepts wheel events at the player level to avoid triggering YouTube's native fullscreen recommendations or extra controls.
 
 Wheel events inside the transform menu are blocked from YouTube so the menu does not accidentally trigger native player behavior.
 
-During fullscreen changes, YouTube may rewrite the video element's inline style. The extension keeps the active transform in its own `!important` stylesheet rule and still reapplies across the next few animation frames, so fullscreen transitions do not briefly fall back to the original video size.
+During fullscreen changes, YouTube may rewrite the video element's inline style. The extension keeps an active transform in its own `!important` stylesheet rule and still reapplies across the next few animation frames, so fullscreen transitions do not briefly fall back to the original video size. When no transform is active, the extension clears that rule and leaves YouTube's native video style alone. Leaving a watch page or switching the active video also removes temporary player listeners and slider-drag listeners.
 
 ## Development
 
