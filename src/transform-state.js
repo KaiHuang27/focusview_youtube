@@ -125,6 +125,23 @@
     return Math.round(MIN_ZOOM + ratio * (MAX_ZOOM - MIN_ZOOM));
   }
 
+  function getZoomFromSliderKey(key, currentZoom) {
+    if (key === "Home") {
+      return MIN_ZOOM;
+    }
+    if (key === "End") {
+      return MAX_ZOOM;
+    }
+    if (key === "ArrowLeft" || key === "ArrowDown") {
+      return applyZoomDelta(currentZoom, -1);
+    }
+    if (key === "ArrowRight" || key === "ArrowUp") {
+      return applyZoomDelta(currentZoom, 1);
+    }
+
+    return null;
+  }
+
   function createFittedSourceSize(sourceWidth, sourceHeight, viewportWidth, viewportHeight) {
     if (sourceWidth <= 0 || sourceHeight <= 0 || viewportWidth <= 0 || viewportHeight <= 0) {
       return null;
@@ -362,6 +379,7 @@
     formatZoomPercent,
     getViewportControlsActivityAfterPanToggle,
     getRotationFitScale,
+    getZoomFromSliderKey,
     getZoomFromPointerPosition,
     normalizeRotation,
     parseZoomPercentInput,

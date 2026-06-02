@@ -14,6 +14,7 @@ const {
   createImportantTransformCssText,
   formatZoomPercent,
   getViewportControlsActivityAfterPanToggle,
+  getZoomFromSliderKey,
   getZoomFromPointerPosition,
   parseZoomPercentInput,
   shouldBlockYouTubeShortcutForZoomInput,
@@ -497,6 +498,8 @@ function createZoomPanel() {
   sliderHitArea.setAttribute("aria-label", "Zoom");
   sliderHitArea.setAttribute("aria-valuemin", "100");
   sliderHitArea.setAttribute("aria-valuemax", "500");
+  sliderHitArea.setAttribute("aria-orientation", "horizontal");
+  sliderHitArea.tabIndex = 0;
 
   const sliderTrack = document.createElement("div");
   sliderTrack.className = "ytvt-slider-track";
@@ -632,6 +635,18 @@ function createZoomPanel() {
     document.addEventListener("dragstart", blockSliderGesture, true);
     document.addEventListener("contextmenu", blockSliderGesture, true);
     updateZoomFromPointer(event);
+  });
+  sliderHitArea.addEventListener("keydown", (event) => {
+    const nextZoom = getZoomFromSliderKey(event.key, state.zoom);
+    if (nextZoom === null) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation?.();
+    setZoom(nextZoom, false);
+    syncZoomControls();
   });
 
   const zoomIn = document.createElement("button");

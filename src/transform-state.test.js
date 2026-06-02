@@ -16,6 +16,7 @@ const {
   createDefaultState,
   createImportantTransformCssText,
   formatZoomPercent,
+  getZoomFromSliderKey,
   getZoomFromPointerPosition,
   parseZoomPercentInput,
   createTransformStyle,
@@ -183,6 +184,21 @@ test("getZoomFromPointerPosition maps pointer x into the supported zoom range", 
 
 test("getZoomFromPointerPosition keeps current zoom for invalid slider geometry", () => {
   assert.equal(getZoomFromPointerPosition({ left: 100, width: 0 }, 200, 175), 175);
+});
+
+test("getZoomFromSliderKey maps supported keys to clamped zoom values", () => {
+  assert.equal(getZoomFromSliderKey("ArrowLeft", 150), 145);
+  assert.equal(getZoomFromSliderKey("ArrowDown", 150), 145);
+  assert.equal(getZoomFromSliderKey("ArrowRight", 150), 155);
+  assert.equal(getZoomFromSliderKey("ArrowUp", 150), 155);
+  assert.equal(getZoomFromSliderKey("ArrowLeft", 100), 100);
+  assert.equal(getZoomFromSliderKey("ArrowRight", 500), 500);
+  assert.equal(getZoomFromSliderKey("Home", 250), 100);
+  assert.equal(getZoomFromSliderKey("End", 250), 500);
+});
+
+test("getZoomFromSliderKey ignores unrelated keys", () => {
+  assert.equal(getZoomFromSliderKey("Enter", 150), null);
 });
 
 test("shouldResetForVideoKey resets only when an existing video key changes", () => {
