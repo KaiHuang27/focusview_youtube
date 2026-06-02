@@ -78,10 +78,22 @@ test("getRotationFitScale fits right-angle rotation inside the video frame", () 
   assert.equal(getRotationFitScale(270, 1080, 1920), 0.5625);
 });
 
+test("getRotationFitScale expands a portrait source after rotating into a landscape viewport", () => {
+  assert.equal(getRotationFitScale(90, 1080, 1920, 1920, 1080), 1.7778);
+  assert.equal(getRotationFitScale(270, 1080, 1920, 1920, 1080), 1.7778);
+});
+
 test("createTransformStyle applies rotation fit before user zoom", () => {
   assert.equal(
     createTransformStyle({ ...createDefaultState(), rotation: 90 }, 1920, 1080).transform,
     "translate(0px, 0px) rotate(90deg) scale(0.5625, 0.5625)"
+  );
+});
+
+test("createTransformStyle expands a portrait source after sideways rotation", () => {
+  assert.equal(
+    createTransformStyle({ ...createDefaultState(), rotation: 90 }, 1080, 1920, 1920, 1080).transform,
+    "translate(0px, 0px) rotate(90deg) scale(1.7778, 1.7778)"
   );
 });
 

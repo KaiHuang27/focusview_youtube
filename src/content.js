@@ -71,8 +71,9 @@ function updateTransformRule() {
     return;
   }
 
+  const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
   getTransformStyleElement().textContent =
-    `${TRANSFORM_SELECTOR} { ${createImportantTransformCssText(state, video.clientWidth, video.clientHeight)} }`;
+    `${TRANSFORM_SELECTOR} { ${createImportantTransformCssText(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight)} }`;
 }
 
 function clearTransformRule() {

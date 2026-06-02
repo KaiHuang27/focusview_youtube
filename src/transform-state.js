@@ -38,21 +38,26 @@
     return rotation;
   }
 
-  function getRotationFitScale(rotation, width = 0, height = 0) {
+  function getRotationFitScale(rotation, sourceWidth = 0, sourceHeight = 0, viewportWidth = sourceWidth, viewportHeight = sourceHeight) {
     const normalizedRotation = normalizeRotation(rotation);
-    if (normalizedRotation === 0 || normalizedRotation === 180 || width <= 0 || height <= 0) {
+    if (normalizedRotation === 0 || normalizedRotation === 180) {
       return 1;
     }
 
-    return Number(Math.min(width / height, height / width).toFixed(4));
+    const fittedSource = createFittedSourceSize(sourceWidth, sourceHeight, viewportWidth, viewportHeight);
+    if (!fittedSource) {
+      return 1;
+    }
+
+    return Number(Math.min(viewportWidth / fittedSource.height, viewportHeight / fittedSource.width).toFixed(4));
   }
 
-  function getEffectiveScale(state, width, height) {
-    return (state.zoom / 100) * getRotationFitScale(state.rotation, width, height);
+  function getEffectiveScale(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight) {
+    return (state.zoom / 100) * getRotationFitScale(state.rotation, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
   }
 
-  function createTransformStyle(state, width = 0, height = 0) {
-    const scale = getEffectiveScale(state, width, height);
+  function createTransformStyle(state, sourceWidth = 0, sourceHeight = 0, viewportWidth = sourceWidth, viewportHeight = sourceHeight) {
+    const scale = getEffectiveScale(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
     const scaleX = state.flipX ? -scale : scale;
     const scaleY = state.flipY ? -scale : scale;
 
@@ -62,8 +67,8 @@
     };
   }
 
-  function createImportantTransformCssText(state, width = 0, height = 0) {
-    const style = createTransformStyle(state, width, height);
+  function createImportantTransformCssText(state, sourceWidth = 0, sourceHeight = 0, viewportWidth = sourceWidth, viewportHeight = sourceHeight) {
+    const style = createTransformStyle(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
     return `transform: ${style.transform} !important; transform-origin: ${style.transformOrigin} !important;`;
   }
 
