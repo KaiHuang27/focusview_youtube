@@ -52,8 +52,8 @@ let suppressNextVideoClick = false;
 let suppressVideoClickTimer = 0;
 let viewportControlsLastActivityAt = 0;
 let viewportControlsHideTimer = 0;
-let ignoreNextStyleMutation = false;
 let isMenuOpen = false;
+let lastTransformCssText = "";
 
 function getTransformStyleElement() {
   let styleElement = document.getElementById(TRANSFORM_STYLE_ID);
@@ -71,16 +71,30 @@ function updateTransformRule() {
     return;
   }
 
-  const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
-  getTransformStyleElement().textContent =
-    `${TRANSFORM_SELECTOR} { ${createImportantTransformCssText(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight)} }`;
+  let cssText = "";
+  if (shouldReapplyTransformAfterMutation(state)) {
+    const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
+    cssText = `${TRANSFORM_SELECTOR} { ${createImportantTransformCssText(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight)} }`;
+  }
+
+  if (cssText === lastTransformCssText) {
+    return;
+  }
+
+  if (cssText) {
+    getTransformStyleElement().textContent = cssText;
+  } else {
+    clearTransformRule();
+  }
+  lastTransformCssText = cssText;
 }
 
 function clearTransformRule() {
   const styleElement = document.getElementById(TRANSFORM_STYLE_ID);
-  if (styleElement) {
+  if (styleElement?.textContent) {
     styleElement.textContent = "";
   }
+  lastTransformCssText = "";
 }
 
 function resetState() {
@@ -137,8 +151,10 @@ function applyTransform() {
 
   clampCurrentPanState();
   updateTransformRule();
-  ignoreNextStyleMutation = true;
-  video.style.cursor = state.panMode ? "grab" : "";
+  const cursor = state.panMode ? "grab" : "";
+  if (video.style.cursor !== cursor) {
+    video.style.cursor = cursor;
+  }
   renderViewportMap();
 }
 
@@ -254,6 +270,17 @@ function renderViewportMap() {
     return;
   }
 
+  const shouldShowControls = areViewportControlsVisible();
+  if (!shouldShowControls) {
+    if (viewportMap) {
+      viewportMap.hidden = true;
+    }
+    if (settingsButton) {
+      settingsButton.hidden = true;
+    }
+    return;
+  }
+
   if (!viewportMap) {
     viewportMap = document.createElement("div");
     viewportMap.className = "ytvt-map";
@@ -293,7 +320,6 @@ function renderViewportMap() {
   settingsButton.classList.toggle("is-active", isMenuOpen);
   settingsButton.setAttribute("aria-expanded", String(isMenuOpen));
 
-  const shouldShowControls = areViewportControlsVisible();
   const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
   const mapSize = createViewportMapSize(sourceWidth, sourceHeight, state.rotation);
   const indicator = createViewportIndicator(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
@@ -1007,11 +1033,6 @@ function bindVideo(nextVideo) {
   video.addEventListener("pointercancel", endDrag);
   video.addEventListener("click", onVideoClick, true);
   videoStyleObserver = new MutationObserver(() => {
-    if (ignoreNextStyleMutation) {
-      ignoreNextStyleMutation = false;
-      return;
-    }
-
     scheduleTransformReapply();
   });
   videoStyleObserver.observe(video, { attributes: true, attributeFilter: ["style"] });
