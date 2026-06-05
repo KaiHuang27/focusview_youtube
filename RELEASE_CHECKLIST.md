@@ -5,9 +5,13 @@
 - Manifest name is `FocusView – Zoom, Rotate & Mirror for YouTube`.
 - Manifest version is `1.0.0`.
 - Manifest description is `Zoom, rotate, mirror, and pan YouTube videos directly inside the player.`
+- Manifest short name is `FocusView`.
+- `package.json` name is `focusview-extension`.
+- `package.json` version is `1.0.0`.
 - Chrome Web Store primary language is English.
 - Chrome Web Store category is Productivity.
 - Store listing copy is prepared in `STORE_LISTING.md`.
+- Release notes are prepared in `CHANGELOG.md`.
 
 ## Privacy And Permissions
 
@@ -84,6 +88,7 @@ Exclude:
 - `PRIVACY.md`
 - `STORE_LISTING.md`
 - `RELEASE_CHECKLIST.md`
+- `CHANGELOG.md`
 - tests
 - temporary files
 

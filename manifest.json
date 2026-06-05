@@ -1,6 +1,7 @@
 {
   "manifest_version": 3,
   "name": "FocusView – Zoom, Rotate & Mirror for YouTube",
+  "short_name": "FocusView",
   "description": "Zoom, rotate, mirror, and pan YouTube videos directly inside the player.",
   "version": "1.0.0",
   "content_scripts": [
