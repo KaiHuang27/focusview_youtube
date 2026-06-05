@@ -1,6 +1,6 @@
-# YouTube Video Transform
+# FocusView – Zoom, Rotate & Mirror for YouTube
 
-Microsoft Edge / Chrome extension for transforming the YouTube video frame without changing the rest of the page.
+Microsoft Edge / Chrome extension for transforming YouTube videos directly inside the player without changing the rest of the page.
 
 ## Features
 
@@ -69,6 +69,10 @@ npm test
 ## Privacy
 
 FocusView does not collect, store, share, or transmit personal data. All video transforms are applied locally in the browser on YouTube pages only. See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
+
+## Release Preparation
+
+Chrome Web Store listing copy is drafted in [STORE_LISTING.md](STORE_LISTING.md). The launch checklist is in [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md). Icon files are still required before creating a release ZIP.
 
 ## Limitations
 
