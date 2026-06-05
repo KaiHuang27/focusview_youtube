@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "YouTube Video Transform",
-  "description": "Zoom, rotate, and mirror YouTube videos in Microsoft Edge or Chrome.",
-  "version": "0.1.0",
+  "name": "FocusView – Zoom, Rotate & Mirror for YouTube",
+  "description": "Zoom, rotate, mirror, and pan YouTube videos directly inside the player.",
+  "version": "1.0.0",
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*"],
