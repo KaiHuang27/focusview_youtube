@@ -66,6 +66,10 @@ If your local Node installation includes npm, this also works:
 npm test
 ```
 
+## Privacy
+
+FocusView does not collect, store, share, or transmit personal data. All video transforms are applied locally in the browser on YouTube pages only. See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
+
 ## Limitations
 
 - Version 1 targets normal YouTube watch pages only.

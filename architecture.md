@@ -6,6 +6,8 @@ This is a Manifest V3 extension with one content-script entrypoint on `https://w
 
 The extension keeps YouTube's native player behavior intact. It only applies CSS transforms to the `video.html5-main-video` element and inserts a small zoom trigger into YouTube's native right-side control bar, with a floating fallback if the native controls are unavailable.
 
+The extension does not request extension permissions, does not persist state, and does not send data to external services. All transform state stays local to the current YouTube page session.
+
 ## Components
 
 - `manifest.json`: declares the MV3 extension and injects CSS plus content scripts on YouTube at `document_start`.
