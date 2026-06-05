@@ -10,7 +10,7 @@ The extension does not request extension permissions, does not persist state, an
 
 ## Components
 
-- `manifest.json`: declares the MV3 extension and injects CSS plus content scripts on YouTube at `document_start`.
+- `manifest.json`: declares the MV3 extension, extension icons, and injected CSS plus content scripts on YouTube at `document_start`.
 - `src/transform-state.js`: shared transform, viewport-map, and shortcut helpers exposed on `globalThis.YTVTTransform` so they can run as a classic content script and still be tested with Node.
 - `src/content.js`: detects the YouTube player, inserts the zoom trigger into `.ytp-right-controls` when available, toggles Pan mode from that trigger, renders a settings button centered below the top-right position map during recent Pan activity, renders the YouTube-style menu `8px` below that settings button, updates transform state, renders the position map during recent Pan activity, handles pan dragging, handles Pan-mode wheel zoom, handles the Pan keyboard shortcut, reapplies transforms after fullscreen/style mutations, and cleans up bindings on YouTube SPA navigation.
 - `src/overlay.css`: native-control-bar zoom trigger using compact fixed YouTube-style sizing, magnifier icon, native `ytp-button` hover styling, a dedicated compact active background layer, compact conditional percentage text, Roboto/Arial typography, floating fallback trigger, top-right native-style settings icon button, compact YouTube-settings-style gray menu, toggle, segment, custom slider with trackpad-safe pointer/mouse fallback, and position-map styling.

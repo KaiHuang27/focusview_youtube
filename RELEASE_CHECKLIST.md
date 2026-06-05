@@ -24,9 +24,9 @@
 
 ## Assets
 
-- Icon files are still required before submission.
+- Manifest icon files are prepared in `icons/`.
 - Required manifest/store icon: `128x128` PNG.
-- Recommended manifest icon set: `16x16`, `32x32`, `48x48`, and `128x128` PNG.
+- Manifest icon set includes `16x16`, `32x32`, `48x48`, and `128x128` PNG.
 - Small promotional image is required: `440x280`.
 - At least one screenshot is required; prepare up to five.
 - Preferred screenshot size: `1280x800`.
@@ -70,8 +70,6 @@ rg -n "official|best|No\\. 1|tracking-free" README.md architecture.md PRIVACY.md
 The second search should only return intentional references if any. Avoid claims that imply endorsement, ranking, or unsupported status.
 
 ## Release ZIP Contents
-
-Do not create the release ZIP until icon files are ready.
 
 The release ZIP should include only runtime files:
 
