@@ -51,6 +51,12 @@ This extension does not collect, store, share, sell, or transmit personal data. 
 
 All video transform controls are applied locally in the browser on YouTube pages only.
 
+## Permission Justification
+
+FocusView does not request extension permissions or host permissions.
+
+The extension uses a content script on `https://www.youtube.com/*` only to detect the YouTube video player, add local transform controls, and apply CSS transforms to the video element. It does not collect data, read account information, access browsing history, or send data to external servers.
+
 ## Screenshot Plan
 
 Use `1280x800` screenshots when possible. `640x400` is acceptable if the UI reads better at that size. Screenshots should be full bleed, square-cornered, sharp, and light on text.
