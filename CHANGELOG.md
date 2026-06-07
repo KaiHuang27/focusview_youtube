@@ -17,6 +17,7 @@ Initial Chrome Web Store release candidate.
 - Automatic reset when switching to another YouTube video.
 - Fullscreen transform preservation.
 - Local-only privacy model with no data collection, no tracking, and no extra extension permissions.
+- Final extension icon assets in 16, 32, 48, and 128 pixel sizes.
 
 ### Limitations
 
