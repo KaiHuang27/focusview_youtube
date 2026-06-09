@@ -243,7 +243,7 @@
   }
 
   function shouldTogglePanShortcut(event) {
-    const isPanKey = event?.code === "KeyP" || event?.key?.toLowerCase() === "p";
+    const isPanKey = event?.code === "KeyZ" || event?.key?.toLowerCase() === "z";
     return (
       isPanKey &&
       event?.altKey === true &&

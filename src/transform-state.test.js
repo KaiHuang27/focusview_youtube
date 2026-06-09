@@ -551,25 +551,26 @@ test("toggleMirrorState toggles horizontal mirror only", () => {
   assert.deepEqual(toggleMirrorState({ ...createDefaultState(), flipX: true }), createDefaultState());
 });
 
-test("shouldTogglePanShortcut accepts only Alt Shift P outside editable targets", () => {
-  assert.equal(shouldTogglePanShortcut({ code: "KeyP", altKey: true, shiftKey: true }), true);
-  assert.equal(shouldTogglePanShortcut({ key: "p", altKey: true, shiftKey: true }), true);
-  assert.equal(shouldTogglePanShortcut({ code: "KeyP", altKey: true, shiftKey: true, ctrlKey: true }), false);
-  assert.equal(shouldTogglePanShortcut({ code: "KeyP", altKey: true, shiftKey: true, metaKey: true }), false);
-  assert.equal(shouldTogglePanShortcut({ code: "KeyP", altKey: true, shiftKey: true, repeat: true }), false);
-  assert.equal(shouldTogglePanShortcut({ code: "KeyP", shiftKey: true }), false);
-  assert.equal(shouldTogglePanShortcut({ code: "KeyP", altKey: true }), false);
+test("shouldTogglePanShortcut accepts only Alt Shift Z outside editable targets", () => {
+  assert.equal(shouldTogglePanShortcut({ code: "KeyZ", altKey: true, shiftKey: true }), true);
+  assert.equal(shouldTogglePanShortcut({ key: "z", altKey: true, shiftKey: true }), true);
+  assert.equal(shouldTogglePanShortcut({ code: "KeyP", altKey: true, shiftKey: true }), false);
+  assert.equal(shouldTogglePanShortcut({ code: "KeyZ", altKey: true, shiftKey: true, ctrlKey: true }), false);
+  assert.equal(shouldTogglePanShortcut({ code: "KeyZ", altKey: true, shiftKey: true, metaKey: true }), false);
+  assert.equal(shouldTogglePanShortcut({ code: "KeyZ", altKey: true, shiftKey: true, repeat: true }), false);
+  assert.equal(shouldTogglePanShortcut({ code: "KeyZ", shiftKey: true }), false);
+  assert.equal(shouldTogglePanShortcut({ code: "KeyZ", altKey: true }), false);
   assert.equal(
-    shouldTogglePanShortcut({ code: "KeyP", altKey: true, shiftKey: true, target: { tagName: "INPUT" } }),
+    shouldTogglePanShortcut({ code: "KeyZ", altKey: true, shiftKey: true, target: { tagName: "INPUT" } }),
     false
   );
   assert.equal(
-    shouldTogglePanShortcut({ code: "KeyP", altKey: true, shiftKey: true, target: { isContentEditable: true } }),
+    shouldTogglePanShortcut({ code: "KeyZ", altKey: true, shiftKey: true, target: { isContentEditable: true } }),
     false
   );
   assert.equal(
     shouldTogglePanShortcut({
-      code: "KeyP",
+      code: "KeyZ",
       altKey: true,
       shiftKey: true,
       target: { getAttribute: (name) => (name === "role" ? "textbox" : "") },
