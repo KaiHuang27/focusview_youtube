@@ -18,11 +18,19 @@ FocusView adds focused video transform controls to YouTube, directly inside the 
 
 Use it when you want to inspect details, reframe a video, rotate sideways footage, mirror a scene, or move around a zoomed video without changing the rest of the YouTube page.
 
+How it works:
+
+1. Open a YouTube video.
+2. Click the FocusView button in the YouTube player toolbar, or press `Alt/Option + Shift + Z`, to turn Zoom mode on or off.
+3. When Zoom mode is on, use the mouse wheel to zoom and drag the video to move around.
+4. Click the small settings button near the Source Map to adjust zoom, rotation, mirror, or reset.
+5. Turn Zoom mode off to return to normal YouTube mouse and wheel behavior.
+
 Core features:
 
 - Zoom YouTube videos from 100% to 500%
 - Pan around zoomed video content with the mouse
-- Use the mouse wheel to zoom while Pan mode is active
+- Use the mouse wheel to zoom while Zoom mode is on
 - Rotate videos by 0, 90, 180, or 270 degrees
 - Mirror videos horizontally
 - See a compact Source Map that shows the visible area while panning
@@ -64,8 +72,8 @@ Use `1280x800` screenshots when possible. `640x400` is acceptable if the UI read
 1. Native toolbar control
    - Show a normal YouTube player with the FocusView zoom control integrated into the native right-side toolbar.
    - Goal: communicate that the extension feels built into the player.
-2. Pan mode with Source Map
-   - Show Pan mode active with a zoomed video and the Source Map visible in the top-right corner.
+2. Zoom mode with Source Map
+   - Show Zoom mode on with a zoomed video and the Source Map visible in the top-right corner.
    - Goal: make the position feedback obvious.
 3. Zoom settings menu
    - Show the settings menu with percentage input, slider, and reset action.
