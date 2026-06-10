@@ -9,6 +9,7 @@ Release packaging and store listing polish.
 - Updated public wording to describe the toolbar action as Zoom mode on/off.
 - Added store listing shortcut instructions for `Alt/Option + Shift + Z`.
 - Added a release ZIP build script that does not require Node in the user's shell.
+- Synchronized the Source Map update path with mouse wheel zoom.
 
 ## 1.0.0
 

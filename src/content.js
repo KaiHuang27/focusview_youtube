@@ -741,6 +741,20 @@ function getTriggerTitle() {
   return state.panMode ? "Pan mode on" : "Pan mode off";
 }
 
+function syncToolbarTrigger() {
+  const trigger = toolbar?.querySelector(".ytvt-trigger");
+  const label = trigger?.querySelector(".ytvt-trigger-label");
+  if (!trigger || !label) {
+    renderToolbar();
+    return;
+  }
+
+  const title = getTriggerTitle();
+  trigger.setAttribute("aria-label", title);
+  trigger.title = title;
+  label.textContent = `${state.zoom}%`;
+}
+
 function renderToolbar({ shouldRenderMenu = true } = {}) {
   if (!toolbar) {
     return;
@@ -1013,8 +1027,11 @@ function onWheel(event) {
 
   blockYouTubeWheel(event);
   const direction = event.deltaY < 0 ? 1 : -1;
-  markViewportControlsActivity({ shouldRender: false });
-  setZoom(applyZoomDelta(state.zoom, direction));
+  viewportControlsLastActivityAt = Date.now();
+  scheduleViewportControlsHide();
+  setZoom(applyZoomDelta(state.zoom, direction), false);
+  syncToolbarTrigger();
+  renderViewportMap();
 }
 
 function endDrag(event) {
