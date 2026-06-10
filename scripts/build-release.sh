@@ -3,7 +3,7 @@ set -eu
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 DIST_DIR="$ROOT_DIR/dist"
-VERSION="$(node -e "console.log(JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')).version)")"
+VERSION="$(awk -F'"' '/"version"[[:space:]]*:/ { print $4; exit }' "$ROOT_DIR/manifest.json")"
 ZIP_NAME="focusview-$VERSION.zip"
 ZIP_PATH="$DIST_DIR/$ZIP_NAME"
 
