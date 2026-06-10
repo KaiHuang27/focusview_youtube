@@ -71,11 +71,22 @@ The second search should only return intentional references if any. Avoid claims
 
 ## Release ZIP Contents
 
-The release ZIP should include only runtime files:
+Build the release ZIP with:
+
+```sh
+./scripts/build-release.sh
+```
+
+The script writes `dist/focusview-<version>.zip` and includes only runtime files:
 
 - `manifest.json`
-- `src/`
-- `icons/`
+- `src/content.js`
+- `src/transform-state.js`
+- `src/overlay.css`
+- `icons/icon-16.png`
+- `icons/icon-32.png`
+- `icons/icon-48.png`
+- `icons/icon-128.png`
 
 Exclude:
 
@@ -87,6 +98,8 @@ Exclude:
 - `STORE_LISTING.md`
 - `RELEASE_CHECKLIST.md`
 - `CHANGELOG.md`
+- `package.json`
+- `scripts/`
 - tests
 - temporary files
 
