@@ -6,11 +6,11 @@
 - Version: 1.0.0
 - Primary language: English
 - Suggested category: Productivity
-- Short description: Zoom, rotate, mirror, and pan YouTube videos directly inside the player.
+- Short description: Zoom, rotate and mirror YouTube videos directly inside the player.
 
 ## Single Purpose
 
-FocusView lets users zoom, rotate, mirror, and pan YouTube videos directly inside the YouTube player.
+FocusView lets users zoom, rotate, mirror, and move around YouTube videos directly inside the YouTube player.
 
 ## Long Description
 
@@ -29,11 +29,11 @@ How it works:
 Core features:
 
 - Zoom YouTube videos from 100% to 500%
-- Pan around zoomed video content with the mouse
+- Drag zoomed video content with the mouse
 - Use the mouse wheel to zoom while Zoom mode is on
 - Rotate videos by 0, 90, 180, or 270 degrees
 - Mirror videos horizontally
-- See a compact Source Map that shows the visible area while panning
+- See a compact Source Map that shows the visible area while moving around
 - Reset transforms when needed
 - Automatically reset when switching to another YouTube video
 

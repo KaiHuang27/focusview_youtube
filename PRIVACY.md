@@ -2,7 +2,7 @@
 
 FocusView – Zoom, Rotate & Mirror for YouTube does not collect, store, sell, share, or transmit any personal data.
 
-The extension only runs on YouTube pages to provide video zoom, rotation, mirror, and pan controls inside the YouTube player.
+The extension only runs on YouTube pages to provide video zoom, rotation, and mirror controls inside the YouTube player.
 
 This extension does not:
 

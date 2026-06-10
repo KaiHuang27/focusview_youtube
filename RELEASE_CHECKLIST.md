@@ -4,7 +4,7 @@
 
 - Manifest name is `FocusView – Zoom, Rotate & Mirror for YouTube`.
 - Manifest version is `1.0.0`.
-- Manifest description is `Zoom, rotate, mirror, and pan YouTube videos directly inside the player.`
+- Manifest description is `Zoom, rotate and mirror YouTube videos directly inside the player.`
 - Manifest short name is `FocusView`.
 - `package.json` name is `focusview-extension`.
 - `package.json` version is `1.0.0`.
@@ -38,13 +38,13 @@
 - Load unpacked in Chrome and Edge.
 - Open a normal YouTube watch page.
 - Confirm the toolbar zoom control appears in YouTube's native control bar.
-- Confirm Pan mode toggles from the toolbar control.
-- Confirm Source Map and settings button appear during Pan activity.
+- Confirm Zoom mode turns on and off from the toolbar control.
+- Confirm Source Map and settings button appear during zoom activity.
 - Confirm settings menu opens below the settings button.
 - Confirm zoom input, custom slider, rotation, mirror, and reset work.
 - Confirm quick click still triggers YouTube play/pause.
-- Confirm long press or drag pans without triggering play/pause on release.
-- Confirm mouse wheel zoom works only while Pan mode is active.
+- Confirm long press or drag moves the video frame without triggering play/pause on release.
+- Confirm mouse wheel zoom works only while Zoom mode is on.
 - Confirm fullscreen enter/exit preserves transforms without flashing back.
 - Confirm switching videos resets transform state.
 
