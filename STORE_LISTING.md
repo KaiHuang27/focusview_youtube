@@ -3,7 +3,7 @@
 ## Basic Information
 
 - Name: FocusView – Zoom, Rotate & Mirror for YouTube
-- Version: 1.0.0
+- Version: 1.0.1
 - Primary language: English
 - Suggested category: Productivity
 - Short description: Zoom, rotate and mirror YouTube videos directly inside the player.

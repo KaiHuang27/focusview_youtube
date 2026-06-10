@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.1
+
+Release packaging and store listing polish.
+
+### Changed
+
+- Updated public wording to describe the toolbar action as Zoom mode on/off.
+- Added store listing shortcut instructions for `Alt/Option + Shift + Z`.
+- Added a release ZIP build script that does not require Node in the user's shell.
+
 ## 1.0.0
 
 Initial Chrome Web Store release candidate.
