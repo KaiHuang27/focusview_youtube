@@ -10,6 +10,7 @@ Release packaging and store listing polish.
 - Added store listing shortcut instructions for `Alt/Option + Shift + Z`.
 - Added a release ZIP build script that does not require Node in the user's shell.
 - Synchronized the Source Map update path with mouse wheel zoom.
+- Blocked YouTube's long-press 2x playback gesture while Zoom mode is on.
 
 ## 1.0.0
 

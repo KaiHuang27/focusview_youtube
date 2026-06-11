@@ -957,6 +957,8 @@ function onPointerDown(event) {
     return;
   }
 
+  event.stopPropagation();
+  event.stopImmediatePropagation?.();
   clearPanLongPressTimer();
   dragStart = {
     pointerId: event.pointerId,
@@ -1070,7 +1072,7 @@ function unbindVideo() {
   cancelPanGesture();
   clearClickSuppression();
   if (video) {
-    video.removeEventListener("pointerdown", onPointerDown);
+    video.removeEventListener("pointerdown", onPointerDown, true);
     video.removeEventListener("pointermove", onPointerMove);
     video.removeEventListener("pointerup", endDrag);
     video.removeEventListener("pointercancel", endDrag);
@@ -1090,7 +1092,7 @@ function bindVideo(nextVideo) {
 
   unbindVideo();
   video = nextVideo;
-  video.addEventListener("pointerdown", onPointerDown);
+  video.addEventListener("pointerdown", onPointerDown, true);
   video.addEventListener("pointermove", onPointerMove);
   video.addEventListener("pointerup", endDrag);
   video.addEventListener("pointercancel", endDrag);
