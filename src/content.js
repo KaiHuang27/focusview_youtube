@@ -952,8 +952,16 @@ function ensureToolbar() {
   }
 }
 
+function isCurrentVideoPointerEvent(event) {
+  return Boolean(video && (event.target === video || event.composedPath?.().includes(video)));
+}
+
 function onPointerDown(event) {
   if (!state.panMode || event.button !== 0) {
+    return;
+  }
+
+  if (!isCurrentVideoPointerEvent(event)) {
     return;
   }
 
@@ -1072,7 +1080,6 @@ function unbindVideo() {
   cancelPanGesture();
   clearClickSuppression();
   if (video) {
-    video.removeEventListener("pointerdown", onPointerDown, true);
     video.removeEventListener("pointermove", onPointerMove);
     video.removeEventListener("pointerup", endDrag);
     video.removeEventListener("pointercancel", endDrag);
@@ -1092,7 +1099,6 @@ function bindVideo(nextVideo) {
 
   unbindVideo();
   video = nextVideo;
-  video.addEventListener("pointerdown", onPointerDown, true);
   video.addEventListener("pointermove", onPointerMove);
   video.addEventListener("pointerup", endDrag);
   video.addEventListener("pointercancel", endDrag);
@@ -1181,6 +1187,7 @@ function start() {
   window.addEventListener("keydown", onShortcutKeyDown, true);
   document.addEventListener("keydown", onShortcutKeyDown, true);
   document.addEventListener("pointerdown", closeMenuOnOutsidePointer, true);
+  document.addEventListener("pointerdown", onPointerDown, true);
   document.addEventListener("keydown", closeMenuOnEscape);
   document.addEventListener("fullscreenchange", () => scheduleTransformReapply(12));
   document.addEventListener("webkitfullscreenchange", () => scheduleTransformReapply(12));
