@@ -735,10 +735,10 @@ function resetZoomOnly() {
 
 function getTriggerTitle() {
   if (state.zoom !== 100) {
-    return `Zoom: ${state.zoom}% · Double-click to reset`;
+    return "Double-click to reset";
   }
 
-  return state.panMode ? "Pan mode on" : "Pan mode off";
+  return state.panMode ? "Zoom mode on" : "Zoom mode off";
 }
 
 function syncToolbarTrigger() {

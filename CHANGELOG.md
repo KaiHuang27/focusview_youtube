@@ -12,6 +12,7 @@ Release packaging and store listing polish.
 - Synchronized the Source Map update path with mouse wheel zoom.
 - Blocked YouTube's long-press 2x playback gesture while Zoom mode is on.
 - Moved the Zoom mode long-press block earlier in the pointer event path.
+- Updated toolbar tooltip wording for Zoom mode and reset.
 
 ## 1.0.0
 
