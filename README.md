@@ -4,7 +4,14 @@ See more details in YouTube videos.
 
 FocusView brings smooth, almost-native zoom, rotate, and mirror controls to YouTube videos in Chrome.
 
-It is great for concerts, sports clips, livestreams, lectures, tutorials, and any video where you want a closer look.
+Best for:
+
+- lectures and tutorials
+- concerts and livestreams
+- sports clips
+- dance practice
+- product demos
+- any video where you want a closer look
 
 [Download from the Chrome Web Store](https://chromewebstore.google.com/detail/jbdndcjclbghkmbiehjigaapembpbgdb?utm_source=github)
 
