@@ -72,7 +72,7 @@ FocusView does not collect, store, share, or transmit personal data. All video t
 
 ## Release Preparation
 
-Chrome Web Store listing copy is drafted in [STORE_LISTING.md](STORE_LISTING.md). The launch checklist is in [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md). Release notes are in [CHANGELOG.md](CHANGELOG.md). Icon files are included in `icons/`.
+Release notes are in [CHANGELOG.md](CHANGELOG.md). Icon files are included in `icons/`.
 
 ## Limitations
 
