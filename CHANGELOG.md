@@ -13,6 +13,7 @@ Release packaging and store listing polish.
 - Blocked YouTube's long-press 2x playback gesture while Zoom mode is on.
 - Moved the Zoom mode long-press block earlier in the pointer event path.
 - Updated toolbar tooltip wording for Zoom mode and reset.
+- Rewrote the README as a public product introduction.
 
 ## 1.0.0
 

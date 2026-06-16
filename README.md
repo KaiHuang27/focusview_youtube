@@ -1,56 +1,123 @@
 # FocusView – Zoom, Rotate & Mirror for YouTube
 
-Microsoft Edge / Chrome extension for transforming YouTube videos directly inside the player without changing the rest of the page.
+FocusView gives YouTube videos a cleaner, more flexible viewing experience. Zoom in on details, rotate the video, mirror it, and move around the frame directly inside the YouTube player.
+
+It is designed to feel native: the main control lives in YouTube's player toolbar, the interface stays compact, and normal YouTube play/pause behavior remains familiar.
+
+[View on the Chrome Web Store](https://chromewebstore.google.com/detail/focusview-%E2%80%93-zoom-rotate-m/jbdndcjclbghkmbiehjigaapembpbgdb)
+
+## Why FocusView
+
+YouTube is great for watching video, but it does not provide enough control when the video itself needs adjustment.
+
+FocusView helps when you want to:
+
+- zoom into a lecture board, product demo, sports moment, dance practice, tutorial, or small on-screen detail
+- rotate videos that were uploaded in the wrong orientation
+- mirror a video horizontally for learning movement, practice, or comparison
+- move around a zoomed video without losing track of where you are
+- keep the experience inside the YouTube player instead of using a separate video tool
 
 ## Features
 
-- Single native-style magnifier zoom button. It switches to zoom text while Zoom mode is on or the video is zoomed, and uses an active background only while Zoom mode is on.
-- Toolbar zoom button turns Zoom mode on or off directly.
-- YouTube-native-style settings icon button appears below the top-right position map when Zoom mode turns on or during recent zoom activity, and opens the transform menu.
-- Rotate video by 0, 90, 180, or 270 degrees, fitting 90/270-degree rotations inside the player frame first.
-- Mirror horizontally.
-- Drag a zoomed video and use the mouse wheel to zoom around the current Player Viewport center without adding extra black borders.
-- Top-right position map when Zoom mode turns on or during recent zoom activity, showing the visible area inside the rotated video frame.
-- Reset transform state when switching to another YouTube video.
+- **Zoom from 100% to 500%**: use the menu slider, `-` / `+` buttons, manual percentage input, or mouse wheel while Zoom mode is on.
 
-## Test in Microsoft Edge
+- **Move around while zoomed**: turn on Zoom mode, then long-press and drag the video to reposition the visible area.
+
+- **Position map**: a small Source Map appears while zooming or moving, so you can see which part of the video is currently visible.
+
+- **Rotate video**: choose `0`, `90`, `180`, or `270` degrees. FocusView fits rotated content into the player so the result stays usable.
+
+- **Mirror horizontally**: flip the video left-to-right with one switch.
+
+- **Native-feeling YouTube controls**: the zoom button is placed in YouTube's control bar and uses compact, low-distraction UI.
+
+- **No extra accounts, no tracking**: FocusView runs locally in your browser and does not collect personal data.
+
+## How To Use
+
+1. Open a normal YouTube video page.
+2. Click the FocusView button in the YouTube player toolbar.
+3. When Zoom mode is on, scroll to zoom and long-press drag to move around the video.
+4. Click the settings button near the Source Map to open rotation, mirror, reset, and detailed zoom controls.
+5. Double-click the toolbar zoom button to reset zoom back to `100%`.
+
+Keyboard shortcut:
+
+```text
+Alt/Option + Shift + Z
+```
+
+This turns Zoom mode on or off without using YouTube's single-key shortcuts.
+
+## Controls
+
+### Toolbar Button
+
+- **Zoom mode off**: shows the FocusView magnifier icon.
+- **Zoom mode on**: shows the current zoom percentage.
+- **Zoomed while off**: keeps showing the zoom percentage so you know the video is still transformed.
+- **Double-click**: resets zoom to `100%`.
+
+### Zoom Menu
+
+The compact settings menu includes:
+
+- zoom percentage input
+- custom zoom slider
+- `-` and `+` zoom buttons
+- rotation controls
+- mirror switch
+- reset action
+
+Zoom values are always clamped between `100%` and `500%`.
+
+### Moving The Video
+
+While Zoom mode is on:
+
+- quick click still plays or pauses the YouTube video
+- long press and drag moves the zoomed frame
+- mouse wheel zooms in 5% steps
+- movement is limited so you do not drag into extra black borders
+
+When the video returns to `100%`, FocusView recenters the frame.
+
+## Privacy
+
+FocusView does not collect, store, share, sell, or transmit personal data.
+
+The extension only runs on YouTube pages and applies video transforms locally in your browser. It does not use analytics, tracking, cookies, account access, browsing history, or external servers.
+
+See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
+
+## Permissions
+
+FocusView uses a minimal content script match:
+
+```json
+"matches": ["https://www.youtube.com/*"]
+```
+
+It does not request storage, history, account, network, or analytics permissions.
+
+## Install For Development
+
+### Chrome
+
+1. Open `chrome://extensions`.
+2. Turn on **Developer mode**.
+3. Click **Load unpacked**.
+4. Select this project folder.
+5. Open a normal YouTube video page.
+
+### Microsoft Edge
 
 1. Open `edge://extensions`.
 2. Turn on **Developer mode**.
 3. Click **Load unpacked**.
-4. Select the folder that contains this project's `manifest.json`.
-5. Open a normal YouTube video page, such as `https://www.youtube.com/watch?v=...`.
-6. Click the magnifier button in YouTube's native control bar to turn Zoom mode on or off.
-7. Turn on Zoom mode, confirm the position map and settings button appear, then click the settings button below the map to open the transform menu.
-8. After changing zoom, enter and leave fullscreen to confirm the transform is preserved without briefly flashing back to the original view.
-
-## Controls
-
-The zoom button is placed in YouTube's native right-side control bar, at the left edge of the right control group. It uses a YouTube-style magnifier icon by default, then switches to compact zoom text when Zoom mode is on or the video is zoomed. Hover uses YouTube's native `ytp-button` styling. Zoom mode adds a matching compact active background when the button is not hovered. Click it to turn Zoom mode on or off, or double-click it to reset zoom to 100%. If YouTube's native controls are unavailable, the extension falls back to a floating top-right button.
-
-The transform menu opens `8px` below the native-style settings icon button while the transient zoom controls are visible. It follows YouTube's settings-menu density: rounded gray panel, compact centered text rows, a compact top `- / slider / +` zoom control, and a small red `Reset` action in the top-right corner.
-
-- `Zoom`: changes zoom between 100% and 500%. Click the percentage value to select all text, type a number such as `150` or `150%`, then press Enter or leave the field. While this field is focused, keyboard input is blocked from YouTube's native number-key seek shortcuts.
-- Zoom slider drag uses a custom slider with a wider hit area around the track and keeps tracking pointer or mouse movement at the document level until release. If the browser cancels a pointer stream during a trackpad long press, it falls back to mouse tracking instead of stopping the drag.
-- Focus the Zoom slider and use arrow keys to change zoom in 5% steps. `Home` returns to 100%, and `End` moves to 500%. These keys are stopped before they reach YouTube's native player controls.
-- Periodic YouTube DOM checks preserve the mounted menu while it remains valid, including when YouTube rebuilds its native control bar and the extension remounts the toolbar button. Editing the zoom value and holding the slider are not interrupted.
-- `Rotation`: rotates the video by `0`, `90`, `180`, or `270` degrees.
-- `Mirror`: mirrors the video horizontally. Click either the switch or anywhere on the Mirror row.
-- Zoom mode is controlled from the native toolbar zoom button. Quick single clicks still use YouTube's native play/pause behavior; long press or intentional drag moves the zoomed video frame and suppresses the native click after that drag ends. While enabled, the mouse wheel changes zoom in 5% steps and is blocked from YouTube's native fullscreen controls.
-- `Alt/Option + Shift + Z`: turns Zoom mode on or off without using YouTube's single-key shortcuts or Chrome/Edge `Ctrl`/`Cmd` shortcuts. The shortcut listener loads early and runs at capture time so YouTube does not consume it first. It is ignored while typing in inputs, comments, search, or other editable fields.
-- `Reset`: restores zoom, rotation, mirror, and video position to the default state and closes the menu.
-
-Zoom changes preserve the Source Video content currently shown at the Player Viewport center. This applies to the menu slider, `-` / `+` buttons, manual percentage input, and mouse wheel zoom while Zoom mode is on. Video movement is bounded by the current zoom level and the Source Video content area inside the Player Viewport. If YouTube is already showing side bars or letterbox space, that black-border direction stays locked until zoom is high enough for the Source Video to fill that side of the Player Viewport. When the video edge reaches the visible edge, the extension stops further movement in that direction. Returning to 100% zoom recenters the video.
-
-When rotating 90 or 270 degrees, 100% zoom means the Source Video is first contain-fit into the Player Viewport, then the rotated content is scaled to fit the player frame. This prevents a landscape video from being cut off after rotating to portrait orientation and lets a portrait video expand correctly after rotating to landscape orientation.
-
-When Zoom mode turns on, while dragging, or while using the mouse wheel to zoom, a low-emphasis Source Map appears in the top-right corner of the player. The Source Map follows the displayed Source Video aspect ratio: 90- and 270-degree rotations swap its width and height. The transparent white-outline Viewport Indicator follows the same rotated geometry plus the current Player Viewport, zoom, and video position. The Viewport Indicator can extend outside the Source Map to show visible letterbox or pillarbox space without making that black-border region look like Source Video content. The overlay position is anchored from the 100% Player Viewport bounds so zooming and dragging update only the indicator, not the Source Map or settings button position. The position map and settings button stay visible briefly after the last zoom activity or mouse movement, then hide like YouTube's native controls. Moving the pointer inside the player shows them again while Zoom mode remains active. If the transform menu is open, the position map and settings button remain visible until the menu closes.
-
-When Zoom mode is off, clicking the video keeps YouTube's normal play and pause behavior, and the mouse wheel is not intercepted by the extension. When Zoom mode is on, quick video clicks still play or pause normally, while long-press drag gestures move the frame and suppress the click generated when the pointer is released. The extension intercepts wheel events at the player level to avoid triggering YouTube's native fullscreen recommendations or extra controls.
-
-Wheel events inside the transform menu are blocked from YouTube so the menu does not accidentally trigger native player behavior.
-
-During fullscreen changes, YouTube may rewrite the video element's inline style. The extension keeps an active transform in its own `!important` stylesheet rule and still reapplies across the next few animation frames, so fullscreen transitions do not briefly fall back to the original video size. When no transform is active, the extension clears that rule and leaves YouTube's native video style alone. Leaving a watch page or switching the active video also removes temporary player listeners and slider-drag listeners.
+4. Select this project folder.
+5. Open a normal YouTube video page.
 
 ## Development
 
@@ -66,17 +133,25 @@ If your local Node installation includes npm, this also works:
 npm test
 ```
 
-## Privacy
+Build the release zip:
 
-FocusView does not collect, store, share, or transmit personal data. All video transforms are applied locally in the browser on YouTube pages only. See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
+```sh
+./scripts/build-release.sh
+```
 
-## Release Preparation
+The release zip includes only the runtime files required by the extension:
 
-Release notes are in [CHANGELOG.md](CHANGELOG.md). Icon files are included in `icons/`.
+- `manifest.json`
+- `src/`
+- `icons/`
 
 ## Limitations
 
-- Version 1 targets normal YouTube watch pages only.
-- Shorts, embedded YouTube iframes, and special live-player layouts are out of scope.
-- The extension avoids extra black borders caused by dragging too far. It does not remove black borders already present because of vertical video or YouTube letterboxing, but it prevents dragging further into those black-border-only areas until zoom fills that direction.
-- The extension uses CSS transforms, not canvas video rendering, to keep performance and compatibility simple.
+- FocusView targets normal YouTube watch pages.
+- Shorts, embedded YouTube iframes, and special live-player layouts are not the focus of version 1.
+- FocusView prevents extra black borders caused by moving too far, but it does not remove black borders already created by YouTube letterboxing or vertical-video layout.
+- Video transforms use CSS transforms, not canvas rendering, to keep the extension lightweight.
+
+## Release Notes
+
+See [CHANGELOG.md](CHANGELOG.md).
