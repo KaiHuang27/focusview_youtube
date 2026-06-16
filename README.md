@@ -17,6 +17,14 @@ Best for:
 
 [Download from the Chrome Web Store](https://chromewebstore.google.com/detail/jbdndcjclbghkmbiehjigaapembpbgdb?utm_source=github)
 
+## Preview
+
+![FocusView promotional tile](assets/focusview-promo-tile.png)
+
+![FocusView toolbar controls](assets/focusview-toolbar.png)
+
+![FocusView zoom mode](assets/focusview-zoom-mode.png)
+
 ## Features
 
 - Press `Alt/Option + Shift + Z` to turn zoom mode on or off.

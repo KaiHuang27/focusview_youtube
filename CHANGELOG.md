@@ -15,6 +15,7 @@ Release packaging and store listing polish.
 - Updated toolbar tooltip wording for Zoom mode and reset.
 - Rewrote the README as a public product introduction.
 - Simplified the README to match the Chrome Web Store listing style.
+- Added README preview images.
 
 ## 1.0.0
 
