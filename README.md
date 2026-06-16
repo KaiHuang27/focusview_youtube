@@ -6,7 +6,7 @@ FocusView brings smooth, almost-native zoom, rotate, and mirror controls to YouT
 
 It is great for concerts, sports clips, livestreams, lectures, tutorials, and any video where you want a closer look.
 
-[View on the Chrome Web Store](https://chromewebstore.google.com/detail/focusview-%E2%80%93-zoom-rotate-m/jbdndcjclbghkmbiehjigaapembpbgdb)
+[Download from the Chrome Web Store](https://chromewebstore.google.com/detail/jbdndcjclbghkmbiehjigaapembpbgdb?utm_source=github)
 
 ## Features
 
