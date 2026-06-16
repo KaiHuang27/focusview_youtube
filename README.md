@@ -13,6 +13,8 @@ Best for:
 - product demos
 - any video where you want a closer look
 
+[Watch the YouTube demo](https://www.youtube.com/watch?v=x4EzsXcOo_A)
+
 [Download from the Chrome Web Store](https://chromewebstore.google.com/detail/jbdndcjclbghkmbiehjigaapembpbgdb?utm_source=github)
 
 ## Features
