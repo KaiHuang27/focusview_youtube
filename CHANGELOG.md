@@ -14,6 +14,7 @@ Release packaging and store listing polish.
 - Moved the Zoom mode long-press block earlier in the pointer event path.
 - Updated toolbar tooltip wording for Zoom mode and reset.
 - Rewrote the README as a public product introduction.
+- Simplified the README to match the Chrome Web Store listing style.
 
 ## 1.0.0
 
