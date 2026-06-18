@@ -2,15 +2,13 @@
 
 See more details in YouTube videos.
 
-FocusView brings smooth, almost-native zoom, rotate, and mirror controls to YouTube videos in Chrome.
+FocusView adds smooth zoom, rotate, and mirror controls to YouTube videos in your browser.
 
 Best for:
 
-- lectures and tutorials
 - concerts and livestreams
 - sports clips
-- dance practice
-- product demos
+- lectures and tutorials
 - any video where you want a closer look
 
 [Watch the YouTube demo](https://www.youtube.com/watch?v=x4EzsXcOo_A)
@@ -32,7 +30,6 @@ Best for:
 - Long-press and drag to move around a zoomed video.
 - Rotate videos by `90°`, `180°`, or `270°`.
 - Mirror videos horizontally.
-- Use the small Source Map to see which part of the video is visible.
 
 ## Privacy And Permissions
 
