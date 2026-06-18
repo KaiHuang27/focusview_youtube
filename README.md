@@ -66,6 +66,17 @@ See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
 4. Select this project folder.
 5. Open a normal YouTube video page.
 
+### Safari
+
+The macOS Safari Web Extension project is in `platforms/safari/FocusView`.
+
+1. Open `platforms/safari/FocusView/FocusView.xcodeproj` in Xcode.
+2. Select the `FocusView` scheme.
+3. Run the macOS app target.
+4. Open Safari Settings → Extensions.
+5. Enable FocusView and allow access to YouTube.
+6. Open a normal YouTube video page.
+
 ## Development
 
 Run tests:

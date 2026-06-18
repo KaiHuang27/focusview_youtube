@@ -16,6 +16,7 @@ Release packaging and store listing polish.
 - Rewrote the README as a public product introduction.
 - Simplified the README to match the Chrome Web Store listing style.
 - Added README preview images.
+- Added a macOS Safari Web Extension Xcode project for local testing and App Store preparation.
 
 ## 1.0.0
 
