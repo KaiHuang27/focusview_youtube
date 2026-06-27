@@ -399,7 +399,7 @@
   transform: translateX(16px);
 }
 
-.ytvt-map {
+.ytvt-minimap {
   position: absolute;
   z-index: 2147483646;
   top: 50px;

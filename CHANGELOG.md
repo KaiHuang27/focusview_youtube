@@ -7,9 +7,10 @@ Release packaging and store listing polish.
 ### Changed
 
 - Updated public wording to describe the toolbar action as Zoom mode on/off.
+- Renamed the map terminology to Minimap while keeping Viewport Indicator for the visible area marker.
 - Added store listing shortcut instructions for `Alt/Option + Shift + Z`.
 - Added a release ZIP build script that does not require Node in the user's shell.
-- Synchronized the Source Map update path with mouse wheel zoom.
+- Synchronized the Minimap update path with mouse wheel zoom.
 - Blocked YouTube's long-press 2x playback gesture while Zoom mode is on.
 - Moved the Zoom mode long-press block earlier in the pointer event path.
 - Updated toolbar tooltip wording for Zoom mode and reset.
@@ -30,7 +31,7 @@ Initial Chrome Web Store release candidate.
 - Manual zoom percentage input and custom slider control.
 - Rotation controls for 0, 90, 180, and 270 degrees.
 - Horizontal mirror control.
-- Source Map and Viewport Indicator for understanding the visible area while moving around.
+- Minimap and Viewport Indicator for understanding the visible area while moving around.
 - Reset behavior for returning transforms to the default state.
 - Automatic reset when switching to another YouTube video.
 - Fullscreen transform preservation.

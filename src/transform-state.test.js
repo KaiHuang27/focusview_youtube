@@ -10,7 +10,7 @@ const {
   createViewportCenteredZoomState,
   createViewportIndicator,
   createViewportOverlayLayout,
-  createViewportMapSize,
+  createMinimapSize,
   createTransformMenuTop,
   createDefaultState,
   createImportantTransformCssText,
@@ -204,7 +204,7 @@ test("shouldResetForVideoKey resets only when an existing video key changes", ()
   assert.equal(shouldResetForVideoKey("abc123", "def456"), true);
 });
 
-test("createViewportIndicator returns full source map when video is not zoomed in", () => {
+test("createViewportIndicator returns full minimap when video is not zoomed in", () => {
   assert.deepEqual(createViewportIndicator(createDefaultState(), 1280, 720), {
     x: 0,
     y: 0,
@@ -225,13 +225,13 @@ test("createViewportIndicator maps zoom and pan into normalized source-video coo
   );
 });
 
-test("createViewportMapSize follows source video ratio within min and max bounds", () => {
-  assert.deepEqual(createViewportMapSize(1920, 1080), { width: 160, height: 90 });
-  assert.deepEqual(createViewportMapSize(1920, 1200), { width: 154, height: 96 });
-  assert.deepEqual(createViewportMapSize(2560, 1080), { width: 160, height: 68 });
-  assert.deepEqual(createViewportMapSize(1080, 1920), { width: 54, height: 96 });
-  assert.deepEqual(createViewportMapSize(100, 1000), { width: 44, height: 96 });
-  assert.deepEqual(createViewportMapSize(0, 0), { width: 160, height: 90 });
+test("createMinimapSize follows source video ratio within min and max bounds", () => {
+  assert.deepEqual(createMinimapSize(1920, 1080), { width: 160, height: 90 });
+  assert.deepEqual(createMinimapSize(1920, 1200), { width: 154, height: 96 });
+  assert.deepEqual(createMinimapSize(2560, 1080), { width: 160, height: 68 });
+  assert.deepEqual(createMinimapSize(1080, 1920), { width: 54, height: 96 });
+  assert.deepEqual(createMinimapSize(100, 1000), { width: 44, height: 96 });
+  assert.deepEqual(createMinimapSize(0, 0), { width: 160, height: 90 });
 });
 
 test("createDisplayedSourceSize swaps source dimensions for sideways rotation", () => {
@@ -241,14 +241,14 @@ test("createDisplayedSourceSize swaps source dimensions for sideways rotation", 
   assert.deepEqual(createDisplayedSourceSize(1920, 1080, 270), { width: 1080, height: 1920 });
 });
 
-test("createViewportMapSize follows the rotated source-video ratio", () => {
-  assert.deepEqual(createViewportMapSize(1920, 1080, 0), { width: 160, height: 90 });
-  assert.deepEqual(createViewportMapSize(1920, 1080, 90), { width: 54, height: 96 });
-  assert.deepEqual(createViewportMapSize(1920, 1080, 180), { width: 160, height: 90 });
-  assert.deepEqual(createViewportMapSize(1920, 1080, 270), { width: 54, height: 96 });
+test("createMinimapSize follows the rotated source-video ratio", () => {
+  assert.deepEqual(createMinimapSize(1920, 1080, 0), { width: 160, height: 90 });
+  assert.deepEqual(createMinimapSize(1920, 1080, 90), { width: 54, height: 96 });
+  assert.deepEqual(createMinimapSize(1920, 1080, 180), { width: 160, height: 90 });
+  assert.deepEqual(createMinimapSize(1920, 1080, 270), { width: 54, height: 96 });
 });
 
-test("createViewportIndicator can exceed the source map for wider or taller player viewports", () => {
+test("createViewportIndicator can exceed the minimap for wider or taller player viewports", () => {
   assert.deepEqual(
     createViewportIndicator(createDefaultState(), 1920, 1080, 1920, 1080),
     { x: 0, y: 0, width: 1, height: 1 }
@@ -274,21 +274,21 @@ test("createViewportIndicator uses rotated source geometry", () => {
   );
 });
 
-test("createViewportIndicator scales with zoom and keeps out-of-source-map areas visible", () => {
+test("createViewportIndicator scales with zoom and keeps out-of-minimap areas visible", () => {
   assert.deepEqual(
     createViewportIndicator({ ...createDefaultState(), zoom: 200 }, 1080, 1920, 1920, 1080),
     { x: -0.2901, y: 0.25, width: 1.5802, height: 0.5 }
   );
 });
 
-test("createViewportIndicator pan is not clamped back into the source map", () => {
+test("createViewportIndicator pan is not clamped back into the minimap", () => {
   assert.deepEqual(
     createViewportIndicator({ ...createDefaultState(), zoom: 200, panX: 540, panY: -270 }, 1920, 1080),
     { x: 0.1094, y: 0.375, width: 0.5, height: 0.5 }
   );
 });
 
-test("createViewportIndicator falls back to full source map for invalid dimensions", () => {
+test("createViewportIndicator falls back to full minimap for invalid dimensions", () => {
   assert.deepEqual(createViewportIndicator({ ...createDefaultState(), zoom: 200 }, 0, 0, 1920, 1080), {
     x: 0,
     y: 0,
@@ -306,20 +306,20 @@ test("createViewportIndicator falls back to full source map for invalid dimensio
 test("createViewportOverlayLayout keeps a wider viewport indicator inside the right edge", () => {
   assert.deepEqual(
     createViewportOverlayLayout({
-      mapSize: { width: 160, height: 90 },
+      minimapSize: { width: 160, height: 90 },
       indicator: { x: -0.1667, y: 0, width: 1.3333, height: 1 },
     }),
-    { mapTop: 50, mapRight: 49, settingsTop: 148, settingsRight: 113 }
+    { minimapTop: 50, minimapRight: 49, settingsTop: 148, settingsRight: 113 }
   );
 });
 
 test("createViewportOverlayLayout keeps a taller viewport indicator inside the top edge", () => {
   assert.deepEqual(
     createViewportOverlayLayout({
-      mapSize: { width: 160, height: 90 },
+      minimapSize: { width: 160, height: 90 },
       indicator: { x: 0, y: -1.0802, width: 1, height: 3.1605 },
     }),
-    { mapTop: 148, mapRight: 22, settingsTop: 344, settingsRight: 86 }
+    { minimapTop: 148, minimapRight: 22, settingsTop: 344, settingsRight: 86 }
   );
 });
 
@@ -329,11 +329,11 @@ test("createViewportOverlayLayout can anchor position while the viewport indicat
 
   assert.deepEqual(
     createViewportOverlayLayout({
-      mapSize: { width: 54, height: 96 },
+      minimapSize: { width: 54, height: 96 },
       indicator: zoomedIndicator,
       anchorIndicator,
     }),
-    { mapTop: 50, mapRight: 81, settingsTop: 154, settingsRight: 92 }
+    { minimapTop: 50, minimapRight: 81, settingsTop: 154, settingsRight: 92 }
   );
 });
 
@@ -355,11 +355,11 @@ test("createViewportOverlayLayout keeps the settings gap stable for rotated sour
 
   assert.deepEqual(
     createViewportOverlayLayout({
-      mapSize: createViewportMapSize(1920, 1080, 90),
+      minimapSize: createMinimapSize(1920, 1080, 90),
       indicator: zoomedIndicator,
       anchorIndicator,
     }),
-    { mapTop: 50, mapRight: 81, settingsTop: 154, settingsRight: 92 }
+    { minimapTop: 50, minimapRight: 81, settingsTop: 154, settingsRight: 92 }
   );
 });
 
@@ -479,7 +479,7 @@ test("createViewportIndicator reflects viewport-aware clamped pan", () => {
   });
 });
 
-test("createViewportIndicator preserves extreme pan instead of clamping to source-map bounds", () => {
+test("createViewportIndicator preserves extreme pan instead of clamping to minimap bounds", () => {
   assert.deepEqual(
     createViewportIndicator({ ...createDefaultState(), zoom: 200, panX: 5000, panY: -5000 }, 1280, 720),
     { x: -1.7031, y: 3.7222, width: 0.5, height: 0.5 }

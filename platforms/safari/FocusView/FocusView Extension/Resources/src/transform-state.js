@@ -3,11 +3,11 @@
   const ZOOM_STEP = 5;
   const MIN_ZOOM = 100;
   const MAX_ZOOM = 500;
-  const DEFAULT_VIEWPORT_MAP_SIZE = {
+  const DEFAULT_MINIMAP_SIZE = {
     width: 160,
     height: 90,
   };
-  const VIEWPORT_MAP_BOUNDS = {
+  const MINIMAP_BOUNDS = {
     maxWidth: 160,
     maxHeight: 96,
     minWidth: 44,
@@ -266,24 +266,24 @@
     );
   }
 
-  function createViewportMapSize(width, height, rotation = 0) {
+  function createMinimapSize(width, height, rotation = 0) {
     if (width <= 0 || height <= 0) {
-      return DEFAULT_VIEWPORT_MAP_SIZE;
+      return DEFAULT_MINIMAP_SIZE;
     }
 
     const displayedSource = createDisplayedSourceSize(width, height, rotation);
     const aspect = displayedSource.width / displayedSource.height;
-    let mapWidth = VIEWPORT_MAP_BOUNDS.maxWidth;
+    let mapWidth = MINIMAP_BOUNDS.maxWidth;
     let mapHeight = mapWidth / aspect;
 
-    if (mapHeight > VIEWPORT_MAP_BOUNDS.maxHeight) {
-      mapHeight = VIEWPORT_MAP_BOUNDS.maxHeight;
+    if (mapHeight > MINIMAP_BOUNDS.maxHeight) {
+      mapHeight = MINIMAP_BOUNDS.maxHeight;
       mapWidth = mapHeight * aspect;
     }
 
     return {
-      width: Math.round(clamp(mapWidth, VIEWPORT_MAP_BOUNDS.minWidth, VIEWPORT_MAP_BOUNDS.maxWidth)),
-      height: Math.round(clamp(mapHeight, VIEWPORT_MAP_BOUNDS.minHeight, VIEWPORT_MAP_BOUNDS.maxHeight)),
+      width: Math.round(clamp(mapWidth, MINIMAP_BOUNDS.minWidth, MINIMAP_BOUNDS.maxWidth)),
+      height: Math.round(clamp(mapHeight, MINIMAP_BOUNDS.minHeight, MINIMAP_BOUNDS.maxHeight)),
     };
   }
 
@@ -309,7 +309,7 @@
   }
 
   function createViewportOverlayLayout({
-    mapSize,
+    minimapSize,
     indicator,
     anchorIndicator = indicator,
     anchorTop = 50,
@@ -317,23 +317,23 @@
     settingsButtonSize = 32,
     settingsGap = 8,
   }) {
-    const indicatorLeft = anchorIndicator.x * mapSize.width;
-    const indicatorTop = anchorIndicator.y * mapSize.height;
-    const indicatorRight = (anchorIndicator.x + anchorIndicator.width) * mapSize.width;
-    const indicatorBottom = (anchorIndicator.y + anchorIndicator.height) * mapSize.height;
+    const indicatorLeft = anchorIndicator.x * minimapSize.width;
+    const indicatorTop = anchorIndicator.y * minimapSize.height;
+    const indicatorRight = (anchorIndicator.x + anchorIndicator.width) * minimapSize.width;
+    const indicatorBottom = (anchorIndicator.y + anchorIndicator.height) * minimapSize.height;
     const overflowTop = Math.max(0, -indicatorTop);
-    const overflowRight = Math.max(0, indicatorRight - mapSize.width);
-    const overlayBottom = Math.max(mapSize.height, indicatorBottom);
-    const indicatorCenterX = indicatorLeft + (anchorIndicator.width * mapSize.width) / 2;
+    const overflowRight = Math.max(0, indicatorRight - minimapSize.width);
+    const overlayBottom = Math.max(minimapSize.height, indicatorBottom);
+    const indicatorCenterX = indicatorLeft + (anchorIndicator.width * minimapSize.width) / 2;
 
-    const mapTop = Math.ceil(anchorTop + overflowTop);
-    const mapRight = Math.ceil(anchorRight + overflowRight);
+    const minimapTop = Math.ceil(anchorTop + overflowTop);
+    const minimapRight = Math.ceil(anchorRight + overflowRight);
 
     return {
-      mapTop,
-      mapRight,
-      settingsTop: Math.ceil(mapTop + overlayBottom + settingsGap),
-      settingsRight: Math.round(mapRight + mapSize.width - indicatorCenterX - settingsButtonSize / 2),
+      minimapTop,
+      minimapRight,
+      settingsTop: Math.ceil(minimapTop + overlayBottom + settingsGap),
+      settingsRight: Math.round(minimapRight + minimapSize.width - indicatorCenterX - settingsButtonSize / 2),
     };
   }
 
@@ -348,7 +348,7 @@
     createViewportCenteredZoomState,
     createViewportIndicator,
     createViewportOverlayLayout,
-    createViewportMapSize,
+    createMinimapSize,
     createTransformMenuTop,
     createDefaultState,
     createImportantTransformCssText,

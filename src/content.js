@@ -8,7 +8,7 @@ const {
   createViewportIndicator,
   createViewportCenteredZoomState,
   createViewportOverlayLayout,
-  createViewportMapSize,
+  createMinimapSize,
   createTransformMenuTop,
   createDefaultState,
   createImportantTransformCssText,
@@ -40,7 +40,7 @@ let video = null;
 let player = null;
 let wheelTarget = null;
 let toolbar = null;
-let viewportMap = null;
+let minimap = null;
 let settingsButton = null;
 let transformMenu = null;
 let resizeObserver = null;
@@ -157,7 +157,7 @@ function applyTransform() {
   if (video.style.cursor !== cursor) {
     video.style.cursor = cursor;
   }
-  renderViewportMap();
+  renderMinimap();
 }
 
 function scheduleTransformReapply(frames = 6) {
@@ -194,8 +194,8 @@ function clearTransform() {
 
 function clearOverlayElements() {
   cleanupSliderDrag();
-  viewportMap?.remove();
-  viewportMap = null;
+  minimap?.remove();
+  minimap = null;
   settingsButton?.remove();
   settingsButton = null;
   transformMenu?.remove();
@@ -254,7 +254,7 @@ function scheduleViewportControlsHide() {
   clearTimeout(viewportControlsHideTimer);
   viewportControlsHideTimer = setTimeout(() => {
     viewportControlsHideTimer = 0;
-    renderViewportMap();
+    renderMinimap();
   }, VIEWPORT_CONTROLS_HIDE_DELAY_MS);
 }
 
@@ -262,7 +262,7 @@ function markViewportControlsActivity({ shouldRender = true } = {}) {
   const controlsWereVisible = areViewportControlsVisible();
   viewportControlsLastActivityAt = Date.now();
   if (shouldRender || !controlsWereVisible) {
-    renderViewportMap();
+    renderMinimap();
   }
   scheduleViewportControlsHide();
 }
@@ -280,15 +280,15 @@ function startPanDrag() {
   markViewportControlsActivity();
 }
 
-function renderViewportMap() {
+function renderMinimap() {
   if (!player || !video) {
     return;
   }
 
   const shouldShowControls = areViewportControlsVisible();
   if (!shouldShowControls) {
-    if (viewportMap) {
-      viewportMap.hidden = true;
+    if (minimap) {
+      minimap.hidden = true;
     }
     if (settingsButton) {
       settingsButton.hidden = true;
@@ -296,14 +296,14 @@ function renderViewportMap() {
     return;
   }
 
-  if (!viewportMap) {
-    viewportMap = document.createElement("div");
-    viewportMap.className = "ytvt-map";
-    viewportMap.setAttribute("aria-label", "Source map and viewport indicator");
-    viewportMap.innerHTML = '<div class="ytvt-viewport-indicator"></div>';
-    player.append(viewportMap);
-  } else if (viewportMap.parentElement !== player) {
-    player.append(viewportMap);
+  if (!minimap) {
+    minimap = document.createElement("div");
+    minimap.className = "ytvt-minimap";
+    minimap.setAttribute("aria-label", "Minimap and viewport indicator");
+    minimap.innerHTML = '<div class="ytvt-viewport-indicator"></div>';
+    player.append(minimap);
+  } else if (minimap.parentElement !== player) {
+    player.append(minimap);
   }
 
   if (!settingsButton) {
@@ -325,7 +325,7 @@ function renderViewportMap() {
       viewportControlsLastActivityAt = Date.now();
       scheduleViewportControlsHide();
       renderToolbar();
-      renderViewportMap();
+      renderMinimap();
     });
     player.append(settingsButton);
   } else if (settingsButton.parentElement !== player) {
@@ -336,7 +336,7 @@ function renderViewportMap() {
   settingsButton.setAttribute("aria-expanded", String(isMenuOpen));
 
   const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
-  const mapSize = createViewportMapSize(sourceWidth, sourceHeight, state.rotation);
+  const minimapSize = createMinimapSize(sourceWidth, sourceHeight, state.rotation);
   const indicator = createViewportIndicator(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
   const anchorIndicator = createViewportIndicator(
     { ...state, zoom: 100, panX: 0, panY: 0 },
@@ -345,12 +345,12 @@ function renderViewportMap() {
     viewportWidth,
     viewportHeight
   );
-  const overlayLayout = createViewportOverlayLayout({ mapSize, indicator, anchorIndicator });
-  const indicatorElement = viewportMap.querySelector(".ytvt-viewport-indicator");
-  viewportMap.style.top = `${overlayLayout.mapTop}px`;
-  viewportMap.style.right = `${overlayLayout.mapRight}px`;
-  viewportMap.style.width = `${mapSize.width}px`;
-  viewportMap.style.height = `${mapSize.height}px`;
+  const overlayLayout = createViewportOverlayLayout({ minimapSize, indicator, anchorIndicator });
+  const indicatorElement = minimap.querySelector(".ytvt-viewport-indicator");
+  minimap.style.top = `${overlayLayout.minimapTop}px`;
+  minimap.style.right = `${overlayLayout.minimapRight}px`;
+  minimap.style.width = `${minimapSize.width}px`;
+  minimap.style.height = `${minimapSize.height}px`;
   settingsButton.style.top = `${overlayLayout.settingsTop}px`;
   settingsButton.style.right = `${overlayLayout.settingsRight}px`;
   positionTransformMenu();
@@ -358,7 +358,7 @@ function renderViewportMap() {
   indicatorElement.style.top = `${indicator.y * 100}%`;
   indicatorElement.style.width = `${indicator.width * 100}%`;
   indicatorElement.style.height = `${indicator.height * 100}%`;
-  viewportMap.hidden = !shouldShowControls;
+  minimap.hidden = !shouldShowControls;
   settingsButton.hidden = !shouldShowControls;
 }
 
@@ -873,7 +873,7 @@ function closeMenuOnOutsidePointer(event) {
 
   isMenuOpen = false;
   renderToolbar();
-  renderViewportMap();
+  renderMinimap();
 }
 
 function closeMenuOnEscape(event) {
@@ -883,7 +883,7 @@ function closeMenuOnEscape(event) {
 
   isMenuOpen = false;
   renderToolbar();
-  renderViewportMap();
+  renderMinimap();
 }
 
 function onShortcutKeyDown(event) {
@@ -1041,7 +1041,7 @@ function onWheel(event) {
   scheduleViewportControlsHide();
   setZoom(applyZoomDelta(state.zoom, direction), false);
   syncToolbarTrigger();
-  renderViewportMap();
+  renderMinimap();
 }
 
 function endDrag(event) {
