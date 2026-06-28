@@ -335,12 +335,17 @@
     };
   }
 
-  function createViewportIndicatorRect(indicator, minimapSize) {
+  function createViewportIndicatorRect(indicator, minimapSize, viewportPreviewSize = null, scale = 1) {
+    const width = viewportPreviewSize?.width > 0 ? viewportPreviewSize.width / scale : indicator.width * minimapSize.width;
+    const height = viewportPreviewSize?.height > 0 ? viewportPreviewSize.height / scale : indicator.height * minimapSize.height;
+    const centerX = (indicator.x + indicator.width / 2) * minimapSize.width;
+    const centerY = (indicator.y + indicator.height / 2) * minimapSize.height;
+
     return {
-      left: Math.round(indicator.x * minimapSize.width),
-      top: Math.round(indicator.y * minimapSize.height),
-      width: Math.round(indicator.width * minimapSize.width),
-      height: Math.round(indicator.height * minimapSize.height),
+      left: Math.round(centerX - width / 2),
+      top: Math.round(centerY - height / 2),
+      width: Math.round(width),
+      height: Math.round(height),
     };
   }
 
@@ -348,11 +353,25 @@
     minimapSize,
     indicator,
     anchorIndicator = indicator,
+    indicatorRect = null,
+    anchorIndicatorRect = indicatorRect,
     anchorTop = 50,
     anchorRight = 22,
     settingsButtonSize = 32,
     settingsGap = 8,
   }) {
+    if (anchorIndicatorRect) {
+      const minimapTop = Math.ceil(anchorTop - anchorIndicatorRect.top);
+      const minimapRight = Math.ceil(anchorRight + anchorIndicatorRect.left + anchorIndicatorRect.width - minimapSize.width);
+
+      return {
+        minimapTop,
+        minimapRight,
+        settingsTop: Math.ceil(anchorTop + anchorIndicatorRect.height + settingsGap),
+        settingsRight: Math.round(anchorRight + anchorIndicatorRect.width / 2 - settingsButtonSize / 2),
+      };
+    }
+
     const indicatorLeft = anchorIndicator.x * minimapSize.width;
     const indicatorTop = anchorIndicator.y * minimapSize.height;
     const indicatorRight = (anchorIndicator.x + anchorIndicator.width) * minimapSize.width;

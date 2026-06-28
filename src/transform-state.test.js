@@ -292,20 +292,42 @@ test("createViewportIndicator uses rotated source geometry", () => {
 test("createViewportIndicatorRect keeps the viewport preview size stable across rotation", () => {
   const unrotatedMinimapSize = createMinimapSize(1920, 1080, 0, 1920, 1080);
   const rotatedMinimapSize = createMinimapSize(1920, 1080, 90, 1920, 1080);
+  const viewportPreviewSize = createMinimapSize(1920, 1080);
   const unrotatedIndicator = createViewportIndicator(createDefaultState(), 1920, 1080, 1920, 1080);
   const rotatedIndicator = createViewportIndicator({ ...createDefaultState(), rotation: 90 }, 1920, 1080, 1920, 1080);
 
-  assert.deepEqual(createViewportIndicatorRect(unrotatedIndicator, unrotatedMinimapSize), {
+  assert.deepEqual(createViewportIndicatorRect(unrotatedIndicator, unrotatedMinimapSize, viewportPreviewSize), {
     left: 0,
     top: 0,
     width: 160,
     height: 90,
   });
-  assert.deepEqual(createViewportIndicatorRect(rotatedIndicator, rotatedMinimapSize), {
+  assert.deepEqual(createViewportIndicatorRect(rotatedIndicator, rotatedMinimapSize, viewportPreviewSize), {
     left: -54,
     top: 0,
     width: 160,
     height: 90,
+  });
+});
+
+test("createViewportIndicatorRect keeps a portrait player viewport stable across rotation", () => {
+  const unrotatedMinimapSize = createMinimapSize(1920, 1080, 0, 1080, 1920);
+  const rotatedMinimapSize = createMinimapSize(1920, 1080, 90, 1080, 1920);
+  const viewportPreviewSize = createMinimapSize(1080, 1920);
+  const unrotatedIndicator = createViewportIndicator(createDefaultState(), 1920, 1080, 1080, 1920);
+  const rotatedIndicator = createViewportIndicator({ ...createDefaultState(), rotation: 90 }, 1920, 1080, 1080, 1920);
+
+  assert.deepEqual(createViewportIndicatorRect(unrotatedIndicator, unrotatedMinimapSize, viewportPreviewSize), {
+    left: 0,
+    top: -26,
+    width: 54,
+    height: 96,
+  });
+  assert.deepEqual(createViewportIndicatorRect(rotatedIndicator, rotatedMinimapSize, viewportPreviewSize), {
+    left: 0,
+    top: 0,
+    width: 54,
+    height: 96,
   });
 });
 
@@ -395,6 +417,37 @@ test("createViewportOverlayLayout keeps the settings gap stable for rotated sour
       anchorIndicator,
     }),
     { minimapTop: 50, minimapRight: 77, settingsTop: 148, settingsRight: 86 }
+  );
+});
+
+test("createViewportOverlayLayout anchors the viewport rect across rotation", () => {
+  const unrotatedMinimapSize = createMinimapSize(1920, 1080, 0, 1080, 1920);
+  const rotatedMinimapSize = createMinimapSize(1920, 1080, 90, 1080, 1920);
+  const viewportPreviewSize = createMinimapSize(1080, 1920);
+  const unrotatedIndicator = createViewportIndicator(createDefaultState(), 1920, 1080, 1080, 1920);
+  const rotatedIndicator = createViewportIndicator({ ...createDefaultState(), rotation: 90 }, 1920, 1080, 1080, 1920);
+  const unrotatedRect = createViewportIndicatorRect(unrotatedIndicator, unrotatedMinimapSize, viewportPreviewSize);
+  const rotatedRect = createViewportIndicatorRect(rotatedIndicator, rotatedMinimapSize, viewportPreviewSize);
+
+  assert.deepEqual(
+    createViewportOverlayLayout({
+      minimapSize: unrotatedMinimapSize,
+      indicator: unrotatedIndicator,
+      anchorIndicator: unrotatedIndicator,
+      indicatorRect: unrotatedRect,
+      anchorIndicatorRect: unrotatedRect,
+    }),
+    { minimapTop: 76, minimapRight: 22, settingsTop: 154, settingsRight: 33 }
+  );
+  assert.deepEqual(
+    createViewportOverlayLayout({
+      minimapSize: rotatedMinimapSize,
+      indicator: rotatedIndicator,
+      anchorIndicator: rotatedIndicator,
+      indicatorRect: rotatedRect,
+      anchorIndicatorRect: rotatedRect,
+    }),
+    { minimapTop: 50, minimapRight: 22, settingsTop: 154, settingsRight: 33 }
   );
 });
 

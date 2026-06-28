@@ -11,6 +11,7 @@ Release packaging and store listing polish.
 - Kept the Viewport Indicator visually anchored to the player viewport size when rotating videos sideways.
 - Fit the Minimap inside the player viewport preview at 100% zoom, including sideways rotation.
 - Rendered the Viewport Indicator with explicit pixel dimensions so rotation does not resize it visually.
+- Anchored the Minimap controls to the Viewport Indicator rect so rotation does not move the control group vertically.
 - Changed mouse wheel and trackpad zoom to two percent per wheel event for finer control.
 - Added store listing shortcut instructions for `Alt/Option + Shift + Z`.
 - Added a release ZIP build script that does not require Node in the user's shell.

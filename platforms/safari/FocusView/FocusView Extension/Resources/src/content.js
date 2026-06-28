@@ -339,6 +339,7 @@ function renderMinimap() {
 
   const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
   const minimapSize = createMinimapSize(sourceWidth, sourceHeight, state.rotation, viewportWidth, viewportHeight);
+  const viewportPreviewSize = createMinimapSize(viewportWidth, viewportHeight);
   const indicator = createViewportIndicator(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
   const anchorIndicator = createViewportIndicator(
     { ...state, zoom: 100, panX: 0, panY: 0 },
@@ -347,8 +348,9 @@ function renderMinimap() {
     viewportWidth,
     viewportHeight
   );
-  const overlayLayout = createViewportOverlayLayout({ minimapSize, indicator, anchorIndicator });
-  const indicatorRect = createViewportIndicatorRect(indicator, minimapSize);
+  const indicatorRect = createViewportIndicatorRect(indicator, minimapSize, viewportPreviewSize, state.zoom / 100);
+  const anchorIndicatorRect = createViewportIndicatorRect(anchorIndicator, minimapSize, viewportPreviewSize);
+  const overlayLayout = createViewportOverlayLayout({ minimapSize, indicator, anchorIndicator, indicatorRect, anchorIndicatorRect });
   const indicatorElement = minimap.querySelector(".ytvt-viewport-indicator");
   minimap.style.top = `${overlayLayout.minimapTop}px`;
   minimap.style.right = `${overlayLayout.minimapRight}px`;
