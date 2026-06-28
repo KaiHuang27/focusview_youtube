@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.3
+
+Release version update.
+
+### Changed
+
+- Bumped the Chrome and Safari extension manifests and package metadata to `1.0.3`.
+- Prepared the latest Chrome Web Store release package.
+
 ## 1.0.2
 
 Minimap and Zoom mode polish.

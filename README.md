@@ -76,6 +76,8 @@ The macOS Safari Web Extension project is in `platforms/safari/FocusView`.
 
 ## Development
 
+Current version: `1.0.3`.
+
 Run tests:
 
 ```sh
