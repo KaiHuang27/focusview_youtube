@@ -278,7 +278,7 @@ test("createViewportIndicator can exceed the minimap for wider or taller player 
 test("createViewportIndicator uses rotated source geometry", () => {
   assert.deepEqual(
     createViewportIndicator({ ...createDefaultState(), rotation: 90 }, 1920, 1080, 1920, 1080),
-    { x: -1.0802, y: 0, width: 3.1605, height: 1 }
+    { x: -0.9815, y: 0.0313, width: 2.963, height: 0.9375 }
   );
 });
 
@@ -367,7 +367,7 @@ test("createViewportOverlayLayout keeps the settings gap stable for rotated sour
       indicator: zoomedIndicator,
       anchorIndicator,
     }),
-    { minimapTop: 50, minimapRight: 81, settingsTop: 154, settingsRight: 92 }
+    { minimapTop: 50, minimapRight: 76, settingsTop: 154, settingsRight: 87 }
   );
 });
 

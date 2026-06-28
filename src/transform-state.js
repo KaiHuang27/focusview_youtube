@@ -300,8 +300,14 @@
       return { x: 0, y: 0, width: 1, height: 1 };
     }
 
-    const indicatorWidth = viewportWidth / (fittedSource.width * scale);
-    const indicatorHeight = viewportHeight / (fittedSource.height * scale);
+    let indicatorWidth = viewportWidth / (fittedSource.width * scale);
+    let indicatorHeight = viewportHeight / (fittedSource.height * scale);
+    if (state.rotation === 90 || state.rotation === 270) {
+      const minimapSize = createMinimapSize(width, height, state.rotation);
+      const viewportPreviewSize = createMinimapSize(viewportWidth, viewportHeight);
+      indicatorWidth = viewportPreviewSize.width / minimapSize.width / scale;
+      indicatorHeight = viewportPreviewSize.height / minimapSize.height / scale;
+    }
     const x = 0.5 - state.panX / (fittedSource.width * scale) - indicatorWidth / 2;
     const y = 0.5 - state.panY / (fittedSource.height * scale) - indicatorHeight / 2;
 

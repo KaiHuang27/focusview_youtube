@@ -8,6 +8,7 @@ Release packaging and store listing polish.
 
 - Updated public wording to describe the toolbar action as Zoom mode on/off.
 - Renamed the map terminology to Minimap while keeping Viewport Indicator for the visible area marker.
+- Kept the Viewport Indicator visually anchored to the player viewport size when rotating videos sideways.
 - Changed mouse wheel and trackpad zoom to two percent per wheel event for finer control.
 - Added store listing shortcut instructions for `Alt/Option + Shift + Z`.
 - Added a release ZIP build script that does not require Node in the user's shell.
