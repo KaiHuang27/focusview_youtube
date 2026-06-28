@@ -337,7 +337,7 @@ function renderMinimap() {
   settingsButton.setAttribute("aria-expanded", String(isMenuOpen));
 
   const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
-  const minimapSize = createMinimapSize(sourceWidth, sourceHeight, state.rotation);
+  const minimapSize = createMinimapSize(sourceWidth, sourceHeight, state.rotation, viewportWidth, viewportHeight);
   const indicator = createViewportIndicator(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
   const anchorIndicator = createViewportIndicator(
     { ...state, zoom: 100, panX: 0, panY: 0 },

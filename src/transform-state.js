@@ -271,12 +271,28 @@
     );
   }
 
-  function createMinimapSize(width, height, rotation = 0) {
+  function createMinimapSize(width, height, rotation = 0, viewportWidth = 0, viewportHeight = 0) {
     if (width <= 0 || height <= 0) {
       return DEFAULT_MINIMAP_SIZE;
     }
 
     const displayedSource = createDisplayedSourceSize(width, height, rotation);
+    if (viewportWidth > 0 && viewportHeight > 0) {
+      const viewportPreviewSize = createMinimapSize(viewportWidth, viewportHeight);
+      const fittedSource = createFittedSourceSize(
+        displayedSource.width,
+        displayedSource.height,
+        viewportPreviewSize.width,
+        viewportPreviewSize.height
+      );
+      if (fittedSource) {
+        return {
+          width: Math.round(clamp(fittedSource.width, MINIMAP_BOUNDS.minWidth, viewportPreviewSize.width)),
+          height: Math.round(clamp(fittedSource.height, MINIMAP_BOUNDS.minHeight, viewportPreviewSize.height)),
+        };
+      }
+    }
+
     const aspect = displayedSource.width / displayedSource.height;
     let mapWidth = MINIMAP_BOUNDS.maxWidth;
     let mapHeight = mapWidth / aspect;
@@ -303,7 +319,7 @@
     let indicatorWidth = viewportWidth / (fittedSource.width * scale);
     let indicatorHeight = viewportHeight / (fittedSource.height * scale);
     if (state.rotation === 90 || state.rotation === 270) {
-      const minimapSize = createMinimapSize(width, height, state.rotation);
+      const minimapSize = createMinimapSize(width, height, state.rotation, viewportWidth, viewportHeight);
       const viewportPreviewSize = createMinimapSize(viewportWidth, viewportHeight);
       indicatorWidth = viewportPreviewSize.width / minimapSize.width / scale;
       indicatorHeight = viewportPreviewSize.height / minimapSize.height / scale;

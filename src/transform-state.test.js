@@ -256,6 +256,12 @@ test("createMinimapSize follows the rotated source-video ratio", () => {
   assert.deepEqual(createMinimapSize(1920, 1080, 270), { width: 54, height: 96 });
 });
 
+test("createMinimapSize fits the source video inside the player viewport preview", () => {
+  assert.deepEqual(createMinimapSize(1920, 1080, 0, 1920, 1080), { width: 160, height: 90 });
+  assert.deepEqual(createMinimapSize(1920, 1080, 90, 1920, 1080), { width: 51, height: 90 });
+  assert.deepEqual(createMinimapSize(1920, 1080, 0, 2560, 1080), { width: 121, height: 68 });
+});
+
 test("createViewportIndicator can exceed the minimap for wider or taller player viewports", () => {
   assert.deepEqual(
     createViewportIndicator(createDefaultState(), 1920, 1080, 1920, 1080),
@@ -278,7 +284,7 @@ test("createViewportIndicator can exceed the minimap for wider or taller player 
 test("createViewportIndicator uses rotated source geometry", () => {
   assert.deepEqual(
     createViewportIndicator({ ...createDefaultState(), rotation: 90 }, 1920, 1080, 1920, 1080),
-    { x: -0.9815, y: 0.0313, width: 2.963, height: 0.9375 }
+    { x: -1.0686, y: 0, width: 3.1373, height: 1 }
   );
 });
 
@@ -363,11 +369,11 @@ test("createViewportOverlayLayout keeps the settings gap stable for rotated sour
 
   assert.deepEqual(
     createViewportOverlayLayout({
-      minimapSize: createMinimapSize(1920, 1080, 90),
+      minimapSize: createMinimapSize(1920, 1080, 90, 1920, 1080),
       indicator: zoomedIndicator,
       anchorIndicator,
     }),
-    { minimapTop: 50, minimapRight: 76, settingsTop: 154, settingsRight: 87 }
+    { minimapTop: 50, minimapRight: 77, settingsTop: 148, settingsRight: 86 }
   );
 });
 
