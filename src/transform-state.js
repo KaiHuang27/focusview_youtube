@@ -1,7 +1,7 @@
 (() => {
   const ALLOWED_ROTATIONS = new Set([0, 90, 180, 270]);
   const ZOOM_STEP = 5;
-  const WHEEL_ZOOM_STEP = 1;
+  const WHEEL_ZOOM_STEP = 2;
   const MIN_ZOOM = 100;
   const MAX_ZOOM = 500;
   const DEFAULT_MINIMAP_SIZE = {

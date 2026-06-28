@@ -118,11 +118,11 @@ test("applyZoomDelta changes zoom and clamps it to the supported range", () => {
   assert.equal(applyZoomDelta(104, -1), 100);
 });
 
-test("applyWheelZoomDelta changes zoom by one percent and clamps it", () => {
-  assert.equal(applyWheelZoomDelta(100, 1), 101);
+test("applyWheelZoomDelta changes zoom by two percent and clamps it", () => {
+  assert.equal(applyWheelZoomDelta(100, 1), 102);
   assert.equal(applyWheelZoomDelta(100, -1), 100);
   assert.equal(applyWheelZoomDelta(499, 1), 500);
-  assert.equal(applyWheelZoomDelta(101, -1), 100);
+  assert.equal(applyWheelZoomDelta(102, -1), 100);
 });
 
 test("createViewportCenteredZoomState preserves the viewport-center content while zooming", () => {
