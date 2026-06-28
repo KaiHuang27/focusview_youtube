@@ -10,6 +10,7 @@ const {
   createDisplayedSourceSize,
   createCursorCenteredZoomState,
   createViewportCenteredZoomState,
+  createFillScreenZoom,
   createViewportIndicator,
   createViewportIndicatorRect,
   createViewportOverlayLayout,
@@ -146,6 +147,26 @@ test("createViewportCenteredZoomState preserves the viewport-center content whil
     createViewportCenteredZoomState({ ...createDefaultState(), zoom: 300, panX: 240, panY: -135 }, 200),
     { ...createDefaultState(), zoom: 200, panX: 160, panY: -90 }
   );
+});
+
+test("createFillScreenZoom keeps matched aspect ratio at 100 percent", () => {
+  assert.equal(createFillScreenZoom(1920, 1080, 1280, 720), 100);
+});
+
+test("createFillScreenZoom expands letterboxed video until it covers the viewport", () => {
+  assert.equal(createFillScreenZoom(1920, 1080, 1024, 768), 134);
+});
+
+test("createFillScreenZoom expands pillarboxed video until it covers the viewport", () => {
+  assert.equal(createFillScreenZoom(1080, 1920, 1920, 1080), 317);
+});
+
+test("createFillScreenZoom clamps extreme aspect ratios to the supported zoom range", () => {
+  assert.equal(createFillScreenZoom(100, 2000, 1920, 1080), 500);
+});
+
+test("createFillScreenZoom uses rotated source dimensions", () => {
+  assert.equal(createFillScreenZoom(1920, 1080, 1920, 1080, 90), 317);
 });
 
 test("createCursorCenteredZoomState matches viewport-centered zoom at the viewport center", () => {

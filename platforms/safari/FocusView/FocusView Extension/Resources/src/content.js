@@ -9,6 +9,7 @@ const {
   createViewportIndicator,
   createViewportIndicatorRect,
   createCursorCenteredZoomState,
+  createFillScreenZoom,
   createViewportCenteredZoomState,
   createViewportOverlayLayout,
   createMinimapSize,
@@ -452,6 +453,11 @@ function setWheelZoom(zoom, event) {
   );
   clampCurrentPanState();
   applyTransform();
+}
+
+function fillScreen() {
+  const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
+  setZoom(createFillScreenZoom(sourceWidth, sourceHeight, viewportWidth, viewportHeight, state.rotation));
 }
 
 function createZoomPanel() {
@@ -899,12 +905,20 @@ function renderMenu() {
   reset.title = "Reset video transform";
   reset.addEventListener("click", resetState);
 
+  const fill = document.createElement("button");
+  fill.type = "button";
+  fill.className = "ytvt-menu-fill";
+  fill.textContent = "Fill Screen";
+  fill.title = "Zoom to fill the player";
+  fill.addEventListener("click", fillScreen);
+
   const rotationGroup = document.createElement("div");
   rotationGroup.className = "ytvt-segment";
   ROTATIONS.forEach((rotation) => rotationGroup.append(createSegment(rotation)));
 
   cleanupSliderDrag();
   transformMenu.replaceChildren(
+    fill,
     reset,
     createZoomPanel(),
     createMenuRow("Rotation", rotationGroup),

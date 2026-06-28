@@ -94,6 +94,17 @@
     };
   }
 
+  function createFillScreenZoom(sourceWidth, sourceHeight, viewportWidth, viewportHeight, rotation = 0) {
+    const displayedSource = createDisplayedSourceSize(sourceWidth, sourceHeight, rotation);
+    const fittedSource = createFittedSourceSize(displayedSource.width, displayedSource.height, viewportWidth, viewportHeight);
+    if (!fittedSource) {
+      return MIN_ZOOM;
+    }
+
+    const coverZoom = Math.ceil(Math.max(viewportWidth / fittedSource.width, viewportHeight / fittedSource.height) * 100);
+    return clamp(coverZoom, MIN_ZOOM, MAX_ZOOM);
+  }
+
   function createCursorCenteredZoomState(state, zoom, cursorOffsetX, cursorOffsetY) {
     const nextZoom = clamp(zoom, MIN_ZOOM, MAX_ZOOM);
     if (nextZoom === MIN_ZOOM || state.zoom <= 0) {
@@ -417,6 +428,7 @@
     clampPanStateToViewport,
     createDisplayedSourceSize,
     createCursorCenteredZoomState,
+    createFillScreenZoom,
     createViewportCenteredZoomState,
     createViewportIndicator,
     createViewportIndicatorRect,

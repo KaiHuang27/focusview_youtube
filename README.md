@@ -29,6 +29,7 @@ Best for:
 - Scroll to zoom videos from `100%` to `500%` around the mouse pointer.
 - Long-press and drag to move around a zoomed video.
 - Use the zoom panel for centered `100%` to `500%` zoom control with clear spacing between the slider and step buttons.
+- Click **Fill Screen** in the zoom settings to enlarge the video until player black bars are covered.
 - Rotate videos by `90°`, `180°`, or `270°`.
 - Mirror videos horizontally.
 
@@ -101,7 +102,7 @@ The release zip includes only the runtime files required by the extension:
 
 - FocusView targets normal YouTube watch pages.
 - Shorts, embedded YouTube iframes, and special live-player layouts are not the focus of version 1.
-- FocusView prevents extra black borders caused by moving too far, but it does not remove black borders already created by YouTube letterboxing or vertical-video layout.
+- FocusView prevents extra black borders caused by moving too far, and **Fill Screen** can cover YouTube letterboxing or vertical-video side bars by cropping the video.
 - Video transforms use CSS transforms, not canvas rendering, to keep the extension lightweight.
 
 ## Release Notes
