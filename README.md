@@ -28,7 +28,7 @@ Best for:
 - Press `Alt/Option + Shift + Z` to turn zoom mode on or off.
 - Scroll to zoom videos from `100%` to `500%` around the mouse pointer.
 - Long-press and drag to move around a zoomed video.
-- Use the zoom panel for centered `100%` to `500%` zoom control with clear spacing between the slider and step buttons.
+- Use the zoom panel for centered `100%` to `500%` zoom control with clear spacing between actions, the value, the slider, and step buttons.
 - Click **Fill Screen** in the zoom settings to enlarge the video until player black bars are covered.
 - Rotate videos by `90°`, `180°`, or `270°`.
 - Mirror videos horizontally.
