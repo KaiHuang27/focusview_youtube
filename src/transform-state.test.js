@@ -5,6 +5,7 @@ await import("./transform-state.js");
 
 const {
   applyZoomDelta,
+  applyWheelZoomDelta,
   clampPanStateToViewport,
   createDisplayedSourceSize,
   createViewportCenteredZoomState,
@@ -115,6 +116,13 @@ test("applyZoomDelta changes zoom and clamps it to the supported range", () => {
   assert.equal(applyZoomDelta(100, -1), 100);
   assert.equal(applyZoomDelta(496, 1), 500);
   assert.equal(applyZoomDelta(104, -1), 100);
+});
+
+test("applyWheelZoomDelta changes zoom by one percent and clamps it", () => {
+  assert.equal(applyWheelZoomDelta(100, 1), 101);
+  assert.equal(applyWheelZoomDelta(100, -1), 100);
+  assert.equal(applyWheelZoomDelta(499, 1), 500);
+  assert.equal(applyWheelZoomDelta(101, -1), 100);
 });
 
 test("createViewportCenteredZoomState preserves the viewport-center content while zooming", () => {

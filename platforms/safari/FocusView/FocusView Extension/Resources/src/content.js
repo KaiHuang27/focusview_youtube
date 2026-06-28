@@ -4,6 +4,7 @@ const TRANSFORM_STYLE_ID = "ytvt-transform-style";
 const TRANSFORM_SELECTOR = "video.html5-main-video";
 const {
   applyZoomDelta,
+  applyWheelZoomDelta,
   clampPanStateToViewport,
   createViewportIndicator,
   createViewportCenteredZoomState,
@@ -1039,7 +1040,7 @@ function onWheel(event) {
   const direction = event.deltaY < 0 ? 1 : -1;
   viewportControlsLastActivityAt = Date.now();
   scheduleViewportControlsHide();
-  setZoom(applyZoomDelta(state.zoom, direction), false);
+  setZoom(applyWheelZoomDelta(state.zoom, direction), false);
   syncToolbarTrigger();
   renderMinimap();
 }

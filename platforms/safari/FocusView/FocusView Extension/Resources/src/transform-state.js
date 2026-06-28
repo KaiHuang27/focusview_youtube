@@ -1,6 +1,7 @@
 (() => {
   const ALLOWED_ROTATIONS = new Set([0, 90, 180, 270]);
   const ZOOM_STEP = 5;
+  const WHEEL_ZOOM_STEP = 1;
   const MIN_ZOOM = 100;
   const MAX_ZOOM = 500;
   const DEFAULT_MINIMAP_SIZE = {
@@ -72,6 +73,10 @@
 
   function applyZoomDelta(zoom, direction) {
     return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + direction * ZOOM_STEP));
+  }
+
+  function applyWheelZoomDelta(zoom, direction) {
+    return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + direction * WHEEL_ZOOM_STEP));
   }
 
   function createViewportCenteredZoomState(state, zoom) {
@@ -343,6 +348,7 @@
 
   globalThis.YTVTTransform = {
     applyZoomDelta,
+    applyWheelZoomDelta,
     clampPanStateToViewport,
     createDisplayedSourceSize,
     createViewportCenteredZoomState,
