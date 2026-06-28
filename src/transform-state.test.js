@@ -38,6 +38,7 @@ const {
   shouldRenderMenuOnToolbarEnsure,
   shouldRenderToolbarOnEnsure,
   shouldTogglePanShortcut,
+  resetTransformState,
   toggleMirrorState,
 } = globalThis.YTVTTransform;
 
@@ -50,6 +51,20 @@ test("createDefaultState returns reset video transform values", () => {
     panY: 0,
     panMode: false,
   });
+});
+
+test("resetTransformState clears every video transform control", () => {
+  assert.deepEqual(
+    resetTransformState({
+      zoom: 250,
+      rotation: 90,
+      flipX: true,
+      panX: 40,
+      panY: -24,
+      panMode: true,
+    }),
+    createDefaultState()
+  );
 });
 
 test("createTransformStyle converts zoom percentage to scale", () => {

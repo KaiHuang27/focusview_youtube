@@ -30,6 +30,10 @@
     };
   }
 
+  function resetTransformState() {
+    return createDefaultState();
+  }
+
   function normalizeRotation(rotation) {
     if (!ALLOWED_ROTATIONS.has(rotation)) {
       throw new Error(`Unsupported rotation: ${rotation}`);
@@ -436,6 +440,7 @@
     createMinimapSize,
     createTransformMenuTop,
     createDefaultState,
+    resetTransformState,
     createImportantTransformCssText,
     createTransformStyle,
     formatZoomPercent,

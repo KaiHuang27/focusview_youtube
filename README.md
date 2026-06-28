@@ -30,6 +30,7 @@ Best for:
 - Long-press and drag to move around a zoomed video.
 - Use the zoom panel for centered `100%` to `500%` zoom control with clear spacing between actions, the value, the slider, and step buttons.
 - Click **Fill Screen** in the zoom settings to enlarge the video until player black bars are covered.
+- Double-click the toolbar zoom control, or click **Reset**, to clear zoom, pan, rotation, mirror, and zoom mode.
 - Rotate videos by `90°`, `180°`, or `270°`.
 - Mirror videos horizontally.
 

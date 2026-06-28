@@ -15,6 +15,7 @@ const {
   createMinimapSize,
   createTransformMenuTop,
   createDefaultState,
+  resetTransformState,
   createImportantTransformCssText,
   formatZoomPercent,
   getViewportControlsActivityAfterPanToggle,
@@ -104,7 +105,7 @@ function clearTransformRule() {
 }
 
 function resetState() {
-  state = createDefaultState();
+  state = resetTransformState();
   isMenuOpen = false;
   renderToolbar();
   applyTransform();
@@ -758,14 +759,6 @@ function togglePanMode() {
   applyTransform();
 }
 
-function resetZoomOnly() {
-  state.zoom = 100;
-  state.panX = 0;
-  state.panY = 0;
-  renderToolbar();
-  applyTransform();
-}
-
 function getTriggerTitle() {
   if (state.zoom !== 100) {
     return "Double-click to reset";
@@ -862,7 +855,7 @@ function renderToolbar({ shouldRenderMenu = true } = {}) {
   trigger.addEventListener("dblclick", (event) => {
     event.preventDefault();
     event.stopPropagation();
-    resetZoomOnly();
+    resetState();
   });
 
   toolbar.append(trigger);
