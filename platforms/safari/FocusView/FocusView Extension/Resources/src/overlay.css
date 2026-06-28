@@ -214,13 +214,13 @@
 }
 
 .ytvt-zoom-panel {
-  padding: 38px 12px 8px;
+  padding: 20px 12px 6px;
 }
 
 .ytvt-zoom-value {
   display: block;
   width: 96px;
-  margin: 0 auto 8px;
+  margin: 0 auto 0px;
   padding: 0 8px;
   color: rgba(255, 255, 255, 0.96);
   background: transparent;
