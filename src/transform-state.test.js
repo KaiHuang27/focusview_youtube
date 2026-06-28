@@ -8,6 +8,7 @@ const {
   applyWheelZoomDelta,
   clampPanStateToViewport,
   createDisplayedSourceSize,
+  createCursorCenteredZoomState,
   createViewportCenteredZoomState,
   createViewportIndicator,
   createViewportIndicatorRect,
@@ -144,6 +145,27 @@ test("createViewportCenteredZoomState preserves the viewport-center content whil
   assert.deepEqual(
     createViewportCenteredZoomState({ ...createDefaultState(), zoom: 300, panX: 240, panY: -135 }, 200),
     { ...createDefaultState(), zoom: 200, panX: 160, panY: -90 }
+  );
+});
+
+test("createCursorCenteredZoomState matches viewport-centered zoom at the viewport center", () => {
+  assert.deepEqual(
+    createCursorCenteredZoomState({ ...createDefaultState(), zoom: 200, panX: 160, panY: -90 }, 300, 0, 0),
+    createViewportCenteredZoomState({ ...createDefaultState(), zoom: 200, panX: 160, panY: -90 }, 300)
+  );
+});
+
+test("createCursorCenteredZoomState preserves the cursor content while zooming in", () => {
+  assert.deepEqual(
+    createCursorCenteredZoomState({ ...createDefaultState(), zoom: 200, panX: 160, panY: -90 }, 300, 200, 120),
+    { ...createDefaultState(), zoom: 300, panX: 140, panY: -195 }
+  );
+});
+
+test("createCursorCenteredZoomState recenters when returning to 100 percent", () => {
+  assert.deepEqual(
+    createCursorCenteredZoomState({ ...createDefaultState(), zoom: 200, panX: 160, panY: -90 }, 100, 200, 120),
+    createDefaultState()
   );
 });
 
