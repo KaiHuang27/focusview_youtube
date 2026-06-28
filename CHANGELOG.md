@@ -11,6 +11,7 @@ Minimap and Zoom mode polish.
 - Fit the Minimap inside the player viewport preview at 100% zoom, including sideways rotation.
 - Rendered the Viewport Indicator with explicit pixel dimensions so rotation does not resize it visually.
 - Anchored the Minimap controls to the Viewport Indicator rect so rotation does not move the control group vertically.
+- Kept the open settings menu zoom value and slider synced while zooming with the mouse wheel or trackpad.
 - Changed mouse wheel and trackpad zoom to two percent per wheel event for finer control.
 
 ## 1.0.1

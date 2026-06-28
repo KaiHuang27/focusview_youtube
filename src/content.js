@@ -760,6 +760,32 @@ function syncToolbarTrigger() {
   label.textContent = `${state.zoom}%`;
 }
 
+function syncOpenZoomPanelControls() {
+  if (!transformMenu) {
+    return;
+  }
+
+  const progress = getSliderProgress();
+  const sliderFill = transformMenu.querySelector(".ytvt-slider-fill");
+  const sliderThumb = transformMenu.querySelector(".ytvt-slider-thumb");
+  const sliderHitArea = transformMenu.querySelector(".ytvt-slider-hit-area");
+  const zoomValue = transformMenu.querySelector(".ytvt-zoom-value");
+
+  if (sliderFill) {
+    sliderFill.style.width = progress;
+  }
+  if (sliderThumb) {
+    sliderThumb.style.left = progress;
+  }
+  if (sliderHitArea) {
+    sliderHitArea.setAttribute("aria-valuenow", String(state.zoom));
+    sliderHitArea.setAttribute("aria-valuetext", formatZoomPercent(state.zoom));
+  }
+  if (zoomValue && document.activeElement !== zoomValue) {
+    zoomValue.value = formatZoomPercent(state.zoom);
+  }
+}
+
 function renderToolbar({ shouldRenderMenu = true } = {}) {
   if (!toolbar) {
     return;
@@ -1046,6 +1072,7 @@ function onWheel(event) {
   scheduleViewportControlsHide();
   setZoom(applyWheelZoomDelta(state.zoom, direction), false);
   syncToolbarTrigger();
+  syncOpenZoomPanelControls();
   renderMinimap();
 }
 
