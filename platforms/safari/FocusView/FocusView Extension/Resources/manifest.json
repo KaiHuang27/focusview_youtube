@@ -3,7 +3,7 @@
   "name": "FocusView – Zoom, Rotate & Mirror for YouTube",
   "short_name": "FocusView",
   "description": "Zoom, rotate and mirror YouTube videos directly inside the player.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",

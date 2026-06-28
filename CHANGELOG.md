@@ -1,11 +1,13 @@
 # Changelog
 
-## Unreleased
+## 1.0.4
 
 ### Changed
 
 - Mouse wheel and trackpad zoom now keeps the content under the pointer anchored while zooming.
 - Zoom panel controls continue to zoom around the viewport center.
+- Added Fill Screen zoom control for covering player black bars.
+- Improved zoom menu spacing for action buttons, zoom value, slider, and step controls.
 
 ## 1.0.3
 
