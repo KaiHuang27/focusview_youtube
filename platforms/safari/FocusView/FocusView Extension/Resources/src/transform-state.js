@@ -94,6 +94,21 @@
     };
   }
 
+  function createCursorCenteredZoomState(state, zoom, cursorOffsetX, cursorOffsetY) {
+    const nextZoom = clamp(zoom, MIN_ZOOM, MAX_ZOOM);
+    if (nextZoom === MIN_ZOOM || state.zoom <= 0) {
+      return { ...state, zoom: nextZoom, panX: 0, panY: 0 };
+    }
+
+    const scaleChange = nextZoom / state.zoom;
+    return {
+      ...state,
+      zoom: nextZoom,
+      panX: Math.round(state.panX * scaleChange + cursorOffsetX * (1 - scaleChange)),
+      panY: Math.round(state.panY * scaleChange + cursorOffsetY * (1 - scaleChange)),
+    };
+  }
+
   function formatZoomPercent(zoom) {
     return `${Math.round(zoom)}%`;
   }
@@ -401,6 +416,7 @@
     applyWheelZoomDelta,
     clampPanStateToViewport,
     createDisplayedSourceSize,
+    createCursorCenteredZoomState,
     createViewportCenteredZoomState,
     createViewportIndicator,
     createViewportIndicatorRect,

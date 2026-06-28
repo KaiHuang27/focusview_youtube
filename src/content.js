@@ -8,6 +8,7 @@ const {
   clampPanStateToViewport,
   createViewportIndicator,
   createViewportIndicatorRect,
+  createCursorCenteredZoomState,
   createViewportCenteredZoomState,
   createViewportOverlayLayout,
   createMinimapSize,
@@ -429,6 +430,27 @@ function setZoom(zoom, shouldRender = true) {
   if (shouldRender) {
     renderToolbar();
   }
+  applyTransform();
+}
+
+function setWheelZoom(zoom, event) {
+  if (!video) {
+    return;
+  }
+
+  const rect = player?.getBoundingClientRect?.();
+  if (!rect || rect.width <= 0 || rect.height <= 0) {
+    setZoom(zoom, false);
+    return;
+  }
+
+  state = createCursorCenteredZoomState(
+    state,
+    zoom,
+    event.clientX - (rect.left + rect.width / 2),
+    event.clientY - (rect.top + rect.height / 2)
+  );
+  clampCurrentPanState();
   applyTransform();
 }
 
@@ -1070,7 +1092,7 @@ function onWheel(event) {
   const direction = event.deltaY < 0 ? 1 : -1;
   viewportControlsLastActivityAt = Date.now();
   scheduleViewportControlsHide();
-  setZoom(applyWheelZoomDelta(state.zoom, direction), false);
+  setWheelZoom(applyWheelZoomDelta(state.zoom, direction), event);
   syncToolbarTrigger();
   syncOpenZoomPanelControls();
   renderMinimap();

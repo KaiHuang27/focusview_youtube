@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Mouse wheel and trackpad zoom now keeps the content under the pointer anchored while zooming.
+- Zoom panel controls continue to zoom around the viewport center.
+
 ## 1.0.3
 
 Release version update.
