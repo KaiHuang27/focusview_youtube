@@ -10,6 +10,7 @@ const {
   createDisplayedSourceSize,
   createViewportCenteredZoomState,
   createViewportIndicator,
+  createViewportIndicatorRect,
   createViewportOverlayLayout,
   createMinimapSize,
   createTransformMenuTop,
@@ -286,6 +287,26 @@ test("createViewportIndicator uses rotated source geometry", () => {
     createViewportIndicator({ ...createDefaultState(), rotation: 90 }, 1920, 1080, 1920, 1080),
     { x: -1.0686, y: 0, width: 3.1373, height: 1 }
   );
+});
+
+test("createViewportIndicatorRect keeps the viewport preview size stable across rotation", () => {
+  const unrotatedMinimapSize = createMinimapSize(1920, 1080, 0, 1920, 1080);
+  const rotatedMinimapSize = createMinimapSize(1920, 1080, 90, 1920, 1080);
+  const unrotatedIndicator = createViewportIndicator(createDefaultState(), 1920, 1080, 1920, 1080);
+  const rotatedIndicator = createViewportIndicator({ ...createDefaultState(), rotation: 90 }, 1920, 1080, 1920, 1080);
+
+  assert.deepEqual(createViewportIndicatorRect(unrotatedIndicator, unrotatedMinimapSize), {
+    left: 0,
+    top: 0,
+    width: 160,
+    height: 90,
+  });
+  assert.deepEqual(createViewportIndicatorRect(rotatedIndicator, rotatedMinimapSize), {
+    left: -54,
+    top: 0,
+    width: 160,
+    height: 90,
+  });
 });
 
 test("createViewportIndicator scales with zoom and keeps out-of-minimap areas visible", () => {

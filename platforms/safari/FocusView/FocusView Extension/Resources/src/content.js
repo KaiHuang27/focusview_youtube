@@ -7,6 +7,7 @@ const {
   applyWheelZoomDelta,
   clampPanStateToViewport,
   createViewportIndicator,
+  createViewportIndicatorRect,
   createViewportCenteredZoomState,
   createViewportOverlayLayout,
   createMinimapSize,
@@ -347,6 +348,7 @@ function renderMinimap() {
     viewportHeight
   );
   const overlayLayout = createViewportOverlayLayout({ minimapSize, indicator, anchorIndicator });
+  const indicatorRect = createViewportIndicatorRect(indicator, minimapSize);
   const indicatorElement = minimap.querySelector(".ytvt-viewport-indicator");
   minimap.style.top = `${overlayLayout.minimapTop}px`;
   minimap.style.right = `${overlayLayout.minimapRight}px`;
@@ -355,10 +357,10 @@ function renderMinimap() {
   settingsButton.style.top = `${overlayLayout.settingsTop}px`;
   settingsButton.style.right = `${overlayLayout.settingsRight}px`;
   positionTransformMenu();
-  indicatorElement.style.left = `${indicator.x * 100}%`;
-  indicatorElement.style.top = `${indicator.y * 100}%`;
-  indicatorElement.style.width = `${indicator.width * 100}%`;
-  indicatorElement.style.height = `${indicator.height * 100}%`;
+  indicatorElement.style.left = `${indicatorRect.left}px`;
+  indicatorElement.style.top = `${indicatorRect.top}px`;
+  indicatorElement.style.width = `${indicatorRect.width}px`;
+  indicatorElement.style.height = `${indicatorRect.height}px`;
   minimap.hidden = !shouldShowControls;
   settingsButton.hidden = !shouldShowControls;
 }

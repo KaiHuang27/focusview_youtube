@@ -335,6 +335,15 @@
     };
   }
 
+  function createViewportIndicatorRect(indicator, minimapSize) {
+    return {
+      left: Math.round(indicator.x * minimapSize.width),
+      top: Math.round(indicator.y * minimapSize.height),
+      width: Math.round(indicator.width * minimapSize.width),
+      height: Math.round(indicator.height * minimapSize.height),
+    };
+  }
+
   function createViewportOverlayLayout({
     minimapSize,
     indicator,
@@ -375,6 +384,7 @@
     createDisplayedSourceSize,
     createViewportCenteredZoomState,
     createViewportIndicator,
+    createViewportIndicatorRect,
     createViewportOverlayLayout,
     createMinimapSize,
     createTransformMenuTop,
