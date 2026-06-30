@@ -12,8 +12,21 @@ test("player controls use user-facing wording for reset and minimap labels", asy
     const content = await readFile(contentUrl, "utf8");
 
     assert.match(content, /"Video position preview"/, `${contentUrl.pathname} labels the minimap as a video position preview`);
-    assert.match(content, /"Reset video view"/, `${contentUrl.pathname} labels reset without implementation terms`);
+    assert.match(content, /"Reset view and turn off zoom mode"/, `${contentUrl.pathname} explains Reset also turns zoom mode off`);
     assert.doesNotMatch(content, /"Reset video transform"/, `${contentUrl.pathname} avoids implementation terms in reset wording`);
+  }
+});
+
+test("toolbar zoom trigger tooltips describe click and double-click outcomes", async () => {
+  for (const contentUrl of CONTENT_SCRIPT_PATHS) {
+    const content = await readFile(contentUrl, "utf8");
+
+    assert.match(content, /"Double-click to reset view and turn off zoom mode"/, `${contentUrl.pathname} explains double-click reset outcome`);
+    assert.match(content, /"Turn on zoom mode"/, `${contentUrl.pathname} describes the off-state click outcome`);
+    assert.match(content, /"Turn off zoom mode"/, `${contentUrl.pathname} describes the on-state click outcome`);
+    assert.doesNotMatch(content, /"Double-click to reset"/, `${contentUrl.pathname} avoids vague double-click reset wording`);
+    assert.doesNotMatch(content, /"Zoom mode on"/, `${contentUrl.pathname} avoids state-only on wording`);
+    assert.doesNotMatch(content, /"Zoom mode off"/, `${contentUrl.pathname} avoids state-only off wording`);
   }
 });
 

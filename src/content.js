@@ -761,10 +761,10 @@ function togglePanMode() {
 
 function getTriggerTitle() {
   if (state.zoom !== 100) {
-    return "Double-click to reset";
+    return "Double-click to reset view and turn off zoom mode";
   }
 
-  return state.panMode ? "Zoom mode on" : "Zoom mode off";
+  return state.panMode ? "Turn off zoom mode" : "Turn on zoom mode";
 }
 
 function syncToolbarTrigger() {
@@ -895,7 +895,7 @@ function renderMenu() {
   reset.type = "button";
   reset.className = "ytvt-menu-reset";
   reset.textContent = "Reset";
-  reset.title = "Reset video view";
+  reset.title = "Reset view and turn off zoom mode";
   reset.addEventListener("click", resetState);
 
   const fill = document.createElement("button");
