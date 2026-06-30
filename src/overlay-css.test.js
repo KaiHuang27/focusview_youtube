@@ -53,9 +53,51 @@ async function getMenuActionGap(cssUrl) {
   return Number(panelPaddingTop.groups.value) - Number(actionTop.groups.value);
 }
 
+async function getMenuInlineAlignment(cssUrl) {
+  const css = await readFile(cssUrl, "utf8");
+  const fill = css.match(/\.ytvt-menu-fill\s*\{(?<rules>[^}]+)\}/);
+  const reset = css.match(/\.ytvt-menu-reset\s*\{(?<rules>[^}]+)\}/);
+  const zoomPanel = css.match(/\.ytvt-zoom-panel\s*\{(?<rules>[^}]+)\}/);
+  const menuRow = css.match(/\.ytvt-menu-row\s*\{(?<rules>[^}]+)\}/);
+  assert.ok(fill, `${cssUrl.pathname} has .ytvt-menu-fill rules`);
+  assert.ok(reset, `${cssUrl.pathname} has .ytvt-menu-reset rules`);
+  assert.ok(zoomPanel, `${cssUrl.pathname} has .ytvt-zoom-panel rules`);
+  assert.ok(menuRow, `${cssUrl.pathname} has .ytvt-menu-row rules`);
+
+  const fillLeft = fill.groups.rules.match(/left:\s*(?<value>\d+)px;/);
+  const resetRight = reset.groups.rules.match(/right:\s*(?<value>\d+)px;/);
+  const panelPadding = zoomPanel.groups.rules.match(/padding:\s*\d+px\s+(?<inline>\d+)px\s+\d+px;/);
+  const rowMargin = menuRow.groups.rules.match(/margin:\s*0\s+(?<inline>\d+)px;/);
+  const rowPadding = menuRow.groups.rules.match(/padding:\s*(?<block>\d+)px\s+(?<inline>\d+)px;/);
+  assert.ok(fillLeft, `${cssUrl.pathname} defines Fill left offset`);
+  assert.ok(resetRight, `${cssUrl.pathname} defines Reset right offset`);
+  assert.ok(panelPadding, `${cssUrl.pathname} defines zoom panel inline padding`);
+  assert.ok(rowMargin, `${cssUrl.pathname} defines menu row inline margin`);
+  assert.ok(rowPadding, `${cssUrl.pathname} defines menu row padding`);
+
+  return {
+    fillLeft: Number(fillLeft.groups.value),
+    resetRight: Number(resetRight.groups.value),
+    panelInline: Number(panelPadding.groups.inline),
+    rowMarginInline: Number(rowMargin.groups.inline),
+    rowPaddingInline: Number(rowPadding.groups.inline),
+    rowContentInline: Number(rowMargin.groups.inline) + Number(rowPadding.groups.inline),
+  };
+}
+
 test("zoom controls keep the slider thumb clear of step buttons", async () => {
   for (const cssUrl of OVERLAY_CSS_PATHS) {
     assert.ok((await getZoomControlsColumnGap(cssUrl)) >= 14, `${cssUrl.pathname} uses at least 14px column gap`);
+  }
+});
+
+test("menu rows share one left and right alignment system", async () => {
+  for (const cssUrl of OVERLAY_CSS_PATHS) {
+    const alignment = await getMenuInlineAlignment(cssUrl);
+    assert.equal(alignment.fillLeft, alignment.resetRight, `${cssUrl.pathname} aligns Fill and Reset to the same inset`);
+    assert.equal(alignment.fillLeft, alignment.panelInline, `${cssUrl.pathname} aligns zoom controls with menu actions`);
+    assert.equal(alignment.fillLeft, alignment.rowContentInline, `${cssUrl.pathname} aligns setting row content with menu actions`);
+    assert.ok(alignment.rowPaddingInline > 0, `${cssUrl.pathname} keeps inset for menu row hover backgrounds`);
   }
 });
 

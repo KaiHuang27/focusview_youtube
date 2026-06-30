@@ -5,6 +5,7 @@
 ### Changed
 
 - Improved user-facing reset and video position preview wording.
+- Aligned zoom menu actions, setting rows, and zoom controls to a shared left and right edge.
 - Shortened the Fill button label while keeping its tooltip descriptive.
 - Unified Safari setup wording around Safari Settings > Extensions.
 

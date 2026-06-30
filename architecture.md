@@ -7,12 +7,12 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 - `manifest.json` defines the Chrome extension metadata, YouTube content script match, icon assets, and runtime files.
 - `src/content.js` owns the YouTube player integration, toolbar UI, pointer and wheel interactions, Fill action, transform application, and player state reset triggers.
 - `src/transform-state.js` contains the shared transform state helpers used by the content script and tests, including viewport-centered zoom for controls, cursor-centered zoom for wheel input, cover zoom calculation for Fill, and full transform reset state.
-- `src/overlay.css` contains the extension UI styling and video transform presentation, including fixed spacing so menu actions, the zoom value, and slider controls remain visually separated.
+- `src/overlay.css` contains the extension UI styling and video transform presentation, including shared menu alignment so actions, setting rows, and zoom controls use the same left and right edges.
 
 ## Testing
 
 - `src/transform-state.test.js` verifies transform state behavior with Node's built-in test runner.
-- `src/overlay-css.test.js` verifies zoom control CSS spacing across Chrome and Safari extension resources.
+- `src/overlay-css.test.js` verifies zoom control CSS spacing and menu alignment across Chrome and Safari extension resources.
 - `src/product-wording.test.js` verifies user-facing control labels and Safari setup wording across Chrome and Safari resources.
 - Run tests with `node --test`.
 
