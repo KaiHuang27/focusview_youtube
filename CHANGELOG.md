@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+No unreleased changes.
+
+## 1.1.0
+
 ### Changed
 
 - Improved user-facing reset and video position preview wording.
