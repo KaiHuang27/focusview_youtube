@@ -901,7 +901,7 @@ function renderMenu() {
   const fill = document.createElement("button");
   fill.type = "button";
   fill.className = "ytvt-menu-fill";
-  fill.textContent = "Fill Screen";
+  fill.textContent = "Fill";
   fill.title = "Zoom to fill the player";
   fill.addEventListener("click", fillScreen);
 

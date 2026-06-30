@@ -5,6 +5,7 @@
 ### Changed
 
 - Improved user-facing reset and video position preview wording.
+- Shortened the Fill button label while keeping its tooltip descriptive.
 - Unified Safari setup wording around Safari Settings > Extensions.
 
 ## 1.0.4

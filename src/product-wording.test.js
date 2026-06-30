@@ -17,6 +17,16 @@ test("player controls use user-facing wording for reset and minimap labels", asy
   }
 });
 
+test("fill action uses concise button text with a descriptive tooltip", async () => {
+  for (const contentUrl of CONTENT_SCRIPT_PATHS) {
+    const content = await readFile(contentUrl, "utf8");
+
+    assert.match(content, /fill\.textContent = "Fill"/, `${contentUrl.pathname} uses concise Fill button text`);
+    assert.match(content, /fill\.title = "Zoom to fill the player"/, `${contentUrl.pathname} explains the Fill action in the tooltip`);
+    assert.doesNotMatch(content, /fill\.textContent = "Fill Screen"/, `${contentUrl.pathname} avoids longer Fill Screen button text`);
+  }
+});
+
 test("Safari app page points users to Safari Settings Extensions", async () => {
   const html = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Base.lproj/Main.html", import.meta.url), "utf8");
   const script = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Script.js", import.meta.url), "utf8");
