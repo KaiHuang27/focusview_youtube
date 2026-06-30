@@ -30,7 +30,7 @@ Best for:
 - Long-press and drag to move around a zoomed video.
 - Use the zoom panel for centered `100%` to `500%` zoom control with clear spacing between actions, the value, the slider, and step buttons.
 - Click **Fill Screen** in the zoom settings to enlarge the video until player black bars are covered.
-- Double-click the toolbar zoom control, or click **Reset**, to clear zoom, pan, rotation, mirror, and zoom mode.
+- Double-click the toolbar zoom control, or click **Reset**, to reset the video view.
 - Rotate videos by `90°`, `180°`, or `270°`.
 - Mirror videos horizontally.
 
@@ -73,7 +73,7 @@ The macOS Safari Web Extension project is in `platforms/safari/FocusView`.
 1. Open `platforms/safari/FocusView/FocusView.xcodeproj` in Xcode.
 2. Select the `FocusView` scheme.
 3. Run the macOS app target.
-4. Open Safari Settings → Extensions.
+4. Open Safari Settings > Extensions.
 5. Enable FocusView and allow access to YouTube.
 6. Open a normal YouTube video page.
 

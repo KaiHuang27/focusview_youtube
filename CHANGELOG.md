@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Improved user-facing reset and video position preview wording.
+- Unified Safari setup wording around Safari Settings > Extensions.
+
 ## 1.0.4
 
 ### Changed

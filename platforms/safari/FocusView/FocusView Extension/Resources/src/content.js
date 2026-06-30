@@ -304,7 +304,7 @@ function renderMinimap() {
   if (!minimap) {
     minimap = document.createElement("div");
     minimap.className = "ytvt-minimap";
-    minimap.setAttribute("aria-label", "Minimap and viewport indicator");
+    minimap.setAttribute("aria-label", "Video position preview");
     minimap.innerHTML = '<div class="ytvt-viewport-indicator"></div>';
     player.append(minimap);
   } else if (minimap.parentElement !== player) {
@@ -895,7 +895,7 @@ function renderMenu() {
   reset.type = "button";
   reset.className = "ytvt-menu-reset";
   reset.textContent = "Reset";
-  reset.title = "Reset video transform";
+  reset.title = "Reset video view";
   reset.addEventListener("click", resetState);
 
   const fill = document.createElement("button");

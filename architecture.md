@@ -13,6 +13,7 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 
 - `src/transform-state.test.js` verifies transform state behavior with Node's built-in test runner.
 - `src/overlay-css.test.js` verifies zoom control CSS spacing across Chrome and Safari extension resources.
+- `src/product-wording.test.js` verifies user-facing control labels and Safari setup wording across Chrome and Safari resources.
 - Run tests with `node --test`.
 
 ## Release Packaging
