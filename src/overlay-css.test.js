@@ -85,9 +85,57 @@ async function getMenuInlineAlignment(cssUrl) {
   };
 }
 
+async function getMenuTypography(cssUrl) {
+  const css = await readFile(cssUrl, "utf8");
+  const fill = css.match(/\.ytvt-menu-fill\s*\{(?<rules>[^}]+)\}/);
+  const reset = css.match(/\.ytvt-menu-reset\s*\{(?<rules>[^}]+)\}/);
+  const label = css.match(/\.ytvt-menu-label\s*\{(?<rules>[^}]+)\}/);
+  assert.ok(fill, `${cssUrl.pathname} has .ytvt-menu-fill rules`);
+  assert.ok(reset, `${cssUrl.pathname} has .ytvt-menu-reset rules`);
+  assert.ok(label, `${cssUrl.pathname} has .ytvt-menu-label rules`);
+
+  const fillFont = fill.groups.rules.match(/font:\s*(?<weight>\d+)\s+(?<size>\d+)px\/(?<lineHeight>\d+)px/);
+  const resetFont = reset.groups.rules.match(/font:\s*(?<weight>\d+)\s+(?<size>\d+)px\/(?<lineHeight>\d+)px/);
+  const labelSize = label.groups.rules.match(/font-size:\s*(?<size>\d+)px;/);
+  const labelLineHeight = label.groups.rules.match(/line-height:\s*(?<lineHeight>\d+)px;/);
+  assert.ok(fillFont, `${cssUrl.pathname} defines Fill font shorthand`);
+  assert.ok(resetFont, `${cssUrl.pathname} defines Reset font shorthand`);
+  assert.ok(labelSize, `${cssUrl.pathname} defines menu label font size`);
+  assert.ok(labelLineHeight, `${cssUrl.pathname} defines menu label line height`);
+
+  return {
+    fill: {
+      weight: Number(fillFont.groups.weight),
+      size: Number(fillFont.groups.size),
+      lineHeight: Number(fillFont.groups.lineHeight),
+    },
+    reset: {
+      weight: Number(resetFont.groups.weight),
+      size: Number(resetFont.groups.size),
+      lineHeight: Number(resetFont.groups.lineHeight),
+    },
+    label: {
+      size: Number(labelSize.groups.size),
+      lineHeight: Number(labelLineHeight.groups.lineHeight),
+    },
+  };
+}
+
 test("zoom controls keep the slider thumb clear of step buttons", async () => {
   for (const cssUrl of OVERLAY_CSS_PATHS) {
     assert.ok((await getZoomControlsColumnGap(cssUrl)) >= 14, `${cssUrl.pathname} uses at least 14px column gap`);
+  }
+});
+
+test("menu action text matches setting label size", async () => {
+  for (const cssUrl of OVERLAY_CSS_PATHS) {
+    const typography = await getMenuTypography(cssUrl);
+    assert.equal(typography.fill.size, typography.label.size, `${cssUrl.pathname} keeps Fill the same size as setting labels`);
+    assert.equal(typography.reset.size, typography.label.size, `${cssUrl.pathname} keeps Reset the same size as setting labels`);
+    assert.equal(typography.fill.lineHeight, typography.label.lineHeight, `${cssUrl.pathname} keeps Fill line height aligned with setting labels`);
+    assert.equal(typography.reset.lineHeight, typography.label.lineHeight, `${cssUrl.pathname} keeps Reset line height aligned with setting labels`);
+    assert.equal(typography.fill.weight, 500, `${cssUrl.pathname} keeps Fill visually actionable`);
+    assert.equal(typography.reset.weight, 500, `${cssUrl.pathname} keeps Reset visually actionable`);
   }
 });
 

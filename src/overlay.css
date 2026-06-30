@@ -187,7 +187,7 @@
   color: rgb(255, 77, 77);
   background: transparent;
   border: 0;
-  font: 500 11px/16px Roboto, Arial, sans-serif;
+  font: 500 14px/20px Roboto, Arial, sans-serif;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.38);
   cursor: pointer;
 }
@@ -204,7 +204,7 @@
   color: rgba(255, 255, 255, 0.92);
   background: transparent;
   border: 0;
-  font: 500 11px/16px Roboto, Arial, sans-serif;
+  font: 500 14px/20px Roboto, Arial, sans-serif;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.38);
   cursor: pointer;
 }
