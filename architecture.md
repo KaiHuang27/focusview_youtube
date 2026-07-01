@@ -20,8 +20,11 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 
 - `scripts/build-release.sh` reads the version from `manifest.json` and writes `dist/focusview-<version>.zip`.
 - The release zip includes only `manifest.json`, `src/`, and `icons/`, which are the files required for Chrome Web Store upload.
+- Mac App Store distribution uses the Safari wrapper in `platforms/safari/FocusView`, not the Chrome release zip.
 
 ## Safari
 
 - `platforms/safari/FocusView` contains the macOS Safari Web Extension wrapper project.
 - The Safari extension manifest mirrors the Chrome manifest version and content script configuration.
+- The macOS app bundle ID is `com.kodingai.focusview`; the embedded extension bundle ID is `com.kodingai.focusview.Extension`.
+- The Xcode project marketing version is kept aligned with the extension manifest version before App Store upload.

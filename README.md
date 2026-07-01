@@ -77,6 +77,19 @@ The macOS Safari Web Extension project is in `platforms/safari/FocusView`.
 5. Enable FocusView and allow access to YouTube.
 6. Open a normal YouTube video page.
 
+## Mac App Store Release
+
+FocusView is packaged for Safari as a macOS app with an embedded Safari Web Extension.
+
+1. In App Store Connect, create a macOS app record for `com.kodingai.focusview`.
+2. In Xcode, open `platforms/safari/FocusView/FocusView.xcodeproj`.
+3. Select the `FocusView` scheme and set your Apple Developer Team for the app and extension targets.
+4. Confirm the app bundle ID is `com.kodingai.focusview` and the extension bundle ID is `com.kodingai.focusview.Extension`.
+5. Select `Any Mac` as the run destination.
+6. Choose Product > Archive.
+7. In Organizer, choose Distribute App > App Store Connect > Upload.
+8. In App Store Connect, select the uploaded build, complete the listing metadata, and submit it for review.
+
 ## Development
 
 Current version: `1.1.0`.
