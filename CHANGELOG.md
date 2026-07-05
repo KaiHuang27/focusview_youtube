@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Blocked YouTube's long-press 2x playback gesture earlier while Zoom mode is active.
+- Preserved YouTube's native single-click play and pause behavior while preventing Zoom mode long-press drags from staying at YouTube's 2x hold speed.
 
 ## 1.1.0
 

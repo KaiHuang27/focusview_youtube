@@ -35,7 +35,7 @@ const {
   shouldShowTransientViewportControls,
   shouldSuppressClickAfterPanEnd,
   shouldBlockYouTubeShortcutForZoomInput,
-  shouldBlockYouTubeLongPressPlayback,
+  shouldRestoreYouTubeLongPressPlaybackRate,
   shouldRenderMenuOnToolbarEnsure,
   shouldRenderToolbarOnEnsure,
   shouldTogglePanShortcut,
@@ -676,21 +676,21 @@ test("shouldStartPanDrag starts only after long press or intentional movement", 
   assert.equal(shouldStartPanDrag({ elapsedMs: 80, distancePx: 6, longPressMs: 220, moveThresholdPx: 6 }), true);
 });
 
-test("shouldBlockYouTubeLongPressPlayback blocks only left-button video presses in pan mode", () => {
+test("shouldRestoreYouTubeLongPressPlaybackRate restores only drag-time hold speed changes", () => {
   assert.equal(
-    shouldBlockYouTubeLongPressPlayback({ state: { ...createDefaultState(), panMode: true }, button: 0, isVideoEvent: true }),
+    shouldRestoreYouTubeLongPressPlaybackRate({ isDragging: true, currentRate: 2, panStartRate: 1 }),
     true
   );
   assert.equal(
-    shouldBlockYouTubeLongPressPlayback({ state: { ...createDefaultState(), panMode: false }, button: 0, isVideoEvent: true }),
+    shouldRestoreYouTubeLongPressPlaybackRate({ isDragging: false, currentRate: 2, panStartRate: 1 }),
     false
   );
   assert.equal(
-    shouldBlockYouTubeLongPressPlayback({ state: { ...createDefaultState(), panMode: true }, button: 2, isVideoEvent: true }),
+    shouldRestoreYouTubeLongPressPlaybackRate({ isDragging: true, currentRate: 1, panStartRate: 1 }),
     false
   );
   assert.equal(
-    shouldBlockYouTubeLongPressPlayback({ state: { ...createDefaultState(), panMode: true }, button: 0, isVideoEvent: false }),
+    shouldRestoreYouTubeLongPressPlaybackRate({ isDragging: true, currentRate: 2, panStartRate: Number.NaN }),
     false
   );
 });

@@ -29,7 +29,7 @@ const {
   shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
   shouldStartPanDrag,
-  shouldBlockYouTubeLongPressPlayback,
+  shouldRestoreYouTubeLongPressPlaybackRate,
   shouldShowZoomTriggerActive,
   shouldShowZoomTriggerText,
   shouldShowTransientViewportControls,
@@ -284,6 +284,7 @@ function startPanDrag() {
   }
   dragStart.video.style.cursor = "grabbing";
   markViewportControlsActivity();
+  restorePanPlaybackRate();
 }
 
 function renderMinimap() {
@@ -1017,25 +1018,15 @@ function isCurrentVideoPointerEvent(event) {
   return Boolean(video && (event.target === video || event.composedPath?.().includes(video)));
 }
 
-function shouldBlockPanVideoPress(event) {
-  return shouldBlockYouTubeLongPressPlayback({
-    state,
-    button: event.button,
-    isVideoEvent: isCurrentVideoPointerEvent(event),
-  });
-}
-
-function blockPanVideoPress(event) {
-  event.stopPropagation();
-  event.stopImmediatePropagation?.();
-}
-
 function onPointerDown(event) {
-  if (!shouldBlockPanVideoPress(event)) {
+  if (!state.panMode || event.button !== 0) {
     return;
   }
 
-  blockPanVideoPress(event);
+  if (!isCurrentVideoPointerEvent(event)) {
+    return;
+  }
+
   clearPanLongPressTimer();
   dragStart = {
     pointerId: event.pointerId,
@@ -1043,18 +1034,13 @@ function onPointerDown(event) {
     y: event.clientY,
     panX: state.panX,
     panY: state.panY,
+    playbackRate: video.playbackRate,
     startedAt: Date.now(),
     isDragging: false,
     video,
   };
   video.setPointerCapture(event.pointerId);
   panLongPressTimer = setTimeout(startPanDrag, PAN_LONG_PRESS_MS);
-}
-
-function onMouseDown(event) {
-  if (shouldBlockPanVideoPress(event)) {
-    blockPanVideoPress(event);
-  }
 }
 
 function onPointerMove(event) {
@@ -1085,6 +1071,22 @@ function onPointerMove(event) {
   viewportControlsLastActivityAt = Date.now();
   applyTransform();
   event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation?.();
+}
+
+function restorePanPlaybackRate() {
+  if (!dragStart?.video) {
+    return;
+  }
+
+  if (shouldRestoreYouTubeLongPressPlaybackRate({
+    isDragging: dragStart.isDragging,
+    currentRate: dragStart.video.playbackRate,
+    panStartRate: dragStart.playbackRate,
+  })) {
+    dragStart.video.playbackRate = dragStart.playbackRate;
+  }
 }
 
 function onPlayerPointerMove() {
@@ -1138,6 +1140,10 @@ function endDrag(event) {
   }
 }
 
+function onVideoRateChange() {
+  restorePanPlaybackRate();
+}
+
 function onVideoClick(event) {
   if (!suppressNextVideoClick) {
     return;
@@ -1160,6 +1166,7 @@ function unbindVideo() {
     video.removeEventListener("pointerup", endDrag);
     video.removeEventListener("pointercancel", endDrag);
     video.removeEventListener("click", onVideoClick, true);
+    video.removeEventListener("ratechange", onVideoRateChange);
     video.style.cursor = "";
   }
   videoStyleObserver?.disconnect();
@@ -1179,6 +1186,7 @@ function bindVideo(nextVideo) {
   video.addEventListener("pointerup", endDrag);
   video.addEventListener("pointercancel", endDrag);
   video.addEventListener("click", onVideoClick, true);
+  video.addEventListener("ratechange", onVideoRateChange);
   videoStyleObserver = new MutationObserver(() => {
     scheduleTransformReapply();
   });
@@ -1262,10 +1270,8 @@ function start() {
   window.addEventListener("keypress", blockYouTubeShortcutFromZoomInput, true);
   window.addEventListener("keydown", onShortcutKeyDown, true);
   window.addEventListener("pointerdown", onPointerDown, true);
-  window.addEventListener("mousedown", onMouseDown, true);
   document.addEventListener("keydown", onShortcutKeyDown, true);
   document.addEventListener("pointerdown", closeMenuOnOutsidePointer, true);
-  document.addEventListener("pointerdown", onPointerDown, true);
   document.addEventListener("keydown", closeMenuOnEscape);
   document.addEventListener("fullscreenchange", () => scheduleTransformReapply(12));
   document.addEventListener("webkitfullscreenchange", () => scheduleTransformReapply(12));
