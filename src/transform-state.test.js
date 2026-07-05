@@ -35,6 +35,7 @@ const {
   shouldShowTransientViewportControls,
   shouldSuppressClickAfterPanEnd,
   shouldBlockYouTubeShortcutForZoomInput,
+  shouldBlockYouTubeLongPressPlayback,
   shouldRenderMenuOnToolbarEnsure,
   shouldRenderToolbarOnEnsure,
   shouldTogglePanShortcut,
@@ -673,6 +674,25 @@ test("shouldStartPanDrag starts only after long press or intentional movement", 
   assert.equal(shouldStartPanDrag({ elapsedMs: 80, distancePx: 2, longPressMs: 220, moveThresholdPx: 6 }), false);
   assert.equal(shouldStartPanDrag({ elapsedMs: 220, distancePx: 0, longPressMs: 220, moveThresholdPx: 6 }), true);
   assert.equal(shouldStartPanDrag({ elapsedMs: 80, distancePx: 6, longPressMs: 220, moveThresholdPx: 6 }), true);
+});
+
+test("shouldBlockYouTubeLongPressPlayback blocks only left-button video presses in pan mode", () => {
+  assert.equal(
+    shouldBlockYouTubeLongPressPlayback({ state: { ...createDefaultState(), panMode: true }, button: 0, isVideoEvent: true }),
+    true
+  );
+  assert.equal(
+    shouldBlockYouTubeLongPressPlayback({ state: { ...createDefaultState(), panMode: false }, button: 0, isVideoEvent: true }),
+    false
+  );
+  assert.equal(
+    shouldBlockYouTubeLongPressPlayback({ state: { ...createDefaultState(), panMode: true }, button: 2, isVideoEvent: true }),
+    false
+  );
+  assert.equal(
+    shouldBlockYouTubeLongPressPlayback({ state: { ...createDefaultState(), panMode: true }, button: 0, isVideoEvent: false }),
+    false
+  );
 });
 
 test("shouldShowZoomTriggerText shows text only when Pan is on or zoom changed", () => {

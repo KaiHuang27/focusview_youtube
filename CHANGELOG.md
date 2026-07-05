@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-No unreleased changes.
+### Fixed
+
+- Blocked YouTube's long-press 2x playback gesture earlier while Zoom mode is active.
 
 ## 1.1.0
 

@@ -29,6 +29,7 @@ const {
   shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
   shouldStartPanDrag,
+  shouldBlockYouTubeLongPressPlayback,
   shouldShowZoomTriggerActive,
   shouldShowZoomTriggerText,
   shouldShowTransientViewportControls,
@@ -1016,17 +1017,25 @@ function isCurrentVideoPointerEvent(event) {
   return Boolean(video && (event.target === video || event.composedPath?.().includes(video)));
 }
 
-function onPointerDown(event) {
-  if (!state.panMode || event.button !== 0) {
-    return;
-  }
+function shouldBlockPanVideoPress(event) {
+  return shouldBlockYouTubeLongPressPlayback({
+    state,
+    button: event.button,
+    isVideoEvent: isCurrentVideoPointerEvent(event),
+  });
+}
 
-  if (!isCurrentVideoPointerEvent(event)) {
-    return;
-  }
-
+function blockPanVideoPress(event) {
   event.stopPropagation();
   event.stopImmediatePropagation?.();
+}
+
+function onPointerDown(event) {
+  if (!shouldBlockPanVideoPress(event)) {
+    return;
+  }
+
+  blockPanVideoPress(event);
   clearPanLongPressTimer();
   dragStart = {
     pointerId: event.pointerId,
@@ -1040,6 +1049,12 @@ function onPointerDown(event) {
   };
   video.setPointerCapture(event.pointerId);
   panLongPressTimer = setTimeout(startPanDrag, PAN_LONG_PRESS_MS);
+}
+
+function onMouseDown(event) {
+  if (shouldBlockPanVideoPress(event)) {
+    blockPanVideoPress(event);
+  }
 }
 
 function onPointerMove(event) {
@@ -1246,6 +1261,8 @@ function start() {
   window.addEventListener("keyup", blockYouTubeShortcutFromZoomInput, true);
   window.addEventListener("keypress", blockYouTubeShortcutFromZoomInput, true);
   window.addEventListener("keydown", onShortcutKeyDown, true);
+  window.addEventListener("pointerdown", onPointerDown, true);
+  window.addEventListener("mousedown", onMouseDown, true);
   document.addEventListener("keydown", onShortcutKeyDown, true);
   document.addEventListener("pointerdown", closeMenuOnOutsidePointer, true);
   document.addEventListener("pointerdown", onPointerDown, true);

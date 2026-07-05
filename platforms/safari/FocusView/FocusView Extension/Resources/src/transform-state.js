@@ -247,6 +247,10 @@
     return elapsedMs >= longPressMs || distancePx >= moveThresholdPx;
   }
 
+  function shouldBlockYouTubeLongPressPlayback({ state, button, isVideoEvent }) {
+    return state?.panMode === true && button === 0 && isVideoEvent === true;
+  }
+
   function shouldShowZoomTriggerText(state) {
     return state.panMode === true || state.zoom !== 100;
   }
@@ -457,6 +461,7 @@
     shouldReapplyTransformAfterMutation,
     shouldResetForVideoKey,
     shouldStartPanDrag,
+    shouldBlockYouTubeLongPressPlayback,
     shouldShowZoomTriggerActive,
     shouldShowZoomTriggerText,
     shouldShowTransientViewportControls,

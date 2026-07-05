@@ -27,7 +27,7 @@ Best for:
 
 - Press `Alt/Option + Shift + Z` to turn zoom mode on or off.
 - Scroll to zoom videos from `100%` to `500%` around the mouse pointer.
-- Long-press and drag to move around a zoomed video.
+- Long-press and drag to move around a zoomed video without triggering YouTube's 2x hold gesture.
 - Use the zoom panel for centered `100%` to `500%` zoom control with aligned actions, matching label sizes, setting rows, the slider, and step buttons.
 - Click **Fill** in the zoom settings to enlarge the video until player black bars are covered.
 - Double-click the toolbar zoom control, or click **Reset**, to reset the video view and turn off zoom mode.
