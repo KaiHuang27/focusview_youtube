@@ -247,6 +247,10 @@
     return elapsedMs >= longPressMs || distancePx >= moveThresholdPx;
   }
 
+  function shouldCancelYouTubeHoldGesture({ isDragging, nativePressCanceled }) {
+    return isDragging === true && nativePressCanceled !== true;
+  }
+
   function shouldRestoreYouTubeLongPressPlaybackRate({ isDragging, currentRate, panStartRate }) {
     return isDragging === true && Number.isFinite(currentRate) && Number.isFinite(panStartRate) && currentRate !== panStartRate;
   }
@@ -461,6 +465,7 @@
     shouldReapplyTransformAfterMutation,
     shouldResetForVideoKey,
     shouldStartPanDrag,
+    shouldCancelYouTubeHoldGesture,
     shouldRestoreYouTubeLongPressPlaybackRate,
     shouldShowZoomTriggerActive,
     shouldShowZoomTriggerText,

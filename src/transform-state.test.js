@@ -30,6 +30,7 @@ const {
   shouldInterceptPanWheel,
   shouldResetForVideoKey,
   shouldStartPanDrag,
+  shouldCancelYouTubeHoldGesture,
   shouldShowZoomTriggerActive,
   shouldShowZoomTriggerText,
   shouldShowTransientViewportControls,
@@ -674,6 +675,12 @@ test("shouldStartPanDrag starts only after long press or intentional movement", 
   assert.equal(shouldStartPanDrag({ elapsedMs: 80, distancePx: 2, longPressMs: 220, moveThresholdPx: 6 }), false);
   assert.equal(shouldStartPanDrag({ elapsedMs: 220, distancePx: 0, longPressMs: 220, moveThresholdPx: 6 }), true);
   assert.equal(shouldStartPanDrag({ elapsedMs: 80, distancePx: 6, longPressMs: 220, moveThresholdPx: 6 }), true);
+});
+
+test("shouldCancelYouTubeHoldGesture cancels native press only once after pan starts", () => {
+  assert.equal(shouldCancelYouTubeHoldGesture({ isDragging: true, nativePressCanceled: false }), true);
+  assert.equal(shouldCancelYouTubeHoldGesture({ isDragging: false, nativePressCanceled: false }), false);
+  assert.equal(shouldCancelYouTubeHoldGesture({ isDragging: true, nativePressCanceled: true }), false);
 });
 
 test("shouldRestoreYouTubeLongPressPlaybackRate restores only drag-time hold speed changes", () => {

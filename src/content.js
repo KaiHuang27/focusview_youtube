@@ -29,6 +29,7 @@ const {
   shouldReapplyTransformAfterMutation,
   shouldResetForVideoKey,
   shouldStartPanDrag,
+  shouldCancelYouTubeHoldGesture,
   shouldRestoreYouTubeLongPressPlaybackRate,
   shouldShowZoomTriggerActive,
   shouldShowZoomTriggerText,
@@ -62,6 +63,7 @@ let viewportControlsHideTimer = 0;
 let isMenuOpen = false;
 let lastTransformCssText = "";
 let cleanupActiveSliderDrag = null;
+let isCancelingNativePress = false;
 
 function getTransformStyleElement() {
   let styleElement = document.getElementById(TRANSFORM_STYLE_ID);
@@ -279,6 +281,7 @@ function startPanDrag() {
   }
 
   dragStart.isDragging = true;
+  cancelYouTubeHoldGesture();
   if (!dragStart.video.hasPointerCapture?.(dragStart.pointerId)) {
     dragStart.video.setPointerCapture(dragStart.pointerId);
   }
@@ -1030,11 +1033,13 @@ function onPointerDown(event) {
   clearPanLongPressTimer();
   dragStart = {
     pointerId: event.pointerId,
+    pointerType: event.pointerType,
     x: event.clientX,
     y: event.clientY,
     panX: state.panX,
     panY: state.panY,
     playbackRate: video.playbackRate,
+    nativePressCanceled: false,
     startedAt: Date.now(),
     isDragging: false,
     video,
@@ -1089,6 +1094,55 @@ function restorePanPlaybackRate() {
   }
 }
 
+function createPanPointerEvent(type) {
+  if (typeof PointerEvent === "function") {
+    return new PointerEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      pointerId: dragStart.pointerId,
+      pointerType: dragStart.pointerType || "mouse",
+      clientX: dragStart.x,
+      clientY: dragStart.y,
+      button: 0,
+      buttons: 0,
+    });
+  }
+
+  return new MouseEvent(type, {
+    bubbles: true,
+    cancelable: true,
+    clientX: dragStart.x,
+    clientY: dragStart.y,
+    button: 0,
+    buttons: 0,
+  });
+}
+
+function cancelYouTubeHoldGesture() {
+  if (!dragStart?.video || !shouldCancelYouTubeHoldGesture({
+    isDragging: dragStart.isDragging,
+    nativePressCanceled: dragStart.nativePressCanceled,
+  })) {
+    return;
+  }
+
+  dragStart.nativePressCanceled = true;
+  isCancelingNativePress = true;
+  try {
+    dragStart.video.dispatchEvent(createPanPointerEvent("pointercancel"));
+  } finally {
+    isCancelingNativePress = false;
+  }
+  dragStart.video.dispatchEvent(new MouseEvent("mouseup", {
+    bubbles: true,
+    cancelable: true,
+    clientX: dragStart.x,
+    clientY: dragStart.y,
+    button: 0,
+    buttons: 0,
+  }));
+}
+
 function onPlayerPointerMove() {
   if (!state.panMode) {
     return;
@@ -1123,6 +1177,10 @@ function onWheel(event) {
 }
 
 function endDrag(event) {
+  if (isCancelingNativePress && event.type === "pointercancel") {
+    return;
+  }
+
   if (!dragStart || event.pointerId !== dragStart.pointerId) {
     return;
   }

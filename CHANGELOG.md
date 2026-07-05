@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Preserved YouTube's native single-click play and pause behavior while preventing Zoom mode long-press drags from staying at YouTube's 2x hold speed.
+- Preserved YouTube's native single-click play and pause behavior while canceling YouTube's 2x hold indicator when Zoom mode long-press drag starts.
 
 ## 1.1.0
 
