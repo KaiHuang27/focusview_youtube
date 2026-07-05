@@ -7,6 +7,25 @@ const CONTENT_SCRIPT_PATHS = [
   new URL("../platforms/safari/FocusView/FocusView Extension/Resources/src/content.js", import.meta.url),
 ];
 
+const MANIFEST_PATHS = [
+  new URL("../manifest.json", import.meta.url),
+  new URL("../platforms/safari/FocusView/FocusView Extension/Resources/manifest.json", import.meta.url),
+];
+
+test("extension manifests use App Store-safe product metadata", async () => {
+  for (const manifestUrl of MANIFEST_PATHS) {
+    const manifest = JSON.parse(await readFile(manifestUrl, "utf8"));
+
+    assert.equal(manifest.name, "FocusView", `${manifestUrl.pathname} uses the short product name`);
+    assert.equal(manifest.short_name, "FocusView", `${manifestUrl.pathname} uses the short display name`);
+    assert.equal(
+      manifest.description,
+      "Zoom, rotate, and mirror YouTube videos.",
+      `${manifestUrl.pathname} uses concise platform-specific wording`,
+    );
+  }
+});
+
 test("player controls use user-facing wording for reset and minimap labels", async () => {
   for (const contentUrl of CONTENT_SCRIPT_PATHS) {
     const content = await readFile(contentUrl, "utf8");

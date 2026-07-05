@@ -1,4 +1,4 @@
-# FocusView – Zoom, Rotate & Mirror for YouTube
+# FocusView
 
 See more details in YouTube videos.
 
