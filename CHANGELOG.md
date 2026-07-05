@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+No unreleased changes.
+
+## 1.1.1
+
 ### Fixed
 
 - Preserved YouTube's native single-click play and pause behavior while canceling YouTube's 2x hold indicator when Zoom mode long-press drag starts.
