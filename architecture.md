@@ -6,7 +6,7 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 
 - `manifest.json` defines the Chrome extension metadata, short product name, YouTube content script match, icon assets, and runtime files.
 - `src/content.js` owns the YouTube player integration, toolbar UI, pointer and wheel interactions, one-percent wheel zoom animation, Zoom mode preservation of native single-click play/pause, drag-start cancellation of YouTube's 2x hold gesture, drag-time playback-rate restoration, Fill action, reset and zoom mode tooltip wording, transform application, and player state reset triggers.
-- `src/transform-state.js` contains the shared transform state helpers used by the content script and tests, including viewport-centered zoom for controls, capped delta-aware cursor-centered zoom for wheel input, one-percent wheel zoom animation steps, cover zoom calculation for Fill, and full transform reset state.
+- `src/transform-state.js` contains the shared transform state helpers used by the content script and tests, including viewport-centered zoom for controls, about-fifteen-percent capped delta-aware cursor-centered zoom for wheel input, one-percent wheel zoom animation steps, cover zoom calculation for Fill, and full transform reset state.
 - `src/overlay.css` contains the extension UI styling and video transform presentation, including shared menu alignment and typography so actions, setting rows, and zoom controls use consistent visual rhythm.
 
 ## Testing
