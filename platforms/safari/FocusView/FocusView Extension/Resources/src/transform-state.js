@@ -1,7 +1,10 @@
 (() => {
   const ALLOWED_ROTATIONS = new Set([0, 90, 180, 270]);
   const ZOOM_STEP = 5;
-  const WHEEL_ZOOM_STEP = 2;
+  const WHEEL_ZOOM_SENSITIVITY = 0.001;
+  const WHEEL_DELTA_LINE_HEIGHT = 16;
+  const WHEEL_DELTA_PAGE_HEIGHT = 800;
+  const MAX_WHEEL_DELTA = 160;
   const MIN_ZOOM = 100;
   const MAX_ZOOM = 500;
   const DEFAULT_MINIMAP_SIZE = {
@@ -79,8 +82,18 @@
     return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + direction * ZOOM_STEP));
   }
 
-  function applyWheelZoomDelta(zoom, direction) {
-    return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + direction * WHEEL_ZOOM_STEP));
+  function normalizeWheelDelta(event) {
+    const deltaY = Number.isFinite(event?.deltaY) ? event.deltaY : 0;
+    const deltaMode = event?.deltaMode ?? 0;
+    const pixelDelta =
+      deltaMode === 1 ? deltaY * WHEEL_DELTA_LINE_HEIGHT : deltaMode === 2 ? deltaY * WHEEL_DELTA_PAGE_HEIGHT : deltaY;
+
+    return clamp(pixelDelta, -MAX_WHEEL_DELTA, MAX_WHEEL_DELTA);
+  }
+
+  function applyWheelZoomDelta(zoom, event) {
+    const scale = Math.exp(-normalizeWheelDelta(event) * WHEEL_ZOOM_SENSITIVITY);
+    return Math.round(clamp(zoom * scale, MIN_ZOOM, MAX_ZOOM));
   }
 
   function createViewportCenteredZoomState(state, zoom) {

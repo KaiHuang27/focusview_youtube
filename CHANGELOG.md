@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-No unreleased changes.
+### Changed
+
+- Changed mouse wheel and trackpad zoom from a fixed step to delta-aware exponential scaling for more natural zoom speed.
 
 ## 1.1.1
 

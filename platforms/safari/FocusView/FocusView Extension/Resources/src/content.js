@@ -1167,10 +1167,9 @@ function onWheel(event) {
   }
 
   blockYouTubeWheel(event);
-  const direction = event.deltaY < 0 ? 1 : -1;
   viewportControlsLastActivityAt = Date.now();
   scheduleViewportControlsHide();
-  setWheelZoom(applyWheelZoomDelta(state.zoom, direction), event);
+  setWheelZoom(applyWheelZoomDelta(state.zoom, event), event);
   syncToolbarTrigger();
   syncOpenZoomPanelControls();
   renderMinimap();

@@ -138,11 +138,22 @@ test("applyZoomDelta changes zoom and clamps it to the supported range", () => {
   assert.equal(applyZoomDelta(104, -1), 100);
 });
 
-test("applyWheelZoomDelta changes zoom by two percent and clamps it", () => {
-  assert.equal(applyWheelZoomDelta(100, 1), 102);
-  assert.equal(applyWheelZoomDelta(100, -1), 100);
-  assert.equal(applyWheelZoomDelta(499, 1), 500);
-  assert.equal(applyWheelZoomDelta(102, -1), 100);
+test("applyWheelZoomDelta scales zoom from wheel pixel delta", () => {
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -10, deltaMode: 0 }), 101);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: 10, deltaMode: 0 }), 100);
+  assert.equal(applyWheelZoomDelta(200, { deltaY: 10, deltaMode: 0 }), 198);
+});
+
+test("applyWheelZoomDelta makes larger wheel deltas zoom faster", () => {
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -40, deltaMode: 0 }), 104);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -120, deltaMode: 0 }), 113);
+});
+
+test("applyWheelZoomDelta normalizes delta modes and clamps extreme events", () => {
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -3, deltaMode: 1 }), 105);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -1, deltaMode: 2 }), 117);
+  assert.equal(applyWheelZoomDelta(490, { deltaY: -1000, deltaMode: 0 }), 500);
+  assert.equal(applyWheelZoomDelta(101, { deltaY: 1000, deltaMode: 0 }), 100);
 });
 
 test("createViewportCenteredZoomState preserves the viewport-center content while zooming", () => {
