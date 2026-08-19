@@ -39,6 +39,7 @@ const {
   toggleMirrorState,
 } = globalThis.YTVTTransform;
 const VIEWPORT_CONTROLS_HIDE_DELAY_MS = 3000;
+const WHEEL_ZOOM_SMOOTHING_IDLE_MS = 140;
 const PAN_LONG_PRESS_MS = 220;
 const PAN_MOVE_THRESHOLD_PX = 6;
 
@@ -60,10 +61,12 @@ let suppressNextVideoClick = false;
 let suppressVideoClickTimer = 0;
 let viewportControlsLastActivityAt = 0;
 let viewportControlsHideTimer = 0;
+let wheelZoomSmoothingTimer = 0;
 let isMenuOpen = false;
 let lastTransformCssText = "";
 let cleanupActiveSliderDrag = null;
 let isCancelingNativePress = false;
+let isWheelZoomSmoothing = false;
 
 function getTransformStyleElement() {
   let styleElement = document.getElementById(TRANSFORM_STYLE_ID);
@@ -84,7 +87,14 @@ function updateTransformRule() {
   let cssText = "";
   if (shouldReapplyTransformAfterMutation(state)) {
     const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
-    cssText = `${TRANSFORM_SELECTOR} { ${createImportantTransformCssText(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight)} }`;
+    cssText = `${TRANSFORM_SELECTOR} { ${createImportantTransformCssText(
+      state,
+      sourceWidth,
+      sourceHeight,
+      viewportWidth,
+      viewportHeight,
+      isWheelZoomSmoothing
+    )} }`;
   }
 
   if (cssText === lastTransformCssText) {
@@ -105,6 +115,23 @@ function clearTransformRule() {
     styleElement.textContent = "";
   }
   lastTransformCssText = "";
+}
+
+function clearWheelZoomSmoothing() {
+  clearTimeout(wheelZoomSmoothingTimer);
+  wheelZoomSmoothingTimer = 0;
+  if (!isWheelZoomSmoothing) {
+    return;
+  }
+
+  isWheelZoomSmoothing = false;
+  applyTransform();
+}
+
+function enableWheelZoomSmoothing() {
+  isWheelZoomSmoothing = true;
+  clearTimeout(wheelZoomSmoothingTimer);
+  wheelZoomSmoothingTimer = setTimeout(clearWheelZoomSmoothing, WHEEL_ZOOM_SMOOTHING_IDLE_MS);
 }
 
 function resetState() {
@@ -195,6 +222,9 @@ function clearTransform() {
     video.style.cursor = "";
   }
 
+  clearTimeout(wheelZoomSmoothingTimer);
+  wheelZoomSmoothingTimer = 0;
+  isWheelZoomSmoothing = false;
   clearOverlayElements();
   cancelPanGesture();
   clearClickSuppression();
@@ -1167,6 +1197,7 @@ function onWheel(event) {
   }
 
   blockYouTubeWheel(event);
+  enableWheelZoomSmoothing();
   viewportControlsLastActivityAt = Date.now();
   scheduleViewportControlsHide();
   setWheelZoom(applyWheelZoomDelta(state.zoom, event), event);

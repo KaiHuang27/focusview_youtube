@@ -5,6 +5,7 @@
 ### Changed
 
 - Changed mouse wheel and trackpad zoom from a fixed step to delta-aware exponential scaling for more natural zoom speed.
+- Added short transform smoothing during wheel zoom so fast zoom gestures animate instead of jumping between scale steps.
 
 ## 1.1.1
 

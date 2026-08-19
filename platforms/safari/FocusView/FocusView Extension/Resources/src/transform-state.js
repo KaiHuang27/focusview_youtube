@@ -73,9 +73,17 @@
     };
   }
 
-  function createImportantTransformCssText(state, sourceWidth = 0, sourceHeight = 0, viewportWidth = sourceWidth, viewportHeight = sourceHeight) {
+  function createImportantTransformCssText(
+    state,
+    sourceWidth = 0,
+    sourceHeight = 0,
+    viewportWidth = sourceWidth,
+    viewportHeight = sourceHeight,
+    shouldSmoothTransform = false
+  ) {
     const style = createTransformStyle(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
-    return `transform: ${style.transform} !important; transform-origin: ${style.transformOrigin} !important;`;
+    const transition = shouldSmoothTransform ? " transition: transform 90ms cubic-bezier(0.2, 0, 0.2, 1) !important;" : "";
+    return `transform: ${style.transform} !important; transform-origin: ${style.transformOrigin} !important;${transition}`;
   }
 
   function applyZoomDelta(zoom, direction) {
