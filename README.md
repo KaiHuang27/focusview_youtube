@@ -92,7 +92,7 @@ FocusView is packaged for Safari as a macOS app with an embedded Safari Web Exte
 
 ## Development
 
-Current version: `1.1.1`.
+Current version: `1.1.2`.
 
 Run tests:
 
