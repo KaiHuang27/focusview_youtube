@@ -145,6 +145,13 @@ test("applyWheelZoomDelta scales zoom from wheel pixel delta", () => {
   assert.equal(applyWheelZoomDelta(200, { deltaY: 10, deltaMode: 0 }), 198);
 });
 
+test("applyWheelZoomDelta applies at least one percent for nonzero wheel delta", () => {
+  assert.equal(applyWheelZoomDelta(150, { deltaY: -1, deltaMode: 0 }), 151);
+  assert.equal(applyWheelZoomDelta(150, { deltaY: 1, deltaMode: 0 }), 149);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: 1, deltaMode: 0 }), 100);
+  assert.equal(applyWheelZoomDelta(500, { deltaY: -1, deltaMode: 0 }), 500);
+});
+
 test("applyWheelZoomDelta makes larger wheel deltas zoom faster", () => {
   assert.equal(applyWheelZoomDelta(100, { deltaY: -40, deltaMode: 0 }), 104);
   assert.equal(applyWheelZoomDelta(100, { deltaY: -80, deltaMode: 0 }), 108);
