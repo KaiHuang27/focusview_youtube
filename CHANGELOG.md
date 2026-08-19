@@ -7,6 +7,7 @@
 - Changed mouse wheel and trackpad zoom from a fixed step to delta-aware exponential scaling for more natural zoom speed.
 - Set the maximum zoom change from a single wheel event to about fifteen percent.
 - Animated wheel zoom proportionally toward the target zoom to reduce delayed trailing after scrolling stops.
+- Fixed small nonzero wheel deltas sometimes rounding back to the current zoom with no visible response.
 
 ## 1.1.1
 
