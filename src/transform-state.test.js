@@ -158,9 +158,11 @@ test("applyWheelZoomDelta normalizes delta modes and clamps extreme events", () 
   assert.equal(applyWheelZoomDelta(101, { deltaY: 1000, deltaMode: 0 }), 100);
 });
 
-test("getWheelZoomAnimationStep moves toward the target by one percent", () => {
-  assert.equal(getWheelZoomAnimationStep(150, 160), 151);
-  assert.equal(getWheelZoomAnimationStep(160, 150), 159);
+test("getWheelZoomAnimationStep moves proportionally toward the target", () => {
+  assert.equal(getWheelZoomAnimationStep(150, 180), 161);
+  assert.equal(getWheelZoomAnimationStep(161, 180), 168);
+  assert.equal(getWheelZoomAnimationStep(160, 150), 156);
+  assert.equal(getWheelZoomAnimationStep(150, 151.4), 151);
   assert.equal(getWheelZoomAnimationStep(150, 150.4), 150.4);
   assert.equal(getWheelZoomAnimationStep(150, 150), 150);
 });

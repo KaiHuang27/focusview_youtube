@@ -5,6 +5,7 @@
   const WHEEL_DELTA_LINE_HEIGHT = 16;
   const WHEEL_DELTA_PAGE_HEIGHT = 800;
   const MAX_WHEEL_DELTA = 140;
+  const WHEEL_ZOOM_ANIMATION_FOLLOW_RATIO = 0.35;
   const MIN_ZOOM = 100;
   const MAX_ZOOM = 500;
   const DEFAULT_MINIMAP_SIZE = {
@@ -101,8 +102,14 @@
       return targetZoom;
     }
 
+    const remaining = Math.abs(targetZoom - currentZoom);
+    if (remaining <= 1) {
+      return targetZoom;
+    }
+
     const direction = targetZoom > currentZoom ? 1 : -1;
-    return Math.abs(targetZoom - currentZoom) <= 1 ? targetZoom : currentZoom + direction;
+    const step = Math.max(1, Math.round(remaining * WHEEL_ZOOM_ANIMATION_FOLLOW_RATIO));
+    return currentZoom + direction * step;
   }
 
   function createViewportCenteredZoomState(state, zoom) {
