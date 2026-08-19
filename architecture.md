@@ -5,7 +5,7 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 ## Runtime
 
 - `manifest.json` defines the Chrome extension metadata, short product name, YouTube content script match, icon assets, and runtime files.
-- `src/content.js` owns the YouTube player integration, toolbar UI, pointer and wheel interactions, temporary wheel zoom smoothing, Zoom mode preservation of native single-click play/pause, drag-start cancellation of YouTube's 2x hold gesture, drag-time playback-rate restoration, Fill action, reset and zoom mode tooltip wording, transform application, and player state reset triggers.
+- `src/content.js` owns the YouTube player integration, toolbar UI, pointer and wheel interactions, Zoom mode preservation of native single-click play/pause, drag-start cancellation of YouTube's 2x hold gesture, drag-time playback-rate restoration, Fill action, reset and zoom mode tooltip wording, transform application, and player state reset triggers.
 - `src/transform-state.js` contains the shared transform state helpers used by the content script and tests, including viewport-centered zoom for controls, delta-aware cursor-centered zoom for wheel input, cover zoom calculation for Fill, and full transform reset state.
 - `src/overlay.css` contains the extension UI styling and video transform presentation, including shared menu alignment and typography so actions, setting rows, and zoom controls use consistent visual rhythm.
 
@@ -13,7 +13,7 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 
 - `src/transform-state.test.js` verifies transform state behavior, wheel delta zoom scaling, Zoom mode gesture guards, drag-start hold cancellation, and drag-time playback-rate restoration with Node's built-in test runner.
 - `src/overlay-css.test.js` verifies zoom control CSS spacing, menu alignment, and menu typography across Chrome and Safari extension resources.
-- `src/product-wording.test.js` verifies App Store-safe manifest metadata, user-facing control labels, wheel zoom smoothing wiring, and Safari setup wording across Chrome and Safari resources.
+- `src/product-wording.test.js` verifies App Store-safe manifest metadata, user-facing control labels, and Safari setup wording across Chrome and Safari resources.
 - Run tests with `node --test`.
 
 ## Release Packaging

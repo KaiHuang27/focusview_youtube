@@ -73,17 +73,9 @@
     };
   }
 
-  function createImportantTransformCssText(
-    state,
-    sourceWidth = 0,
-    sourceHeight = 0,
-    viewportWidth = sourceWidth,
-    viewportHeight = sourceHeight,
-    shouldSmoothTransform = false
-  ) {
+  function createImportantTransformCssText(state, sourceWidth = 0, sourceHeight = 0, viewportWidth = sourceWidth, viewportHeight = sourceHeight) {
     const style = createTransformStyle(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
-    const transition = shouldSmoothTransform ? " transition: transform 90ms cubic-bezier(0.2, 0, 0.2, 1) !important;" : "";
-    return `transform: ${style.transform} !important; transform-origin: ${style.transformOrigin} !important;${transition}`;
+    return `transform: ${style.transform} !important; transform-origin: ${style.transformOrigin} !important;`;
   }
 
   function applyZoomDelta(zoom, direction) {

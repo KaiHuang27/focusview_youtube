@@ -26,7 +26,7 @@ Best for:
 ## Features
 
 - Press `Alt/Option + Shift + Z` to turn zoom mode on or off.
-- Scroll to smoothly zoom videos from `100%` to `500%` around the mouse pointer, with zoom speed following the wheel or trackpad delta.
+- Scroll to zoom videos from `100%` to `500%` around the mouse pointer, with zoom speed following the wheel or trackpad delta.
 - Long-press and drag to move around a zoomed video without leaving YouTube's 2x hold indicator on screen, while normal single-click play and pause stays unchanged.
 - Use the zoom panel for centered `100%` to `500%` zoom control with aligned actions, matching label sizes, setting rows, the slider, and step buttons.
 - Click **Fill** in the zoom settings to enlarge the video until player black bars are covered.

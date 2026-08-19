@@ -59,15 +59,6 @@ test("fill action uses concise button text with a descriptive tooltip", async ()
   }
 });
 
-test("wheel zoom enables temporary transform smoothing", async () => {
-  for (const contentUrl of CONTENT_SCRIPT_PATHS) {
-    const content = await readFile(contentUrl, "utf8");
-
-    assert.match(content, /enableWheelZoomSmoothing\(\);/, `${contentUrl.pathname} enables smoothing during wheel zoom`);
-    assert.match(content, /clearWheelZoomSmoothing/, `${contentUrl.pathname} clears smoothing after wheel zoom activity`);
-  }
-});
-
 test("Safari app page points users to Safari Settings Extensions", async () => {
   const html = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Base.lproj/Main.html", import.meta.url), "utf8");
   const script = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Script.js", import.meta.url), "utf8");

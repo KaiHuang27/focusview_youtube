@@ -123,13 +123,6 @@ test("createImportantTransformCssText makes transform override YouTube inline re
   );
 });
 
-test("createImportantTransformCssText can smooth transform changes", () => {
-  assert.equal(
-    createImportantTransformCssText({ ...createDefaultState(), zoom: 150 }, 1280, 720, 1280, 720, true),
-    "transform: translate(0px, 0px) rotate(0deg) scale(1.5, 1.5) !important; transform-origin: center center !important; transition: transform 90ms cubic-bezier(0.2, 0, 0.2, 1) !important;"
-  );
-});
-
 test("normalizeRotation only accepts right-angle rotations", () => {
   assert.equal(normalizeRotation(0), 0);
   assert.equal(normalizeRotation(90), 90);
