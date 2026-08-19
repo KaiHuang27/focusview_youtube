@@ -92,15 +92,8 @@
   }
 
   function applyWheelZoomDelta(zoom, event) {
-    const wheelDelta = normalizeWheelDelta(event);
-    const scale = Math.exp(-wheelDelta * WHEEL_ZOOM_SENSITIVITY);
-    const nextZoom = Math.round(clamp(zoom * scale, MIN_ZOOM, MAX_ZOOM));
-    if (wheelDelta !== 0 && nextZoom === zoom) {
-      const direction = wheelDelta < 0 ? 1 : -1;
-      return clamp(zoom + direction, MIN_ZOOM, MAX_ZOOM);
-    }
-
-    return nextZoom;
+    const scale = Math.exp(-normalizeWheelDelta(event) * WHEEL_ZOOM_SENSITIVITY);
+    return Math.round(clamp(zoom * scale, MIN_ZOOM, MAX_ZOOM));
   }
 
   function getWheelZoomAnimationStep(currentZoom, targetZoom) {

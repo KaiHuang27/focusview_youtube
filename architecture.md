@@ -11,7 +11,7 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 
 ## Testing
 
-- `src/transform-state.test.js` verifies transform state behavior, capped wheel delta zoom scaling, minimum one-percent wheel response, wheel zoom animation steps, Zoom mode gesture guards, drag-start hold cancellation, and drag-time playback-rate restoration with Node's built-in test runner.
+- `src/transform-state.test.js` verifies transform state behavior, capped wheel delta zoom scaling, wheel zoom animation steps, Zoom mode gesture guards, drag-start hold cancellation, and drag-time playback-rate restoration with Node's built-in test runner.
 - `src/overlay-css.test.js` verifies zoom control CSS spacing, menu alignment, and menu typography across Chrome and Safari extension resources.
 - `src/product-wording.test.js` verifies App Store-safe manifest metadata, user-facing control labels, wheel zoom animation wiring, and Safari setup wording across Chrome and Safari resources.
 - Run tests with `node --test`.
