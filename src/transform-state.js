@@ -96,6 +96,15 @@
     return Math.round(clamp(zoom * scale, MIN_ZOOM, MAX_ZOOM));
   }
 
+  function getWheelZoomAnimationStep(currentZoom, targetZoom) {
+    if (currentZoom === targetZoom) {
+      return targetZoom;
+    }
+
+    const direction = targetZoom > currentZoom ? 1 : -1;
+    return Math.abs(targetZoom - currentZoom) <= 1 ? targetZoom : currentZoom + direction;
+  }
+
   function createViewportCenteredZoomState(state, zoom) {
     const nextZoom = clamp(zoom, MIN_ZOOM, MAX_ZOOM);
     if (nextZoom === MIN_ZOOM || state.zoom <= 0) {
@@ -467,6 +476,7 @@
     formatZoomPercent,
     getViewportControlsActivityAfterPanToggle,
     getRotationFitScale,
+    getWheelZoomAnimationStep,
     getZoomFromSliderKey,
     getZoomFromPointerPosition,
     normalizeRotation,

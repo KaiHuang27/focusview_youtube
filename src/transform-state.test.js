@@ -24,6 +24,7 @@ const {
   parseZoomPercentInput,
   createTransformStyle,
   getRotationFitScale,
+  getWheelZoomAnimationStep,
   normalizeRotation,
   getViewportControlsActivityAfterPanToggle,
   shouldReapplyTransformAfterMutation,
@@ -155,6 +156,13 @@ test("applyWheelZoomDelta normalizes delta modes and clamps extreme events", () 
   assert.equal(applyWheelZoomDelta(100, { deltaY: -1, deltaMode: 2 }), 110);
   assert.equal(applyWheelZoomDelta(490, { deltaY: -1000, deltaMode: 0 }), 500);
   assert.equal(applyWheelZoomDelta(101, { deltaY: 1000, deltaMode: 0 }), 100);
+});
+
+test("getWheelZoomAnimationStep moves toward the target by one percent", () => {
+  assert.equal(getWheelZoomAnimationStep(150, 160), 151);
+  assert.equal(getWheelZoomAnimationStep(160, 150), 159);
+  assert.equal(getWheelZoomAnimationStep(150, 150.4), 150.4);
+  assert.equal(getWheelZoomAnimationStep(150, 150), 150);
 });
 
 test("createViewportCenteredZoomState preserves the viewport-center content while zooming", () => {

@@ -19,6 +19,7 @@ const {
   createImportantTransformCssText,
   formatZoomPercent,
   getViewportControlsActivityAfterPanToggle,
+  getWheelZoomAnimationStep,
   getZoomFromSliderKey,
   getZoomFromPointerPosition,
   parseZoomPercentInput,
@@ -53,6 +54,7 @@ let transformMenu = null;
 let resizeObserver = null;
 let videoStyleObserver = null;
 let reapplyFrame = 0;
+let wheelZoomFrame = 0;
 let currentVideoKey = "";
 let dragStart = null;
 let panLongPressTimer = 0;
@@ -108,6 +110,7 @@ function clearTransformRule() {
 }
 
 function resetState() {
+  cancelWheelZoomAnimation();
   state = resetTransformState();
   isMenuOpen = false;
   renderToolbar();
@@ -187,6 +190,13 @@ function scheduleTransformReapply(frames = 6) {
   reapplyFrame = requestAnimationFrame(reapply);
 }
 
+function cancelWheelZoomAnimation() {
+  if (wheelZoomFrame) {
+    cancelAnimationFrame(wheelZoomFrame);
+    wheelZoomFrame = 0;
+  }
+}
+
 function clearTransform() {
   if (video) {
     clearTransformRule();
@@ -195,6 +205,7 @@ function clearTransform() {
     video.style.cursor = "";
   }
 
+  cancelWheelZoomAnimation();
   clearOverlayElements();
   cancelPanGesture();
   clearClickSuppression();
@@ -432,6 +443,7 @@ function setZoom(zoom, shouldRender = true) {
     return;
   }
 
+  cancelWheelZoomAnimation();
   state = createViewportCenteredZoomState(state, zoom);
   clampCurrentPanState();
   if (shouldRender) {
@@ -451,14 +463,21 @@ function setWheelZoom(zoom, event) {
     return;
   }
 
-  state = createCursorCenteredZoomState(
-    state,
-    zoom,
-    event.clientX - (rect.left + rect.width / 2),
-    event.clientY - (rect.top + rect.height / 2)
-  );
-  clampCurrentPanState();
-  applyTransform();
+  cancelWheelZoomAnimation();
+  const cursorOffsetX = event.clientX - (rect.left + rect.width / 2);
+  const cursorOffsetY = event.clientY - (rect.top + rect.height / 2);
+  const animate = () => {
+    wheelZoomFrame = 0;
+    const nextZoom = getWheelZoomAnimationStep(state.zoom, zoom);
+    state = createCursorCenteredZoomState(state, nextZoom, cursorOffsetX, cursorOffsetY);
+    clampCurrentPanState();
+    applyTransform();
+    if (state.zoom !== zoom) {
+      wheelZoomFrame = requestAnimationFrame(animate);
+    }
+  };
+
+  animate();
 }
 
 function fillScreen() {

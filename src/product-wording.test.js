@@ -59,6 +59,16 @@ test("fill action uses concise button text with a descriptive tooltip", async ()
   }
 });
 
+test("wheel zoom animates by measured zoom steps", async () => {
+  for (const contentUrl of CONTENT_SCRIPT_PATHS) {
+    const content = await readFile(contentUrl, "utf8");
+
+    assert.match(content, /getWheelZoomAnimationStep/, `${contentUrl.pathname} uses measured wheel zoom steps`);
+    assert.match(content, /wheelZoomFrame = requestAnimationFrame\(animate\)/, `${contentUrl.pathname} animates wheel zoom across frames`);
+    assert.match(content, /cancelWheelZoomAnimation\(\);/, `${contentUrl.pathname} cancels stale wheel zoom animation`);
+  }
+});
+
 test("Safari app page points users to Safari Settings Extensions", async () => {
   const html = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Base.lproj/Main.html", import.meta.url), "utf8");
   const script = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Script.js", import.meta.url), "utf8");
