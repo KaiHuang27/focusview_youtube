@@ -1,6 +1,6 @@
 # FocusView
 
-See more details in YouTube videos.
+Reveal video details in YouTube videos.
 
 FocusView adds smooth zoom, rotate, and mirror controls to YouTube videos in your browser.
 
@@ -81,6 +81,13 @@ The macOS Safari Web Extension project is in `platforms/safari/FocusView`.
 ## Mac App Store Release
 
 FocusView is packaged for Safari as a macOS app with an embedded Safari Web Extension.
+
+Planned store metadata:
+
+- Chrome Web Store name: `FocusView – Zoom, Rotate & Mirror for YouTube`
+- Apple App Store listing name: `FocusView - Zoom for YouTube`
+- Safari extension name: `FocusView - Zoom for YouTube`
+- Apple App Store subtitle: `Reveal Video Details`
 
 1. In App Store Connect, create a macOS app record for `com.kodingai.focusview`.
 2. In Xcode, open `platforms/safari/FocusView/FocusView.xcodeproj`.

@@ -12,11 +12,15 @@ const MANIFEST_PATHS = [
   new URL("../platforms/safari/FocusView/FocusView Extension/Resources/manifest.json", import.meta.url),
 ];
 
-test("extension manifests use App Store-safe product metadata", async () => {
+test("extension manifests use store-specific product metadata", async () => {
   for (const manifestUrl of MANIFEST_PATHS) {
     const manifest = JSON.parse(await readFile(manifestUrl, "utf8"));
 
-    assert.equal(manifest.name, "FocusView", `${manifestUrl.pathname} uses the short product name`);
+    const expectedName = manifestUrl.pathname.includes("platforms/safari")
+      ? "FocusView - Zoom for YouTube"
+      : "FocusView – Zoom, Rotate & Mirror for YouTube";
+
+    assert.equal(manifest.name, expectedName, `${manifestUrl.pathname} uses the store-specific product name`);
     assert.equal(manifest.short_name, "FocusView", `${manifestUrl.pathname} uses the short display name`);
     assert.equal(
       manifest.description,
@@ -85,6 +89,7 @@ test("Safari wrapper uses the shipped extension bundle identifier", async () => 
 
   assert.match(viewController, /let extensionBundleIdentifier = "com\.kodingai\.focusview\.Extension"/);
   assert.match(xcodeProject, /PRODUCT_BUNDLE_IDENTIFIER = com\.kodingai\.focusview\.Extension;/);
+  assert.match(xcodeProject, /INFOPLIST_KEY_CFBundleDisplayName = "FocusView - Zoom for YouTube";/);
 });
 
 test("Safari toolbar button opens a visible popup", async () => {
@@ -93,6 +98,7 @@ test("Safari toolbar button opens a visible popup", async () => {
   const popupCss = await readFile(new URL("../platforms/safari/FocusView/FocusView Extension/Resources/popup.css", import.meta.url), "utf8");
   const manifest = JSON.parse(manifestText);
 
+  assert.equal(manifest.action.default_title, "FocusView - Zoom for YouTube");
   assert.equal(manifest.action.default_popup, "popup.html");
   assert.match(popup, /<header class="brand">[\s\S]*<h1>FocusView<\/h1>/);
   assert.match(popup, /Zoom, rotate, and mirror YouTube videos\./);
