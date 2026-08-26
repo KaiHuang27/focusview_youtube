@@ -11,24 +11,72 @@ body {
 }
 
 main {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+}
+
+.brand {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 18px;
+  gap: 12px;
 }
 
 img {
   flex: none;
-  border-radius: 10px;
+  border-radius: 9px;
 }
 
 h1 {
   margin: 0;
-  font: -apple-system-headline;
+  font: -apple-system-title1;
+  font-weight: 700;
 }
 
 p {
-  margin: 4px 0 0;
-  opacity: 0.72;
-  line-height: 1.4;
+  margin: 0;
+  line-height: 1.42;
+}
+
+.summary {
+  opacity: 0.78;
+}
+
+.hint {
+  color: GrayText;
+  font: -apple-system-caption1;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 1px 5px 2px;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 5px;
+  background: rgba(128, 128, 128, 0.12);
+  color: CanvasText;
+  font: -apple-system-caption1;
+  text-align: center;
+}
+
+.zoom-icon {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  margin: 0 2px;
+  vertical-align: -5px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(128, 128, 128, 0.14);
+}
+
+.zoom-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: CanvasText;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
