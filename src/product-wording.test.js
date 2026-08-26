@@ -90,8 +90,12 @@ test("Safari wrapper uses the shipped extension bundle identifier", async () => 
 test("Safari toolbar button opens a visible popup", async () => {
   const manifestText = await readFile(new URL("../platforms/safari/FocusView/FocusView Extension/Resources/manifest.json", import.meta.url), "utf8");
   const popup = await readFile(new URL("../platforms/safari/FocusView/FocusView Extension/Resources/popup.html", import.meta.url), "utf8");
+  const popupCss = await readFile(new URL("../platforms/safari/FocusView/FocusView Extension/Resources/popup.css", import.meta.url), "utf8");
   const manifest = JSON.parse(manifestText);
 
   assert.equal(manifest.action.default_popup, "popup.html");
+  assert.match(popup, /<h1>FocusView<\/h1>/);
   assert.match(popup, /Open a YouTube video/);
+  assert.doesNotMatch(popup, /Zoom for YouTube/);
+  assert.match(popupCss, /display: flex;/);
 });
