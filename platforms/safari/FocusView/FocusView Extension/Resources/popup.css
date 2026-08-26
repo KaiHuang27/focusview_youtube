@@ -3,7 +3,7 @@ html {
 }
 
 body {
-  width: 320px;
+  width: 300px;
   margin: 0;
   color: CanvasText;
   background: Canvas;
@@ -12,50 +12,51 @@ body {
 
 main {
   display: grid;
-  gap: 12px;
-  padding: 18px;
+  gap: 10px;
+  padding: 16px;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 img {
   flex: none;
-  border-radius: 9px;
+  border-radius: 8px;
 }
 
 h1 {
   margin: 0;
-  font: -apple-system-title1;
-  font-weight: 700;
+  font: -apple-system-headline;
+  font-weight: 600;
 }
 
 p {
   margin: 0;
-  line-height: 1.42;
+  line-height: 1.35;
 }
 
 .summary {
-  opacity: 0.78;
+  font: -apple-system-subheadline;
+  opacity: 0.82;
 }
 
 .hint {
   color: GrayText;
-  font: -apple-system-caption1;
+  font: -apple-system-caption2;
 }
 
 kbd {
   display: inline-block;
   min-width: 1.6em;
-  padding: 1px 5px 2px;
+  padding: 1px 4px 2px;
   border: 1px solid rgba(128, 128, 128, 0.35);
-  border-radius: 5px;
+  border-radius: 4px;
   background: rgba(128, 128, 128, 0.12);
   color: CanvasText;
-  font: -apple-system-caption1;
+  font: -apple-system-caption2;
   text-align: center;
 }
 

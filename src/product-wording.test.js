@@ -95,10 +95,13 @@ test("Safari toolbar button opens a visible popup", async () => {
 
   assert.equal(manifest.action.default_popup, "popup.html");
   assert.match(popup, /<header class="brand">[\s\S]*<h1>FocusView<\/h1>/);
-  assert.match(popup, /Open a YouTube video to use zoom, rotate, mirror, and fill controls in the player\./);
+  assert.match(popup, /Zoom, rotate, and mirror YouTube videos\./);
   assert.match(popup, /Option<\/kbd>[\s\S]*Shift<\/kbd>[\s\S]*Z<\/kbd>/);
   assert.match(popup, /<span class="zoom-icon"/);
   assert.match(popup, /<circle cx="15" cy="15" r="8"><\/circle>/);
   assert.doesNotMatch(popup, /Zoom for YouTube/);
-  assert.match(popupCss, /main \{\n  display: grid;/);
+  assert.match(popup, /width="40" height="40"/);
+  assert.match(popupCss, /width: 300px;/);
+  assert.match(popupCss, /font: -apple-system-headline;/);
+  assert.match(popupCss, /padding: 16px;/);
 });
