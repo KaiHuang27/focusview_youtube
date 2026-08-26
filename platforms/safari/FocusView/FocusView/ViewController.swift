@@ -9,7 +9,7 @@ import Cocoa
 import SafariServices
 import WebKit
 
-let extensionBundleIdentifier = "com.kaihuang.focusview.Extension"
+let extensionBundleIdentifier = "com.kodingai.focusview.Extension"
 
 class ViewController: NSViewController, WKNavigationDelegate, WKScriptMessageHandler {
 
@@ -49,6 +49,14 @@ class ViewController: NSViewController, WKNavigationDelegate, WKScriptMessageHan
 
         SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
             DispatchQueue.main.async {
+                if let error = error {
+                    let alert = NSAlert(error: error)
+                    alert.messageText = "Unable to open Safari Extensions Settings"
+                    alert.informativeText = "Open Safari, then choose Safari > Settings > Extensions and enable FocusView."
+                    alert.runModal()
+                    return
+                }
+
                 NSApplication.shared.terminate(nil)
             }
         }

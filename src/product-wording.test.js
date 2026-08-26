@@ -78,3 +78,20 @@ test("Safari app page points users to Safari Settings Extensions", async () => {
   assert.doesNotMatch(html, /Safari Extensions preferences/, "Safari app fallback copy avoids old preferences wording");
   assert.doesNotMatch(script, /Safari Extensions preferences/, "Safari app runtime copy avoids old preferences wording");
 });
+
+test("Safari wrapper uses the shipped extension bundle identifier", async () => {
+  const viewController = await readFile(new URL("../platforms/safari/FocusView/FocusView/ViewController.swift", import.meta.url), "utf8");
+  const xcodeProject = await readFile(new URL("../platforms/safari/FocusView/FocusView.xcodeproj/project.pbxproj", import.meta.url), "utf8");
+
+  assert.match(viewController, /let extensionBundleIdentifier = "com\.kodingai\.focusview\.Extension"/);
+  assert.match(xcodeProject, /PRODUCT_BUNDLE_IDENTIFIER = com\.kodingai\.focusview\.Extension;/);
+});
+
+test("Safari toolbar button opens a visible popup", async () => {
+  const manifestText = await readFile(new URL("../platforms/safari/FocusView/FocusView Extension/Resources/manifest.json", import.meta.url), "utf8");
+  const popup = await readFile(new URL("../platforms/safari/FocusView/FocusView Extension/Resources/popup.html", import.meta.url), "utf8");
+  const manifest = JSON.parse(manifestText);
+
+  assert.equal(manifest.action.default_popup, "popup.html");
+  assert.match(popup, /Open a YouTube video/);
+});

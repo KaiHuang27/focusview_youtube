@@ -1,0 +1,32 @@
+html {
+  color-scheme: light dark;
+}
+
+body {
+  width: 260px;
+  margin: 0;
+  color: CanvasText;
+  background: Canvas;
+  font: -apple-system-body;
+}
+
+main {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+}
+
+img {
+  border-radius: 10px;
+}
+
+h1 {
+  margin: 0;
+  font: -apple-system-headline;
+}
+
+p {
+  margin: 0;
+  opacity: 0.72;
+  line-height: 1.4;
+}

@@ -75,7 +75,8 @@ The macOS Safari Web Extension project is in `platforms/safari/FocusView`.
 3. Run the macOS app target.
 4. Open Safari Settings > Extensions.
 5. Enable FocusView and allow access to YouTube.
-6. Open a normal YouTube video page.
+6. Click the FocusView toolbar button and confirm the popup opens.
+7. Open a normal YouTube video page and confirm the in-player controls appear.
 
 ## Mac App Store Release
 
@@ -84,11 +85,23 @@ FocusView is packaged for Safari as a macOS app with an embedded Safari Web Exte
 1. In App Store Connect, create a macOS app record for `com.kodingai.focusview`.
 2. In Xcode, open `platforms/safari/FocusView/FocusView.xcodeproj`.
 3. Select the `FocusView` scheme and set your Apple Developer Team for the app and extension targets.
-4. Confirm the app bundle ID is `com.kodingai.focusview` and the extension bundle ID is `com.kodingai.focusview.Extension`.
+4. Confirm the app bundle ID is `com.kodingai.focusview`, the extension bundle ID is `com.kodingai.focusview.Extension`, and `ViewController.swift` uses the same extension identifier when opening Safari Extensions settings.
 5. Select `Any Mac` as the run destination.
 6. Choose Product > Archive.
 7. In Organizer, choose Distribute App > App Store Connect > Upload.
 8. In App Store Connect, select the uploaded build, complete the listing metadata, and submit it for review.
+
+## Safari App Review Checklist
+
+Before resubmitting after a Safari Web Extension rejection:
+
+1. Delete any older FocusView app from `/Applications`.
+2. In Safari Settings > Extensions, remove or disable older FocusView entries.
+3. Install the archived App Store build, then launch the macOS container app.
+4. Click **Quit and Open Safari Settings** and confirm Safari opens Extensions settings for FocusView.
+5. Enable FocusView, allow access to YouTube, then open `https://www.youtube.com/watch?v=x4EzsXcOo_A`.
+6. Click the Safari toolbar FocusView button and confirm the popup responds.
+7. Confirm the YouTube player shows FocusView controls and zoom, rotate, mirror, and fill actions work.
 
 ## Development
 
