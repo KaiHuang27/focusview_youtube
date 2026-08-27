@@ -2,127 +2,171 @@ html {
   color-scheme: light dark;
 }
 
+:root {
+  --accent-color: #007aff;
+  --body-background: #f5f5f7;
+  --control-background: rgba(255, 255, 255, 0.72);
+  --separator-color: rgba(60, 60, 67, 0.18);
+  --primary-text: rgba(0, 0, 0, 0.86);
+  --secondary-text: rgba(60, 60, 67, 0.72);
+  --tertiary-text: rgba(60, 60, 67, 0.54);
+  --button-text: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent-color: #0a84ff;
+    --body-background: #1c1c1e;
+    --control-background: rgba(255, 255, 255, 0.08);
+    --separator-color: rgba(235, 235, 245, 0.16);
+    --primary-text: rgba(255, 255, 255, 0.92);
+    --secondary-text: rgba(235, 235, 245, 0.72);
+    --tertiary-text: rgba(235, 235, 245, 0.5);
+    --button-text: #ffffff;
+  }
+}
+
 body {
-  width: 300px;
+  width: 320px;
   margin: 0;
-  color: CanvasText;
-  background: Canvas;
-  font: -apple-system-body;
+  color: var(--primary-text);
+  background: var(--body-background);
+  font: 13px/1.36 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
 }
 
 main {
   display: grid;
-  gap: 12px;
-  padding: 16px;
+  gap: 14px;
+  padding: 14px;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
 }
 
 .brand-copy {
   min-width: 0;
   display: grid;
-  gap: 3px;
+  gap: 2px;
 }
 
 img {
+  width: 38px;
+  height: 38px;
   flex: none;
   border-radius: 8px;
 }
 
 h1 {
   margin: 0;
-  font: -apple-system-headline;
-  font-weight: 600;
-  line-height: 1.22;
+  color: var(--primary-text);
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.18;
 }
 
 p {
   margin: 0;
-  line-height: 1.35;
 }
 
 .summary {
-  font: -apple-system-subheadline;
-  opacity: 0.82;
+  color: var(--secondary-text);
+  font-size: 13px;
+  line-height: 1.28;
 }
 
 .hint {
-  color: GrayText;
-  font: -apple-system-caption2;
+  color: var(--tertiary-text);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 kbd {
-  display: inline-block;
-  min-width: 1.6em;
-  padding: 1px 4px 2px;
-  border: 1px solid rgba(128, 128, 128, 0.35);
-  border-radius: 4px;
-  background: rgba(128, 128, 128, 0.12);
-  color: CanvasText;
-  font: -apple-system-caption2;
+  display: inline-flex;
+  min-width: 1.8em;
+  min-height: 20px;
+  padding: 0 6px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--separator-color);
+  border-radius: 6px;
+  background: var(--control-background);
+  color: var(--primary-text);
+  font-size: 12px;
+  font-weight: 600;
   text-align: center;
 }
 
 .zoom-icon {
   display: inline-flex;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   margin: 0 2px;
-  vertical-align: -5px;
+  vertical-align: -6px;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(128, 128, 128, 0.14);
+  background: var(--control-background);
 }
 
 .zoom-icon svg {
   width: 16px;
   height: 16px;
   fill: none;
-  stroke: CanvasText;
-  stroke-width: 2.4;
+  stroke: var(--primary-text);
+  stroke-width: 2.35;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .review {
   display: grid;
-  gap: 10px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(128, 128, 128, 0.22);
+  gap: 11px;
+  padding: 12px;
+  border: 1px solid var(--separator-color);
+  border-radius: 10px;
+  background: var(--control-background);
 }
 
 .review p {
-  color: CanvasText;
-  font: -apple-system-caption1;
+  color: var(--primary-text);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.34;
 }
 
 .review-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .review-button {
   display: inline-flex;
-  min-height: 28px;
-  padding: 0 12px;
+  min-height: 30px;
+  padding: 0 13px;
   align-items: center;
   justify-content: center;
-  border-radius: 7px;
-  background: LinkText;
-  color: Canvas;
-  font: -apple-system-caption1;
+  border-radius: 8px;
+  background: var(--accent-color);
+  color: var(--button-text);
+  font-size: 13px;
   font-weight: 600;
+  line-height: 1;
   text-decoration: none;
 }
 
 .feedback-link {
-  color: LinkText;
-  font: -apple-system-caption1;
+  color: var(--accent-color);
+  font-size: 13px;
+  line-height: 1;
   text-decoration: none;
+}
+
+.review-button:focus-visible,
+.feedback-link:focus-visible {
+  outline: 3px solid rgba(0, 122, 255, 0.34);
+  outline-offset: 2px;
 }
