@@ -156,14 +156,17 @@ test("Chrome toolbar button opens a visible popup", async () => {
   assert.equal(manifest.action.default_title, "FocusView – Zoom, Rotate & Mirror for YouTube");
   assert.equal(manifest.action.default_popup, "popup.html");
   assert.match(popup, /<h1>FocusView<\/h1>[\s\S]*<p class="summary">Zoom, rotate, and mirror YouTube videos\.<\/p>/);
-  assert.match(popup, /Open a YouTube video[\s\S]*Alt\/Option<\/kbd>[\s\S]*Shift<\/kbd>[\s\S]*Z<\/kbd>/);
-  assert.match(popup, /in the player to toggle zoom mode\./);
+  assert.match(popup, /Alt\/Option<\/kbd>[\s\S]*Shift<\/kbd>[\s\S]*Z<\/kbd>[\s\S]*in the player to toggle zoom mode\./);
   assert.match(popup, /<span class="zoom-icon"/);
   assert.match(popup, /<circle cx="15" cy="15" r="8"><\/circle>/);
+  assert.match(popup, /<p>Enjoying FocusView\? <a href="https:\/\/chromewebstore\.google\.com\/detail\/jbdndcjclbghkmbiehjigaapembpbgdb\/reviews"[^>]*>Rate it<\/a> or <a href="mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback">share feedback<\/a>\.<\/p>/);
   assert.match(popupCss, /width: 340px;/);
   assert.match(popupCss, /font-size: 17px;/);
   assert.match(popupCss, /\.brand-copy \{[\s\S]*min-width: 0;/);
-  assert.doesNotMatch(popup, /apps\.apple\.com|App Store/);
+  assert.match(popupCss, /\.review \{/);
+  assert.match(popupCss, /\.review a \{/);
+  assert.match(popupCss, /color: var\(--accent-color\);/);
+  assert.doesNotMatch(popup, /apps\.apple\.com/);
 });
 
 test("Chrome release package includes toolbar popup resources", async () => {
