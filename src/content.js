@@ -51,6 +51,7 @@ let player = null;
 let wheelTarget = null;
 let wheelTargetUsesBlockingListener = false;
 let documentWheelListenerBound = false;
+let isPointerInPlayer = false;
 let toolbar = null;
 let minimap = null;
 let settingsButton = null;
@@ -1195,7 +1196,16 @@ function cancelYouTubeHoldGesture() {
   }));
 }
 
+function onPlayerPointerEnter() {
+  isPointerInPlayer = true;
+}
+
+function onPlayerPointerLeave() {
+  isPointerInPlayer = false;
+}
+
 function onPlayerPointerMove() {
+  isPointerInPlayer = true;
   if (!state.panMode) {
     return;
   }
@@ -1219,6 +1229,8 @@ function updateLastPointerPosition(event) {
   lastPointerClientX = event.clientX;
   lastPointerClientY = event.clientY;
   hasLastPointerPosition = true;
+  const eventPath = event.composedPath?.() || [];
+  isPointerInPlayer = Boolean(player && (event.target === player || player.contains(event.target) || eventPath.includes(player)));
 }
 
 function onWheel(event) {
@@ -1255,9 +1267,11 @@ function onDocumentWheel(event) {
   }
 
   const rect = player?.getBoundingClientRect?.();
+  const eventPath = event.composedPath?.() || [];
+  const isEventInPlayer = Boolean(player && (event.target === player || player.contains(event.target) || eventPath.includes(player)));
   const isWheelPointInPlayer = shouldHandlePlayerWheel(state, event.clientX, event.clientY, rect);
   const isLastPointerInPlayer = hasLastPointerPosition && shouldHandlePlayerWheel(state, lastPointerClientX, lastPointerClientY, rect);
-  if (!isWheelPointInPlayer && !isLastPointerInPlayer) {
+  if (!isEventInPlayer && !isPointerInPlayer && !isWheelPointInPlayer && !isLastPointerInPlayer) {
     return;
   }
 
@@ -1347,10 +1361,15 @@ function bindWheelTarget(nextPlayer) {
   }
 
   wheelTarget?.removeEventListener("wheel", onWheel, true);
+  wheelTarget?.removeEventListener("pointerenter", onPlayerPointerEnter);
+  wheelTarget?.removeEventListener("pointerleave", onPlayerPointerLeave);
   wheelTarget?.removeEventListener("pointermove", onPlayerPointerMove);
   wheelTarget = nextPlayer;
   wheelTargetUsesBlockingListener = false;
+  isPointerInPlayer = false;
   syncWheelTargetListenerMode();
+  wheelTarget.addEventListener("pointerenter", onPlayerPointerEnter);
+  wheelTarget.addEventListener("pointerleave", onPlayerPointerLeave);
   wheelTarget.addEventListener("pointermove", onPlayerPointerMove);
 }
 
@@ -1400,8 +1419,11 @@ function sync() {
       reapplyFrame = 0;
     }
     wheelTarget?.removeEventListener("wheel", onWheel, true);
+    wheelTarget?.removeEventListener("pointerenter", onPlayerPointerEnter);
+    wheelTarget?.removeEventListener("pointerleave", onPlayerPointerLeave);
     wheelTarget?.removeEventListener("pointermove", onPlayerPointerMove);
     wheelTarget = null;
+    isPointerInPlayer = false;
     syncWheelTargetListenerMode();
     state = createDefaultState();
     isMenuOpen = false;
