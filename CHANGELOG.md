@@ -8,6 +8,14 @@
 - Captured Safari wheel zoom inside the non-fullscreen player even when Safari or YouTube routes the wheel event outside the player listener.
 - Batched wheel-time UI updates to reduce non-fullscreen Safari zoom lag.
 
+## 1.1.3 - 2026-08-26
+
+### Changed
+
+- Synchronized Chrome Web Store and Safari App Store release versions.
+- Prepared the latest Chrome Web Store upload package.
+- Verified extension metadata, tests, and release packaging before store upload.
+
 ## 1.1.2 - 2026-08-19
 
 ### Changed

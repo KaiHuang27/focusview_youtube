@@ -113,7 +113,7 @@ Before resubmitting after a Safari Web Extension rejection:
 
 ## Development
 
-Current version: `1.1.2`.
+Current version: `1.1.3`.
 
 Run tests:
 
