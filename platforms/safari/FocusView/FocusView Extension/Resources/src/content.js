@@ -22,7 +22,6 @@ const {
   getWheelZoomAnimationStep,
   getZoomFromSliderKey,
   getZoomFromPointerPosition,
-  isPointInsideRect,
   parseZoomPercentInput,
   shouldBlockYouTubeShortcutForZoomInput,
   shouldInterceptPanWheel,
@@ -39,7 +38,6 @@ const {
   shouldShowTransientViewportControls,
   shouldSuppressClickAfterPanEnd,
   shouldTogglePanShortcut,
-  shouldUseDocumentWheelListener,
   shouldUseBlockingWheelListener,
   toggleMirrorState,
 } = globalThis.YTVTTransform;
@@ -53,7 +51,6 @@ let player = null;
 let wheelTarget = null;
 let wheelTargetUsesBlockingListener = false;
 let documentWheelListenerBound = false;
-let isPointerInPlayer = false;
 let toolbar = null;
 let minimap = null;
 let settingsButton = null;
@@ -1198,24 +1195,7 @@ function cancelYouTubeHoldGesture() {
   }));
 }
 
-function onPlayerPointerEnter(event) {
-  updateLastPointerPosition(event);
-  isPointerInPlayer = true;
-  syncWheelTargetListenerMode();
-}
-
-function onPlayerPointerLeave(event) {
-  updateLastPointerPosition(event);
-  isPointerInPlayer = false;
-  syncDocumentWheelListener(false);
-}
-
-function onPlayerPointerMove(event) {
-  updateLastPointerPosition(event);
-  if (!isPointerInPlayer) {
-    isPointerInPlayer = true;
-    syncWheelTargetListenerMode();
-  }
+function onPlayerPointerMove() {
   if (!state.panMode) {
     return;
   }
@@ -1360,30 +1340,17 @@ function bindVideo(nextVideo) {
   applyTransform();
 }
 
-function syncPointerInPlayerFromLastPosition(target = wheelTarget) {
-  if (hasLastPointerPosition) {
-    const rect = target?.getBoundingClientRect?.();
-    isPointerInPlayer = isPointInsideRect(lastPointerClientX, lastPointerClientY, rect);
-  }
-  syncWheelTargetListenerMode();
-}
-
 function bindWheelTarget(nextPlayer) {
   if (wheelTarget === nextPlayer) {
-    syncPointerInPlayerFromLastPosition(nextPlayer);
+    syncWheelTargetListenerMode();
     return;
   }
 
   wheelTarget?.removeEventListener("wheel", onWheel, true);
-  wheelTarget?.removeEventListener("pointerenter", onPlayerPointerEnter);
-  wheelTarget?.removeEventListener("pointerleave", onPlayerPointerLeave);
   wheelTarget?.removeEventListener("pointermove", onPlayerPointerMove);
   wheelTarget = nextPlayer;
   wheelTargetUsesBlockingListener = false;
-  isPointerInPlayer = false;
-  syncPointerInPlayerFromLastPosition(nextPlayer);
-  wheelTarget.addEventListener("pointerenter", onPlayerPointerEnter);
-  wheelTarget.addEventListener("pointerleave", onPlayerPointerLeave);
+  syncWheelTargetListenerMode();
   wheelTarget.addEventListener("pointermove", onPlayerPointerMove);
 }
 
@@ -1403,7 +1370,7 @@ function syncDocumentWheelListener(shouldBlockWheel) {
 
 function syncWheelTargetListenerMode() {
   const shouldBlockWheel = Boolean(wheelTarget && shouldUseBlockingWheelListener(state));
-  syncDocumentWheelListener(shouldUseDocumentWheelListener(state, Boolean(wheelTarget && isPointerInPlayer)));
+  syncDocumentWheelListener(shouldBlockWheel);
 
   if (!wheelTarget) {
     wheelTargetUsesBlockingListener = false;
@@ -1433,11 +1400,8 @@ function sync() {
       reapplyFrame = 0;
     }
     wheelTarget?.removeEventListener("wheel", onWheel, true);
-    wheelTarget?.removeEventListener("pointerenter", onPlayerPointerEnter);
-    wheelTarget?.removeEventListener("pointerleave", onPlayerPointerLeave);
     wheelTarget?.removeEventListener("pointermove", onPlayerPointerMove);
     wheelTarget = null;
-    isPointerInPlayer = false;
     syncWheelTargetListenerMode();
     state = createDefaultState();
     isMenuOpen = false;
@@ -1479,11 +1443,6 @@ function observePlayerSize() {
   resizeObserver.observe(document.documentElement);
 }
 
-function onFullscreenChange() {
-  scheduleTransformReapply(12);
-  requestAnimationFrame(() => syncPointerInPlayerFromLastPosition());
-}
-
 function start() {
   sync();
   observePlayerSize();
@@ -1500,8 +1459,8 @@ function start() {
   document.addEventListener("keydown", onShortcutKeyDown, true);
   document.addEventListener("pointerdown", closeMenuOnOutsidePointer, true);
   document.addEventListener("keydown", closeMenuOnEscape);
-  document.addEventListener("fullscreenchange", onFullscreenChange);
-  document.addEventListener("webkitfullscreenchange", onFullscreenChange);
+  document.addEventListener("fullscreenchange", () => scheduleTransformReapply(12));
+  document.addEventListener("webkitfullscreenchange", () => scheduleTransformReapply(12));
 }
 
 start();
