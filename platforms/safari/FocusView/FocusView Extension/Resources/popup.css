@@ -122,24 +122,22 @@ kbd {
 }
 
 .review {
-  padding-top: 12px;
+  display: grid;
+  gap: 4px;
+  padding-top: 11px;
   border-top: 1px solid var(--separator-color);
 }
 
 .review p {
   color: var(--tertiary-text);
   font-size: 12px;
-  line-height: 1.42;
+  line-height: 1.38;
 }
 
 .review a {
-  color: var(--secondary-text);
+  color: var(--accent-color);
   font-weight: 500;
   text-decoration: none;
-}
-
-.review a + a {
-  margin-left: 8px;
 }
 
 .review a:focus-visible {
