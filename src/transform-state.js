@@ -259,6 +259,10 @@
     return state.panMode === true;
   }
 
+  function shouldUseBlockingWheelListener(state) {
+    return shouldInterceptPanWheel(state);
+  }
+
   function shouldShowTransientViewportControls({ isPanMode, isMenuOpen, isDragging, lastActivityAt, now, delayMs }) {
     if (isPanMode === false) {
       return false;
@@ -509,6 +513,7 @@
     shouldShowTransientViewportControls,
     shouldSuppressClickAfterPanEnd,
     shouldTogglePanShortcut,
+    shouldUseBlockingWheelListener,
     toggleMirrorState,
   };
 })();

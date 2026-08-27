@@ -73,6 +73,18 @@ test("wheel zoom animates by measured zoom steps", async () => {
   }
 });
 
+test("wheel listener blocks native scrolling only while zoom mode is active", async () => {
+  for (const contentUrl of CONTENT_SCRIPT_PATHS) {
+    const content = await readFile(contentUrl, "utf8");
+
+    assert.match(content, /syncWheelTargetListenerMode/, `${contentUrl.pathname} syncs the wheel listener mode`);
+    assert.match(content, /passive: !shouldBlockWheel/, `${contentUrl.pathname} uses a passive wheel listener outside zoom mode`);
+    assert.match(content, /shouldUseBlockingWheelListener\(state\)/, `${contentUrl.pathname} derives blocking wheel behavior from zoom mode state`);
+    assert.match(content, /state = resetTransformState\(\);\n  syncWheelTargetListenerMode\(\);/, `${contentUrl.pathname} releases blocking wheel behavior on reset`);
+    assert.doesNotMatch(content, /addEventListener\("wheel", onWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} avoids an always-blocking player wheel listener`);
+  }
+});
+
 test("Safari app page points users to Safari Settings Extensions", async () => {
   const html = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Base.lproj/Main.html", import.meta.url), "utf8");
   const script = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Script.js", import.meta.url), "utf8");

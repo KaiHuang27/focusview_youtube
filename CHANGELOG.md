@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-No unreleased changes.
+### Fixed
+
+- Kept Safari page scrolling smooth by avoiding a blocking player wheel listener while zoom mode is off.
 
 ## 1.1.2 - 2026-08-19
 

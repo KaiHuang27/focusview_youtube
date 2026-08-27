@@ -37,6 +37,7 @@ const {
   shouldShowTransientViewportControls,
   shouldSuppressClickAfterPanEnd,
   shouldTogglePanShortcut,
+  shouldUseBlockingWheelListener,
   toggleMirrorState,
 } = globalThis.YTVTTransform;
 const VIEWPORT_CONTROLS_HIDE_DELAY_MS = 3000;
@@ -47,6 +48,7 @@ let state = createDefaultState();
 let video = null;
 let player = null;
 let wheelTarget = null;
+let wheelTargetUsesBlockingListener = false;
 let toolbar = null;
 let minimap = null;
 let settingsButton = null;
@@ -112,6 +114,7 @@ function clearTransformRule() {
 function resetState() {
   cancelWheelZoomAnimation();
   state = resetTransformState();
+  syncWheelTargetListenerMode();
   isMenuOpen = false;
   renderToolbar();
   applyTransform();
@@ -766,6 +769,7 @@ function toggleMirror() {
 
 function togglePanMode() {
   state.panMode = !state.panMode;
+  syncWheelTargetListenerMode();
   viewportControlsLastActivityAt = getViewportControlsActivityAfterPanToggle({
     isPanMode: state.panMode,
     now: Date.now(),
@@ -1272,14 +1276,35 @@ function bindVideo(nextVideo) {
 
 function bindWheelTarget(nextPlayer) {
   if (wheelTarget === nextPlayer) {
+    syncWheelTargetListenerMode();
     return;
   }
 
   wheelTarget?.removeEventListener("wheel", onWheel, true);
   wheelTarget?.removeEventListener("pointermove", onPlayerPointerMove);
   wheelTarget = nextPlayer;
-  wheelTarget.addEventListener("wheel", onWheel, { capture: true, passive: false });
+  wheelTargetUsesBlockingListener = false;
+  syncWheelTargetListenerMode();
   wheelTarget.addEventListener("pointermove", onPlayerPointerMove);
+}
+
+function syncWheelTargetListenerMode() {
+  if (!wheelTarget) {
+    wheelTargetUsesBlockingListener = false;
+    return;
+  }
+
+  const shouldBlockWheel = shouldUseBlockingWheelListener(state);
+  if (wheelTargetUsesBlockingListener === shouldBlockWheel) {
+    return;
+  }
+
+  wheelTarget.removeEventListener("wheel", onWheel, true);
+  wheelTarget.addEventListener("wheel", onWheel, {
+    capture: true,
+    passive: !shouldBlockWheel,
+  });
+  wheelTargetUsesBlockingListener = shouldBlockWheel;
 }
 
 function sync() {
@@ -1295,6 +1320,7 @@ function sync() {
     wheelTarget?.removeEventListener("wheel", onWheel, true);
     wheelTarget?.removeEventListener("pointermove", onPlayerPointerMove);
     wheelTarget = null;
+    wheelTargetUsesBlockingListener = false;
     state = createDefaultState();
     isMenuOpen = false;
     currentVideoKey = "";

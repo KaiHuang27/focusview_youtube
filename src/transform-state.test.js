@@ -29,6 +29,7 @@ const {
   getViewportControlsActivityAfterPanToggle,
   shouldReapplyTransformAfterMutation,
   shouldInterceptPanWheel,
+  shouldUseBlockingWheelListener,
   shouldResetForVideoKey,
   shouldStartPanDrag,
   shouldCancelYouTubeHoldGesture,
@@ -666,6 +667,11 @@ test("createViewportIndicator preserves extreme pan instead of clamping to minim
 test("shouldInterceptPanWheel intercepts wheel events only in Pan mode", () => {
   assert.equal(shouldInterceptPanWheel(createDefaultState()), false);
   assert.equal(shouldInterceptPanWheel({ ...createDefaultState(), panMode: true }), true);
+});
+
+test("shouldUseBlockingWheelListener only blocks wheel while Pan mode is active", () => {
+  assert.equal(shouldUseBlockingWheelListener(createDefaultState()), false);
+  assert.equal(shouldUseBlockingWheelListener({ ...createDefaultState(), panMode: true }), true);
 });
 
 test("shouldShowTransientViewportControls keeps controls visible during activity delay", () => {
