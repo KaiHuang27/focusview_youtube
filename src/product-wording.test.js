@@ -123,9 +123,9 @@ test("Safari toolbar button opens a visible popup", async () => {
   assert.match(popup, /<span class="zoom-icon"/);
   assert.match(popup, /<circle cx="15" cy="15" r="8"><\/circle>/);
   assert.match(popup, /width="40" height="40"/);
-  assert.match(popup, /Enjoying FocusView\? A <a href="https:\/\/apps\.apple\.com\/app\/id0000000000\?action=write-review"[^>]*>quick rating<\/a> helps others find it\./);
-  assert.match(popup, /Need help or have an idea\? <a href="mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback">Send feedback<\/a>\./);
-  assert.doesNotMatch(popup, /Rate on App Store/);
+  assert.match(popup, /<p>Enjoying FocusView\?<\/p>/);
+  assert.match(popup, /<a href="https:\/\/apps\.apple\.com\/app\/id0000000000\?action=write-review"[^>]*>Rate it<\/a> or <a href="mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback">share feedback<\/a>\./);
+  assert.doesNotMatch(popup, /Rate on App Store|quick rating|Send feedback/);
   assert.match(popup, /mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback/);
   assert.doesNotMatch(popup, /five-star|5-star|5 stars/i);
   assert.match(popupCss, /width: 340px;/);
