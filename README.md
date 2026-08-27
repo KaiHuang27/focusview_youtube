@@ -134,6 +134,7 @@ The release zip includes only the runtime files required by the extension:
 - `icons/`
 
 Before App Store submission, replace the Safari popup review placeholder URL `https://apps.apple.com/app/id0000000000?action=write-review` with the live Mac App Store app ID URL.
+The Safari popup feedback link opens `kodin.gai.apps@gmail.com` with a FocusView feedback subject.
 
 ## Limitations
 

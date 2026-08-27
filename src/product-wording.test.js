@@ -126,6 +126,7 @@ test("Safari toolbar button opens a visible popup", async () => {
   assert.match(popup, /Enjoying FocusView\? A quick rating helps more people find it\./);
   assert.match(popup, /Rate on App Store/);
   assert.match(popup, /Send feedback/);
+  assert.match(popup, /mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback/);
   assert.doesNotMatch(popup, /five-star|5-star|5 stars/i);
   assert.match(popupCss, /width: 300px;/);
   assert.match(popupCss, /font: -apple-system-headline;/);
