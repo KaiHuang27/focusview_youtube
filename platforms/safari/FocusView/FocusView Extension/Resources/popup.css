@@ -12,7 +12,7 @@ body {
 
 main {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   padding: 16px;
 }
 
@@ -87,4 +87,42 @@ kbd {
   stroke-width: 2.4;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.review {
+  display: grid;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(128, 128, 128, 0.22);
+}
+
+.review p {
+  color: CanvasText;
+  font: -apple-system-caption1;
+}
+
+.review-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.review-button {
+  display: inline-flex;
+  min-height: 28px;
+  padding: 0 12px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: LinkText;
+  color: Canvas;
+  font: -apple-system-caption1;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.feedback-link {
+  color: LinkText;
+  font: -apple-system-caption1;
+  text-decoration: none;
 }

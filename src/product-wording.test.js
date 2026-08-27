@@ -123,8 +123,14 @@ test("Safari toolbar button opens a visible popup", async () => {
   assert.match(popup, /<span class="zoom-icon"/);
   assert.match(popup, /<circle cx="15" cy="15" r="8"><\/circle>/);
   assert.match(popup, /width="40" height="40"/);
+  assert.match(popup, /Enjoying FocusView\? A quick rating helps more people find it\./);
+  assert.match(popup, /Rate on App Store/);
+  assert.match(popup, /Send feedback/);
+  assert.doesNotMatch(popup, /five-star|5-star|5 stars/i);
   assert.match(popupCss, /width: 300px;/);
   assert.match(popupCss, /font: -apple-system-headline;/);
   assert.match(popupCss, /\.brand-copy \{/);
+  assert.match(popupCss, /\.review \{/);
+  assert.match(popupCss, /\.review-button \{/);
   assert.match(popupCss, /padding: 16px;/);
 });
