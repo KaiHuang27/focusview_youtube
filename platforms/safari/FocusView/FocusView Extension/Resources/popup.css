@@ -22,6 +22,12 @@ main {
   gap: 10px;
 }
 
+.brand-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
 img {
   flex: none;
   border-radius: 8px;
@@ -31,6 +37,7 @@ h1 {
   margin: 0;
   font: -apple-system-headline;
   font-weight: 600;
+  line-height: 1.22;
 }
 
 p {
