@@ -25,6 +25,7 @@ const {
   createTransformStyle,
   getRotationFitScale,
   getWheelZoomAnimationStep,
+  isPointInsideRect,
   normalizeRotation,
   getViewportControlsActivityAfterPanToggle,
   shouldReapplyTransformAfterMutation,
@@ -682,6 +683,15 @@ test("shouldUseDocumentWheelListener limits the global fallback to the active pl
   assert.equal(shouldUseDocumentWheelListener(createDefaultState(), true), false);
   assert.equal(shouldUseDocumentWheelListener(activeState, false), false);
   assert.equal(shouldUseDocumentWheelListener(activeState, true), true);
+});
+
+test("isPointInsideRect validates cached pointer coordinates independently of zoom mode", () => {
+  const rect = { left: 10, top: 20, right: 210, bottom: 120, width: 200, height: 100 };
+
+  assert.equal(isPointInsideRect(100, 80, rect), true);
+  assert.equal(isPointInsideRect(9, 80, rect), false);
+  assert.equal(isPointInsideRect(Number.NaN, 80, rect), false);
+  assert.equal(isPointInsideRect(100, 80, null), false);
 });
 
 test("shouldHandlePlayerWheel accepts only active pan-mode wheel points inside the player", () => {

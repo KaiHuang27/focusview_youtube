@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Prevented intermittent native page scrolling in Safari when wheel input begins after a missed pointer-enter event, player replacement, or fullscreen transition.
 - Scoped the Safari global wheel fallback to pointer presence inside the player so page scrolling remains native outside it, including while zoom mode is active.
 - Kept Safari page scrolling smooth by avoiding a blocking player wheel listener while zoom mode is off.
 - Captured Safari wheel zoom inside the non-fullscreen player even when Safari or YouTube routes the wheel event outside the player listener.

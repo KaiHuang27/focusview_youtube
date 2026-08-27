@@ -83,6 +83,10 @@ test("wheel listener blocks native scrolling only while zoom mode is active", as
     assert.match(content, /wheelTarget\.addEventListener\("pointerleave", onPlayerPointerLeave\)/, "tracks when the pointer leaves the player");
     assert.match(content, /syncDocumentWheelListener\(false\)/, "releases the global fallback after leaving the player");
     assert.match(content, /shouldUseDocumentWheelListener\(state, Boolean\(wheelTarget && isPointerInPlayer\)\)/, "limits the global fallback to active player hover");
+    assert.match(content, /if \(!isPointerInPlayer\) \{[\s\S]*syncWheelTargetListenerMode\(\);/, "repairs a missed pointerenter during pointer movement");
+    assert.match(content, /function onPlayerPointerEnter\(event\) \{\n  updateLastPointerPosition\(event\);/, "caches pointer coordinates from player boundary events");
+    assert.match(content, /syncPointerInPlayerFromLastPosition\(nextPlayer\)/, "restores pointer state after player replacement");
+    assert.match(content, /requestAnimationFrame\(\(\) => syncPointerInPlayerFromLastPosition\(\)\)/, "resyncs pointer state after fullscreen geometry settles");
     assert.match(content, /shouldHandlePlayerWheel\(state, event\.clientX, event\.clientY, rect\)/, `${contentUrl.pathname} limits document wheel handling to the player bounds`);
     assert.match(content, /window\.addEventListener\("wheel", onDocumentWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} catches Safari wheel events before page scrolling`);
     assert.match(content, /document\.addEventListener\("wheel", onDocumentWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} blocks fallback wheel only while zoom mode is active`);

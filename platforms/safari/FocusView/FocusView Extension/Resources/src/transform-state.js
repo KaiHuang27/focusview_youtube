@@ -267,8 +267,8 @@
     return shouldUseBlockingWheelListener(state) && isPointerInPlayer === true;
   }
 
-  function shouldHandlePlayerWheel(state, clientX, clientY, rect) {
-    if (!shouldInterceptPanWheel(state) || !rect || rect.width <= 0 || rect.height <= 0) {
+  function isPointInsideRect(clientX, clientY, rect) {
+    if (!rect || rect.width <= 0 || rect.height <= 0) {
       return false;
     }
 
@@ -277,6 +277,10 @@
     }
 
     return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+  }
+
+  function shouldHandlePlayerWheel(state, clientX, clientY, rect) {
+    return shouldInterceptPanWheel(state) && isPointInsideRect(clientX, clientY, rect);
   }
 
   function shouldShowTransientViewportControls({ isPanMode, isMenuOpen, isDragging, lastActivityAt, now, delayMs }) {
@@ -514,6 +518,7 @@
     getZoomFromSliderKey,
     getZoomFromPointerPosition,
     normalizeRotation,
+    isPointInsideRect,
     parseZoomPercentInput,
     shouldBlockYouTubeShortcutForZoomInput,
     shouldInterceptPanWheel,

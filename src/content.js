@@ -22,6 +22,7 @@ const {
   getWheelZoomAnimationStep,
   getZoomFromSliderKey,
   getZoomFromPointerPosition,
+  isPointInsideRect,
   parseZoomPercentInput,
   shouldBlockYouTubeShortcutForZoomInput,
   shouldInterceptPanWheel,
@@ -1197,18 +1198,24 @@ function cancelYouTubeHoldGesture() {
   }));
 }
 
-function onPlayerPointerEnter() {
+function onPlayerPointerEnter(event) {
+  updateLastPointerPosition(event);
   isPointerInPlayer = true;
   syncWheelTargetListenerMode();
 }
 
-function onPlayerPointerLeave() {
+function onPlayerPointerLeave(event) {
+  updateLastPointerPosition(event);
   isPointerInPlayer = false;
   syncDocumentWheelListener(false);
 }
 
-function onPlayerPointerMove() {
-  isPointerInPlayer = true;
+function onPlayerPointerMove(event) {
+  updateLastPointerPosition(event);
+  if (!isPointerInPlayer) {
+    isPointerInPlayer = true;
+    syncWheelTargetListenerMode();
+  }
   if (!state.panMode) {
     return;
   }
@@ -1353,9 +1360,17 @@ function bindVideo(nextVideo) {
   applyTransform();
 }
 
+function syncPointerInPlayerFromLastPosition(target = wheelTarget) {
+  if (hasLastPointerPosition) {
+    const rect = target?.getBoundingClientRect?.();
+    isPointerInPlayer = isPointInsideRect(lastPointerClientX, lastPointerClientY, rect);
+  }
+  syncWheelTargetListenerMode();
+}
+
 function bindWheelTarget(nextPlayer) {
   if (wheelTarget === nextPlayer) {
-    syncWheelTargetListenerMode();
+    syncPointerInPlayerFromLastPosition(nextPlayer);
     return;
   }
 
@@ -1366,7 +1381,7 @@ function bindWheelTarget(nextPlayer) {
   wheelTarget = nextPlayer;
   wheelTargetUsesBlockingListener = false;
   isPointerInPlayer = false;
-  syncWheelTargetListenerMode();
+  syncPointerInPlayerFromLastPosition(nextPlayer);
   wheelTarget.addEventListener("pointerenter", onPlayerPointerEnter);
   wheelTarget.addEventListener("pointerleave", onPlayerPointerLeave);
   wheelTarget.addEventListener("pointermove", onPlayerPointerMove);
@@ -1464,6 +1479,11 @@ function observePlayerSize() {
   resizeObserver.observe(document.documentElement);
 }
 
+function onFullscreenChange() {
+  scheduleTransformReapply(12);
+  requestAnimationFrame(() => syncPointerInPlayerFromLastPosition());
+}
+
 function start() {
   sync();
   observePlayerSize();
@@ -1480,8 +1500,8 @@ function start() {
   document.addEventListener("keydown", onShortcutKeyDown, true);
   document.addEventListener("pointerdown", closeMenuOnOutsidePointer, true);
   document.addEventListener("keydown", closeMenuOnEscape);
-  document.addEventListener("fullscreenchange", () => scheduleTransformReapply(12));
-  document.addEventListener("webkitfullscreenchange", () => scheduleTransformReapply(12));
+  document.addEventListener("fullscreenchange", onFullscreenChange);
+  document.addEventListener("webkitfullscreenchange", onFullscreenChange);
 }
 
 start();
