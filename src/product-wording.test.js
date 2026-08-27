@@ -141,3 +141,31 @@ test("Safari toolbar button opens a visible popup", async () => {
   assert.doesNotMatch(popupCss, /color-mix/);
   assert.match(popupCss, /padding: 14px;/);
 });
+
+
+test("Chrome toolbar button opens a visible popup", async () => {
+  const manifestText = await readFile(new URL("../manifest.json", import.meta.url), "utf8");
+  const popup = await readFile(new URL("../popup.html", import.meta.url), "utf8");
+  const popupCss = await readFile(new URL("../popup.css", import.meta.url), "utf8");
+  const manifest = JSON.parse(manifestText);
+
+  assert.equal(manifest.action.default_title, "FocusView – Zoom, Rotate & Mirror for YouTube");
+  assert.equal(manifest.action.default_popup, "popup.html");
+  assert.match(popup, /<h1>FocusView<\/h1>[\s\S]*<p class="summary">Zoom, rotate, and mirror YouTube videos\.<\/p>/);
+  assert.match(popup, /Open a YouTube video[\s\S]*Alt\/Option<\/kbd>[\s\S]*Shift<\/kbd>[\s\S]*Z<\/kbd>/);
+  assert.match(popup, /in the player to toggle zoom mode\./);
+  assert.match(popup, /<span class="zoom-icon"/);
+  assert.match(popup, /<circle cx="15" cy="15" r="8"><\/circle>/);
+  assert.match(popupCss, /width: 340px;/);
+  assert.match(popupCss, /font-size: 17px;/);
+  assert.match(popupCss, /\.brand-copy \{[\s\S]*min-width: 0;/);
+  assert.doesNotMatch(popup, /apps\.apple\.com|App Store/);
+});
+
+test("Chrome release package includes toolbar popup resources", async () => {
+  const releaseScript = await readFile(new URL("../scripts/build-release.sh", import.meta.url), "utf8");
+
+  assert.match(releaseScript, /manifest\.json \\/);
+  assert.match(releaseScript, /popup\.html \\/);
+  assert.match(releaseScript, /popup\.css \\/);
+});

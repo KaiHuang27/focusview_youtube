@@ -4,7 +4,8 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 
 ## Runtime
 
-- `manifest.json` defines the Chrome Web Store extension metadata, long searchable product name, YouTube content script match, icon assets, and runtime files.
+- `manifest.json` defines the Chrome Web Store extension metadata, long searchable product name, toolbar popup action, YouTube content script match, icon assets, and runtime files.
+- `popup.html` and `popup.css` provide the Chrome and Edge toolbar popup with a compact FocusView identity, YouTube usage hint, and macOS-style light/dark presentation.
 - `src/content.js` owns the YouTube player integration, toolbar UI, pointer and wheel interactions, Zoom mode-only blocking wheel listener synchronization, player-bounds window/document fallback, and batched wheel UI updates for smooth Safari page scrolling, proportional wheel zoom animation, Zoom mode preservation of native single-click play/pause, drag-start cancellation of YouTube's 2x hold gesture, drag-time playback-rate restoration, Fill action, reset and zoom mode tooltip wording, transform application, and player state reset triggers.
 - `src/transform-state.js` contains the shared transform state helpers used by the content script and tests, including viewport-centered zoom for controls, about-fifteen-percent capped delta-aware cursor-centered zoom for wheel input, wheel listener blocking decisions, player-bounds wheel hit testing, proportional wheel zoom animation steps, cover zoom calculation for Fill, and full transform reset state.
 - `src/overlay.css` contains the extension UI styling and video transform presentation, including shared menu alignment and typography so actions, setting rows, and zoom controls use consistent visual rhythm.
@@ -20,7 +21,7 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 
 - `scripts/build-release.sh` reads the version from `manifest.json` and writes `dist/focusview-<version>.zip`.
 - `package.json`, the Chrome manifest, the Safari extension manifest, and Xcode marketing version stay aligned for each release. Current release version: `1.1.3`; Xcode build number: `4`.
-- The release zip includes only `manifest.json`, `src/`, and `icons/`, which are the files required for Chrome Web Store upload.
+- The release zip includes `manifest.json`, `popup.html`, `popup.css`, `src/`, and `icons/`, which are the runtime files required for Chrome Web Store upload.
 - Mac App Store distribution uses the Safari wrapper in `platforms/safari/FocusView`, not the Chrome release zip.
 
 ## Safari

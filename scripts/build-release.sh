@@ -13,6 +13,8 @@ rm -f "$ZIP_PATH"
 cd "$ROOT_DIR"
 zip -q -r "$ZIP_PATH" \
   manifest.json \
+  popup.html \
+  popup.css \
   src/content.js \
   src/transform-state.js \
   src/overlay.css \

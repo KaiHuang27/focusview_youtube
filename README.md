@@ -57,7 +57,8 @@ See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
 2. Turn on **Developer mode**.
 3. Click **Load unpacked**.
 4. Select this project folder.
-5. Open a normal YouTube video page.
+5. Click the FocusView toolbar button and confirm the popup opens with the FocusView name, concise YouTube tagline, and zoom mode shortcut hint.
+6. Open a normal YouTube video page.
 
 ### Microsoft Edge
 
@@ -65,7 +66,8 @@ See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
 2. Turn on **Developer mode**.
 3. Click **Load unpacked**.
 4. Select this project folder.
-5. Open a normal YouTube video page.
+5. Click the FocusView toolbar button and confirm the popup opens with the FocusView name, concise YouTube tagline, and zoom mode shortcut hint.
+6. Open a normal YouTube video page.
 
 ### Safari
 
@@ -130,6 +132,8 @@ Build the release zip:
 The release zip includes only the runtime files required by the extension:
 
 - `manifest.json`
+- `popup.html`
+- `popup.css`
 - `src/`
 - `icons/`
 

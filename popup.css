@@ -1,0 +1,118 @@
+html {
+  color-scheme: light dark;
+}
+
+:root {
+  --body-background: #f5f5f7;
+  --control-background: rgba(255, 255, 255, 0.72);
+  --separator-color: rgba(60, 60, 67, 0.18);
+  --primary-text: rgba(0, 0, 0, 0.86);
+  --secondary-text: rgba(60, 60, 67, 0.72);
+  --tertiary-text: rgba(60, 60, 67, 0.54);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --body-background: #1c1c1e;
+    --control-background: rgba(255, 255, 255, 0.08);
+    --separator-color: rgba(235, 235, 245, 0.16);
+    --primary-text: rgba(255, 255, 255, 0.92);
+    --secondary-text: rgba(235, 235, 245, 0.72);
+    --tertiary-text: rgba(235, 235, 245, 0.5);
+  }
+}
+
+body {
+  width: 340px;
+  margin: 0;
+  color: var(--primary-text);
+  background: var(--body-background);
+  font: 13px/1.36 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+}
+
+main {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.brand-copy {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+img {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 8px;
+}
+
+h1 {
+  margin: 0;
+  color: var(--primary-text);
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.18;
+}
+
+p {
+  margin: 0;
+}
+
+.summary {
+  color: var(--secondary-text);
+  font-size: 13px;
+  line-height: 1.28;
+}
+
+.hint {
+  color: var(--tertiary-text);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+kbd {
+  display: inline-flex;
+  min-width: 1.8em;
+  min-height: 20px;
+  padding: 0 6px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--separator-color);
+  border-radius: 6px;
+  background: var(--control-background);
+  color: var(--primary-text);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.zoom-icon {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  margin: 0 2px;
+  vertical-align: -6px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--control-background);
+}
+
+.zoom-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: var(--primary-text);
+  stroke-width: 2.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
