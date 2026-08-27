@@ -5,7 +5,8 @@
 ### Fixed
 
 - Kept Safari page scrolling smooth by avoiding a blocking player wheel listener while zoom mode is off.
-- Captured Safari wheel zoom inside the non-fullscreen player even when YouTube routes the wheel event outside the player listener.
+- Captured Safari wheel zoom inside the non-fullscreen player even when Safari or YouTube routes the wheel event outside the player listener.
+- Batched wheel-time UI updates to reduce non-fullscreen Safari zoom lag.
 
 ## 1.1.2 - 2026-08-19
 

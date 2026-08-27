@@ -59,6 +59,7 @@ let resizeObserver = null;
 let videoStyleObserver = null;
 let reapplyFrame = 0;
 let wheelZoomFrame = 0;
+let wheelUiFrame = 0;
 let currentVideoKey = "";
 let dragStart = null;
 let panLongPressTimer = 0;
@@ -68,6 +69,9 @@ let viewportControlsLastActivityAt = 0;
 let viewportControlsHideTimer = 0;
 let isMenuOpen = false;
 let lastTransformCssText = "";
+let lastPointerClientX = 0;
+let lastPointerClientY = 0;
+let hasLastPointerPosition = false;
 let cleanupActiveSliderDrag = null;
 let isCancelingNativePress = false;
 
@@ -162,7 +166,7 @@ function blockYouTubeWheel(event) {
   event.stopImmediatePropagation?.();
 }
 
-function applyTransform() {
+function applyTransform({ shouldRenderMinimap = true } = {}) {
   if (!video) {
     return;
   }
@@ -173,7 +177,9 @@ function applyTransform() {
   if (video.style.cursor !== cursor) {
     video.style.cursor = cursor;
   }
-  renderMinimap();
+  if (shouldRenderMinimap) {
+    renderMinimap();
+  }
 }
 
 function scheduleTransformReapply(frames = 6) {
@@ -185,7 +191,7 @@ function scheduleTransformReapply(frames = 6) {
   let remainingFrames = frames;
   const reapply = () => {
     reapplyFrame = 0;
-    applyTransform();
+    applyTransform({ shouldRenderMinimap: false });
     remainingFrames -= 1;
     if (remainingFrames > 0) {
       reapplyFrame = requestAnimationFrame(reapply);
@@ -202,6 +208,26 @@ function cancelWheelZoomAnimation() {
   }
 }
 
+function cancelWheelUiSync() {
+  if (wheelUiFrame) {
+    cancelAnimationFrame(wheelUiFrame);
+    wheelUiFrame = 0;
+  }
+}
+
+function scheduleWheelUiSync() {
+  if (wheelUiFrame) {
+    return;
+  }
+
+  wheelUiFrame = requestAnimationFrame(() => {
+    wheelUiFrame = 0;
+    syncToolbarTrigger();
+    syncOpenZoomPanelControls();
+    renderMinimap();
+  });
+}
+
 function clearTransform() {
   if (video) {
     clearTransformRule();
@@ -211,6 +237,7 @@ function clearTransform() {
   }
 
   cancelWheelZoomAnimation();
+  cancelWheelUiSync();
   clearOverlayElements();
   cancelPanGesture();
   clearClickSuppression();
@@ -476,7 +503,7 @@ function setWheelZoom(zoom, event) {
     const nextZoom = getWheelZoomAnimationStep(state.zoom, zoom);
     state = createCursorCenteredZoomState(state, nextZoom, cursorOffsetX, cursorOffsetY);
     clampCurrentPanState();
-    applyTransform();
+    applyTransform({ shouldRenderMinimap: false });
     if (state.zoom !== zoom) {
       wheelZoomFrame = requestAnimationFrame(animate);
     }
@@ -1181,9 +1208,17 @@ function applyWheelZoomFromEvent(event) {
   viewportControlsLastActivityAt = Date.now();
   scheduleViewportControlsHide();
   setWheelZoom(applyWheelZoomDelta(state.zoom, event), event);
-  syncToolbarTrigger();
-  syncOpenZoomPanelControls();
-  renderMinimap();
+  scheduleWheelUiSync();
+}
+
+function updateLastPointerPosition(event) {
+  if (!Number.isFinite(event.clientX) || !Number.isFinite(event.clientY)) {
+    return;
+  }
+
+  lastPointerClientX = event.clientX;
+  lastPointerClientY = event.clientY;
+  hasLastPointerPosition = true;
 }
 
 function onWheel(event) {
@@ -1220,7 +1255,9 @@ function onDocumentWheel(event) {
   }
 
   const rect = player?.getBoundingClientRect?.();
-  if (!shouldHandlePlayerWheel(state, event.clientX, event.clientY, rect)) {
+  const isWheelPointInPlayer = shouldHandlePlayerWheel(state, event.clientX, event.clientY, rect);
+  const isLastPointerInPlayer = hasLastPointerPosition && shouldHandlePlayerWheel(state, lastPointerClientX, lastPointerClientY, rect);
+  if (!isWheelPointInPlayer && !isLastPointerInPlayer) {
     return;
   }
 
@@ -1322,8 +1359,10 @@ function syncDocumentWheelListener(shouldBlockWheel) {
     return;
   }
 
+  window.removeEventListener("wheel", onDocumentWheel, true);
   document.removeEventListener("wheel", onDocumentWheel, true);
   if (shouldBlockWheel) {
+    window.addEventListener("wheel", onDocumentWheel, { capture: true, passive: false });
     document.addEventListener("wheel", onDocumentWheel, { capture: true, passive: false });
   }
   documentWheelListenerBound = shouldBlockWheel;
@@ -1415,6 +1454,8 @@ function start() {
   window.addEventListener("keypress", blockYouTubeShortcutFromZoomInput, true);
   window.addEventListener("keydown", onShortcutKeyDown, true);
   window.addEventListener("pointerdown", onPointerDown, true);
+  window.addEventListener("pointermove", updateLastPointerPosition, { passive: true });
+  window.addEventListener("mousemove", updateLastPointerPosition, { passive: true });
   document.addEventListener("keydown", onShortcutKeyDown, true);
   document.addEventListener("pointerdown", closeMenuOnOutsidePointer, true);
   document.addEventListener("keydown", closeMenuOnEscape);

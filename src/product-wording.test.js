@@ -80,8 +80,11 @@ test("wheel listener blocks native scrolling only while zoom mode is active", as
     assert.match(content, /syncWheelTargetListenerMode/, `${contentUrl.pathname} syncs the wheel listener mode`);
     assert.match(content, /onDocumentWheel/, `${contentUrl.pathname} catches player wheel events that miss the player listener`);
     assert.match(content, /shouldHandlePlayerWheel\(state, event\.clientX, event\.clientY, rect\)/, `${contentUrl.pathname} limits document wheel handling to the player bounds`);
+    assert.match(content, /window\.addEventListener\("wheel", onDocumentWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} catches Safari wheel events before page scrolling`);
     assert.match(content, /document\.addEventListener\("wheel", onDocumentWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} blocks fallback wheel only while zoom mode is active`);
     assert.match(content, /passive: !shouldBlockWheel/, `${contentUrl.pathname} uses a passive player wheel listener outside zoom mode`);
+    assert.match(content, /scheduleWheelUiSync\(\)/, `${contentUrl.pathname} batches wheel UI updates`);
+    assert.match(content, /applyTransform\(\{ shouldRenderMinimap: false \}\)/, `${contentUrl.pathname} avoids synchronous minimap rendering during wheel animation`);
     assert.match(content, /shouldUseBlockingWheelListener\(state\)/, `${contentUrl.pathname} derives blocking wheel behavior from zoom mode state`);
     assert.match(content, /state = resetTransformState\(\);\n  syncWheelTargetListenerMode\(\);/, `${contentUrl.pathname} releases blocking wheel behavior on reset`);
     assert.doesNotMatch(content, /addEventListener\("wheel", onWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} avoids an always-blocking player wheel listener`);
