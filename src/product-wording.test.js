@@ -118,7 +118,7 @@ test("Safari toolbar button opens a visible popup", async () => {
 
   assert.equal(manifest.action.default_title, "FocusView - Zoom for YouTube");
   assert.equal(manifest.action.default_popup, "popup.html");
-  assert.match(popup, /<h1>FocusView - Zoom for YouTube<\/h1>[\s\S]*<p class="summary">Zoom, rotate, and mirror YouTube videos\.<\/p>/);
+  assert.match(popup, /<h1>FocusView<\/h1>[\s\S]*<p class="summary">Zoom, rotate, and mirror YouTube videos\.<\/p>/);
   assert.match(popup, /Option<\/kbd>[\s\S]*Shift<\/kbd>[\s\S]*Z<\/kbd>[\s\S]*in the player to toggle zoom mode\./);
   assert.match(popup, /<span class="zoom-icon"/);
   assert.match(popup, /<circle cx="15" cy="15" r="8"><\/circle>/);
@@ -128,7 +128,7 @@ test("Safari toolbar button opens a visible popup", async () => {
   assert.doesNotMatch(popup, /Rate on App Store/);
   assert.match(popup, /mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback/);
   assert.doesNotMatch(popup, /five-star|5-star|5 stars/i);
-  assert.match(popupCss, /width: 440px;/);
+  assert.match(popupCss, /width: 340px;/);
   assert.match(popupCss, /font-size: 17px;/);
   assert.match(popupCss, /\.brand-copy \{[\s\S]*min-width: 0;/);
   assert.match(popupCss, /\.brand-copy \{/);

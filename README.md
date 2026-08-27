@@ -76,7 +76,7 @@ The macOS Safari Web Extension project is in `platforms/safari/FocusView`.
 3. Run the macOS app target.
 4. Open Safari Settings > Extensions.
 5. Enable FocusView and allow access to YouTube.
-6. Click the FocusView toolbar button and confirm the popup opens with the single-line FocusView name, single-line YouTube tagline, zoom mode shortcut hint, secondary App Store rating and feedback text links.
+6. Click the FocusView toolbar button and confirm the popup opens with the FocusView title, concise YouTube tagline, zoom mode shortcut hint, secondary App Store rating and feedback text links.
 7. Open a normal YouTube video page and confirm the in-player controls appear.
 
 ## Mac App Store Release
@@ -108,7 +108,7 @@ Before resubmitting after a Safari Web Extension rejection:
 3. Install the archived App Store build, then launch the macOS container app.
 4. Click **Quit and Open Safari Settings** and confirm Safari opens Extensions settings for FocusView.
 5. Enable FocusView, allow access to YouTube, then open `https://www.youtube.com/watch?v=x4EzsXcOo_A`.
-6. Click the Safari toolbar FocusView button and confirm the popup responds with the single-line FocusView name, single-line YouTube tagline, zoom mode shortcut hint, secondary App Store rating and feedback text links.
+6. Click the Safari toolbar FocusView button and confirm the popup responds with the FocusView title, concise YouTube tagline, zoom mode shortcut hint, secondary App Store rating and feedback text links.
 7. Confirm the YouTube player shows FocusView controls and zoom, rotate, mirror, and fill actions work.
 
 ## Development
