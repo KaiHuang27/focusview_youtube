@@ -124,7 +124,7 @@ test("Safari toolbar button opens a visible popup", async () => {
   assert.match(popup, /<span class="zoom-icon"/);
   assert.match(popup, /<circle cx="15" cy="15" r="8"><\/circle>/);
   assert.match(popup, /width="40" height="40"/);
-  assert.match(popup, /<p>Enjoying FocusView\? <a href="https:\/\/apps\.apple\.com\/app\/id0000000000\?action=write-review"[^>]*>Rate it<\/a> or <a href="mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback">share feedback<\/a>\.<\/p>/);
+  assert.match(popup, /<p>Enjoying FocusView\? <a href="https:\/\/apps\.apple\.com\/app\/id0000000000\?action=write-review"[^>]*>Rate us<\/a> or <a href="mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback">share feedback<\/a>\.<\/p>/);
   assert.doesNotMatch(popup, /Rate on App Store|quick rating|Send feedback/);
   assert.match(popup, /mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback/);
   assert.doesNotMatch(popup, /five-star|5-star|5 stars/i);
@@ -156,7 +156,7 @@ test("Chrome toolbar button opens a visible popup", async () => {
   assert.match(popup, /Alt\/Option<\/kbd>[\s\S]*Shift<\/kbd>[\s\S]*Z<\/kbd>[\s\S]*in the player to toggle zoom mode\./);
   assert.match(popup, /<span class="zoom-icon"/);
   assert.match(popup, /<circle cx="15" cy="15" r="8"><\/circle>/);
-  assert.match(popup, /<p>Enjoying FocusView\? <a href="https:\/\/chromewebstore\.google\.com\/detail\/jbdndcjclbghkmbiehjigaapembpbgdb\/reviews"[^>]*>Rate it<\/a> or <a href="mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback">share feedback<\/a>\.<\/p>/);
+  assert.match(popup, /<p>Enjoying FocusView\? <a href="https:\/\/chromewebstore\.google\.com\/detail\/jbdndcjclbghkmbiehjigaapembpbgdb\/reviews"[^>]*>Rate us<\/a> or <a href="mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback">share feedback<\/a>\.<\/p>/);
   assert.match(popupCss, /width: 340px;/);
   assert.match(popupCss, /font-size: 17px;/);
   assert.match(popupCss, /\.brand-copy \{[\s\S]*min-width: 0;/);
