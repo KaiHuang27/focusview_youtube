@@ -263,6 +263,18 @@
     return shouldInterceptPanWheel(state);
   }
 
+  function shouldHandlePlayerWheel(state, clientX, clientY, rect) {
+    if (!shouldInterceptPanWheel(state) || !rect || rect.width <= 0 || rect.height <= 0) {
+      return false;
+    }
+
+    if (!Number.isFinite(clientX) || !Number.isFinite(clientY)) {
+      return false;
+    }
+
+    return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+  }
+
   function shouldShowTransientViewportControls({ isPanMode, isMenuOpen, isDragging, lastActivityAt, now, delayMs }) {
     if (isPanMode === false) {
       return false;
@@ -507,6 +519,7 @@
     shouldResetForVideoKey,
     shouldStartPanDrag,
     shouldCancelYouTubeHoldGesture,
+    shouldHandlePlayerWheel,
     shouldRestoreYouTubeLongPressPlaybackRate,
     shouldShowZoomTriggerActive,
     shouldShowZoomTriggerText,

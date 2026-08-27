@@ -33,6 +33,7 @@ const {
   shouldResetForVideoKey,
   shouldStartPanDrag,
   shouldCancelYouTubeHoldGesture,
+  shouldHandlePlayerWheel,
   shouldShowZoomTriggerActive,
   shouldShowZoomTriggerText,
   shouldShowTransientViewportControls,
@@ -672,6 +673,17 @@ test("shouldInterceptPanWheel intercepts wheel events only in Pan mode", () => {
 test("shouldUseBlockingWheelListener only blocks wheel while Pan mode is active", () => {
   assert.equal(shouldUseBlockingWheelListener(createDefaultState()), false);
   assert.equal(shouldUseBlockingWheelListener({ ...createDefaultState(), panMode: true }), true);
+});
+
+test("shouldHandlePlayerWheel accepts only active pan-mode wheel points inside the player", () => {
+  const rect = { left: 10, top: 20, right: 210, bottom: 120, width: 200, height: 100 };
+
+  assert.equal(shouldHandlePlayerWheel(createDefaultState(), 100, 80, rect), false);
+  assert.equal(shouldHandlePlayerWheel({ ...createDefaultState(), panMode: true }, 100, 80, rect), true);
+  assert.equal(shouldHandlePlayerWheel({ ...createDefaultState(), panMode: true }, 9, 80, rect), false);
+  assert.equal(shouldHandlePlayerWheel({ ...createDefaultState(), panMode: true }, 100, 121, rect), false);
+  assert.equal(shouldHandlePlayerWheel({ ...createDefaultState(), panMode: true }, Number.NaN, 80, rect), false);
+  assert.equal(shouldHandlePlayerWheel({ ...createDefaultState(), panMode: true }, 100, 80, null), false);
 });
 
 test("shouldShowTransientViewportControls keeps controls visible during activity delay", () => {

@@ -78,7 +78,10 @@ test("wheel listener blocks native scrolling only while zoom mode is active", as
     const content = await readFile(contentUrl, "utf8");
 
     assert.match(content, /syncWheelTargetListenerMode/, `${contentUrl.pathname} syncs the wheel listener mode`);
-    assert.match(content, /passive: !shouldBlockWheel/, `${contentUrl.pathname} uses a passive wheel listener outside zoom mode`);
+    assert.match(content, /onDocumentWheel/, `${contentUrl.pathname} catches player wheel events that miss the player listener`);
+    assert.match(content, /shouldHandlePlayerWheel\(state, event\.clientX, event\.clientY, rect\)/, `${contentUrl.pathname} limits document wheel handling to the player bounds`);
+    assert.match(content, /document\.addEventListener\("wheel", onDocumentWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} blocks fallback wheel only while zoom mode is active`);
+    assert.match(content, /passive: !shouldBlockWheel/, `${contentUrl.pathname} uses a passive player wheel listener outside zoom mode`);
     assert.match(content, /shouldUseBlockingWheelListener\(state\)/, `${contentUrl.pathname} derives blocking wheel behavior from zoom mode state`);
     assert.match(content, /state = resetTransformState\(\);\n  syncWheelTargetListenerMode\(\);/, `${contentUrl.pathname} releases blocking wheel behavior on reset`);
     assert.doesNotMatch(content, /addEventListener\("wheel", onWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} avoids an always-blocking player wheel listener`);

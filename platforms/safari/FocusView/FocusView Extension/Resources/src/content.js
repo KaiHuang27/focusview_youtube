@@ -31,6 +31,7 @@ const {
   shouldResetForVideoKey,
   shouldStartPanDrag,
   shouldCancelYouTubeHoldGesture,
+  shouldHandlePlayerWheel,
   shouldRestoreYouTubeLongPressPlaybackRate,
   shouldShowZoomTriggerActive,
   shouldShowZoomTriggerText,
@@ -49,6 +50,7 @@ let video = null;
 let player = null;
 let wheelTarget = null;
 let wheelTargetUsesBlockingListener = false;
+let documentWheelListenerBound = false;
 let toolbar = null;
 let minimap = null;
 let settingsButton = null;
@@ -1174,6 +1176,16 @@ function onPlayerPointerMove() {
   markViewportControlsActivity({ shouldRender: false });
 }
 
+function applyWheelZoomFromEvent(event) {
+  blockYouTubeWheel(event);
+  viewportControlsLastActivityAt = Date.now();
+  scheduleViewportControlsHide();
+  setWheelZoom(applyWheelZoomDelta(state.zoom, event), event);
+  syncToolbarTrigger();
+  syncOpenZoomPanelControls();
+  renderMinimap();
+}
+
 function onWheel(event) {
   if (!shouldInterceptPanWheel(state) || !video) {
     return;
@@ -1189,13 +1201,30 @@ function onWheel(event) {
     return;
   }
 
-  blockYouTubeWheel(event);
-  viewportControlsLastActivityAt = Date.now();
-  scheduleViewportControlsHide();
-  setWheelZoom(applyWheelZoomDelta(state.zoom, event), event);
-  syncToolbarTrigger();
-  syncOpenZoomPanelControls();
-  renderMinimap();
+  applyWheelZoomFromEvent(event);
+}
+
+function onDocumentWheel(event) {
+  if (!video) {
+    return;
+  }
+
+  if (toolbar?.contains(event.target)) {
+    blockYouTubeWheel(event);
+    return;
+  }
+
+  if (transformMenu?.contains(event.target)) {
+    blockYouTubeWheel(event);
+    return;
+  }
+
+  const rect = player?.getBoundingClientRect?.();
+  if (!shouldHandlePlayerWheel(state, event.clientX, event.clientY, rect)) {
+    return;
+  }
+
+  applyWheelZoomFromEvent(event);
 }
 
 function endDrag(event) {
@@ -1288,13 +1317,27 @@ function bindWheelTarget(nextPlayer) {
   wheelTarget.addEventListener("pointermove", onPlayerPointerMove);
 }
 
+function syncDocumentWheelListener(shouldBlockWheel) {
+  if (documentWheelListenerBound === shouldBlockWheel) {
+    return;
+  }
+
+  document.removeEventListener("wheel", onDocumentWheel, true);
+  if (shouldBlockWheel) {
+    document.addEventListener("wheel", onDocumentWheel, { capture: true, passive: false });
+  }
+  documentWheelListenerBound = shouldBlockWheel;
+}
+
 function syncWheelTargetListenerMode() {
+  const shouldBlockWheel = Boolean(wheelTarget && shouldUseBlockingWheelListener(state));
+  syncDocumentWheelListener(shouldBlockWheel);
+
   if (!wheelTarget) {
     wheelTargetUsesBlockingListener = false;
     return;
   }
 
-  const shouldBlockWheel = shouldUseBlockingWheelListener(state);
   if (wheelTargetUsesBlockingListener === shouldBlockWheel) {
     return;
   }
@@ -1320,7 +1363,7 @@ function sync() {
     wheelTarget?.removeEventListener("wheel", onWheel, true);
     wheelTarget?.removeEventListener("pointermove", onPlayerPointerMove);
     wheelTarget = null;
-    wheelTargetUsesBlockingListener = false;
+    syncWheelTargetListenerMode();
     state = createDefaultState();
     isMenuOpen = false;
     currentVideoKey = "";
