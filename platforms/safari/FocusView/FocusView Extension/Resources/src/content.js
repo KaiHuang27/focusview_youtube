@@ -38,6 +38,7 @@ const {
   shouldShowTransientViewportControls,
   shouldSuppressClickAfterPanEnd,
   shouldTogglePanShortcut,
+  shouldUseDocumentWheelListener,
   shouldUseBlockingWheelListener,
   toggleMirrorState,
 } = globalThis.YTVTTransform;
@@ -51,6 +52,7 @@ let player = null;
 let wheelTarget = null;
 let wheelTargetUsesBlockingListener = false;
 let documentWheelListenerBound = false;
+let isPointerInPlayer = false;
 let toolbar = null;
 let minimap = null;
 let settingsButton = null;
@@ -1195,7 +1197,18 @@ function cancelYouTubeHoldGesture() {
   }));
 }
 
+function onPlayerPointerEnter() {
+  isPointerInPlayer = true;
+  syncWheelTargetListenerMode();
+}
+
+function onPlayerPointerLeave() {
+  isPointerInPlayer = false;
+  syncDocumentWheelListener(false);
+}
+
 function onPlayerPointerMove() {
+  isPointerInPlayer = true;
   if (!state.panMode) {
     return;
   }
@@ -1347,10 +1360,15 @@ function bindWheelTarget(nextPlayer) {
   }
 
   wheelTarget?.removeEventListener("wheel", onWheel, true);
+  wheelTarget?.removeEventListener("pointerenter", onPlayerPointerEnter);
+  wheelTarget?.removeEventListener("pointerleave", onPlayerPointerLeave);
   wheelTarget?.removeEventListener("pointermove", onPlayerPointerMove);
   wheelTarget = nextPlayer;
   wheelTargetUsesBlockingListener = false;
+  isPointerInPlayer = false;
   syncWheelTargetListenerMode();
+  wheelTarget.addEventListener("pointerenter", onPlayerPointerEnter);
+  wheelTarget.addEventListener("pointerleave", onPlayerPointerLeave);
   wheelTarget.addEventListener("pointermove", onPlayerPointerMove);
 }
 
@@ -1370,7 +1388,7 @@ function syncDocumentWheelListener(shouldBlockWheel) {
 
 function syncWheelTargetListenerMode() {
   const shouldBlockWheel = Boolean(wheelTarget && shouldUseBlockingWheelListener(state));
-  syncDocumentWheelListener(shouldBlockWheel);
+  syncDocumentWheelListener(shouldUseDocumentWheelListener(state, Boolean(wheelTarget && isPointerInPlayer)));
 
   if (!wheelTarget) {
     wheelTargetUsesBlockingListener = false;
@@ -1400,8 +1418,11 @@ function sync() {
       reapplyFrame = 0;
     }
     wheelTarget?.removeEventListener("wheel", onWheel, true);
+    wheelTarget?.removeEventListener("pointerenter", onPlayerPointerEnter);
+    wheelTarget?.removeEventListener("pointerleave", onPlayerPointerLeave);
     wheelTarget?.removeEventListener("pointermove", onPlayerPointerMove);
     wheelTarget = null;
+    isPointerInPlayer = false;
     syncWheelTargetListenerMode();
     state = createDefaultState();
     isMenuOpen = false;

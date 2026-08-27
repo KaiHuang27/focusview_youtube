@@ -30,6 +30,7 @@ const {
   shouldReapplyTransformAfterMutation,
   shouldInterceptPanWheel,
   shouldUseBlockingWheelListener,
+  shouldUseDocumentWheelListener,
   shouldResetForVideoKey,
   shouldStartPanDrag,
   shouldCancelYouTubeHoldGesture,
@@ -673,6 +674,14 @@ test("shouldInterceptPanWheel intercepts wheel events only in Pan mode", () => {
 test("shouldUseBlockingWheelListener only blocks wheel while Pan mode is active", () => {
   assert.equal(shouldUseBlockingWheelListener(createDefaultState()), false);
   assert.equal(shouldUseBlockingWheelListener({ ...createDefaultState(), panMode: true }), true);
+});
+
+test("shouldUseDocumentWheelListener limits the global fallback to the active player hover", () => {
+  const activeState = { ...createDefaultState(), panMode: true };
+
+  assert.equal(shouldUseDocumentWheelListener(createDefaultState(), true), false);
+  assert.equal(shouldUseDocumentWheelListener(activeState, false), false);
+  assert.equal(shouldUseDocumentWheelListener(activeState, true), true);
 });
 
 test("shouldHandlePlayerWheel accepts only active pan-mode wheel points inside the player", () => {

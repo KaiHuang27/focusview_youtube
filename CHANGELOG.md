@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Scoped the Safari global wheel fallback to pointer presence inside the player so page scrolling remains native outside it, including while zoom mode is active.
 - Kept Safari page scrolling smooth by avoiding a blocking player wheel listener while zoom mode is off.
 - Captured Safari wheel zoom inside the non-fullscreen player even when Safari or YouTube routes the wheel event outside the player listener.
 - Batched wheel-time UI updates to reduce non-fullscreen Safari zoom lag.

@@ -263,6 +263,10 @@
     return shouldInterceptPanWheel(state);
   }
 
+  function shouldUseDocumentWheelListener(state, isPointerInPlayer) {
+    return shouldUseBlockingWheelListener(state) && isPointerInPlayer === true;
+  }
+
   function shouldHandlePlayerWheel(state, clientX, clientY, rect) {
     if (!shouldInterceptPanWheel(state) || !rect || rect.width <= 0 || rect.height <= 0) {
       return false;
@@ -526,6 +530,7 @@
     shouldShowTransientViewportControls,
     shouldSuppressClickAfterPanEnd,
     shouldTogglePanShortcut,
+    shouldUseDocumentWheelListener,
     shouldUseBlockingWheelListener,
     toggleMirrorState,
   };
