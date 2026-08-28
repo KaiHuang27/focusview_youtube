@@ -17,6 +17,7 @@ zip -q -r "$ZIP_PATH" \
   popup.css \
   src/content.js \
   src/transform-state.js \
+  src/review-prompt-state.js \
   src/overlay.css \
   icons/icon-16.png \
   icons/icon-32.png \

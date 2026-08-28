@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.1.4 - 2026-08-28
+
 ### Added
 
 - Added a macOS-style in-player review prompt after ten qualifying FocusView uses, with local-only state, five-use snooze behavior, accessible keyboard handling, and no new extension permission.
