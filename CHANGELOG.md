@@ -16,7 +16,7 @@
 ### Fixed
 
 - Replaced recurring 800 ms player polling and whole-page resize observation with event-driven player discovery and player-scoped resize updates, reducing long-running Safari tab work.
-- Reused one inactivity timer during continuous player movement and avoided duplicate pointer and mouse tracking listeners in Safari.
+- Reduced high-frequency Safari input work by reusing one inactivity timer and choosing a single pointer or mouse movement listener.
 - Centered the review prompt correctly by restoring the missing review animation block delimiter.
 - Exposed only the FocusView review icon to YouTube so the dialog no longer shows a broken image.
 - Kept Safari wheel fallback active throughout Zoom mode so player wheel events cannot fall through to native page scrolling after player replacement or fullscreen transitions.
@@ -25,8 +25,6 @@
 - Kept Safari page scrolling smooth by avoiding a blocking player wheel listener while zoom mode is off.
 - Captured Safari wheel zoom inside the non-fullscreen player even when Safari or YouTube routes the wheel event outside the player listener.
 - Batched wheel-time UI updates to reduce non-fullscreen Safari zoom lag.
-- Kept transient viewport controls visible through rapid repeated activity without resetting the hide timer on every interaction.
-- Avoided duplicate pointer and mouse tracking on browsers with PointerEvent support.
 
 ## 1.1.3 - 2026-08-26
 
