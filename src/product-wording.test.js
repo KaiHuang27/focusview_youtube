@@ -106,6 +106,27 @@ test("player lifecycle is event-driven without idle polling", async () => {
   }
 });
 
+test("high-frequency pointer activity avoids redundant work", async () => {
+  for (const contentUrl of CONTENT_SCRIPT_PATHS) {
+    const content = await readFile(contentUrl, "utf8");
+
+    assert.match(content, /if \(viewportControlsHideTimer\) \{\n    return;/, contentUrl.pathname + " reuses one controls-hide timer");
+    assert.match(content, /remainingDelayMs = Math\.max/, contentUrl.pathname + " reschedules from the latest activity time");
+    assert.match(content, /if \("PointerEvent" in window\)/, contentUrl.pathname + " feature-detects pointer movement support");
+    assert.match(content, /else \{\n    window\.addEventListener\("mousemove"/, contentUrl.pathname + " keeps mouse movement only as a fallback");
+    assert.equal(
+      content.match(/window\.addEventListener\(\s*"pointermove"/g)?.length,
+      1,
+      contentUrl.pathname + " has one pointer movement registration path"
+    );
+    assert.equal(
+      content.match(/window\.addEventListener\(\s*"mousemove"/g)?.length,
+      1,
+      contentUrl.pathname + " has one mouse fallback registration path"
+    );
+  }
+});
+
 test("Safari app page points users to Safari Settings Extensions", async () => {
   const html = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Base.lproj/Main.html", import.meta.url), "utf8");
   const script = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Script.js", import.meta.url), "utf8");

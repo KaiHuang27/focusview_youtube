@@ -33,6 +33,7 @@ Best for:
 - Rotate videos by `90°`, `180°`, or `270°`.
 - Mirror videos horizontally.
 - Player detection and resizing are event-driven, so idle YouTube tabs do not run recurring FocusView synchronization work.
+- Pointer tracking uses one supported event path, and transient controls reuse a single inactivity timer during continuous movement.
 
 ## Privacy And Permissions
 

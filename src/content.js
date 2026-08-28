@@ -477,12 +477,24 @@ function suppressUpcomingVideoClick() {
   }, 500);
 }
 
+function onViewportControlsHideTimer() {
+  viewportControlsHideTimer = 0;
+  const elapsedSinceActivityMs = Date.now() - viewportControlsLastActivityAt;
+  const remainingDelayMs = Math.max(0, VIEWPORT_CONTROLS_HIDE_DELAY_MS - elapsedSinceActivityMs);
+  if (remainingDelayMs > 0) {
+    viewportControlsHideTimer = setTimeout(onViewportControlsHideTimer, remainingDelayMs);
+    return;
+  }
+
+  renderMinimap();
+}
+
 function scheduleViewportControlsHide() {
-  clearTimeout(viewportControlsHideTimer);
-  viewportControlsHideTimer = setTimeout(() => {
-    viewportControlsHideTimer = 0;
-    renderMinimap();
-  }, VIEWPORT_CONTROLS_HIDE_DELAY_MS);
+  if (viewportControlsHideTimer) {
+    return;
+  }
+
+  viewportControlsHideTimer = setTimeout(onViewportControlsHideTimer, VIEWPORT_CONTROLS_HIDE_DELAY_MS);
 }
 
 function markViewportControlsActivity({ shouldRender = true } = {}) {
@@ -1694,8 +1706,11 @@ function start() {
   window.addEventListener("keypress", blockYouTubeShortcutFromZoomInput, true);
   window.addEventListener("keydown", onShortcutKeyDown, true);
   window.addEventListener("pointerdown", onPointerDown, true);
-  window.addEventListener("pointermove", updateLastPointerPosition, { passive: true });
-  window.addEventListener("mousemove", updateLastPointerPosition, { passive: true });
+  if ("PointerEvent" in window) {
+    window.addEventListener("pointermove", updateLastPointerPosition, { passive: true });
+  } else {
+    window.addEventListener("mousemove", updateLastPointerPosition, { passive: true });
+  }
   document.addEventListener("keydown", onShortcutKeyDown, true);
   document.addEventListener("pointerdown", closeMenuOnOutsidePointer, true);
   document.addEventListener("keydown", closeMenuOnEscape);
