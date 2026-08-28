@@ -1,9 +1,9 @@
 (function (root) {
   "use strict";
 
-  const DEFAULT_REVIEW_PROMPT_THRESHOLD = 5;
+  const DEFAULT_REVIEW_PROMPT_THRESHOLD = 10;
   const DEFAULT_REVIEW_PROMPT_SNOOZE_USES = 5;
-  const DEFAULT_REVIEW_PROMPT_MIN_USE_MS = 3000;
+  const DEFAULT_REVIEW_PROMPT_MIN_USE_MS = 10000;
 
   function createReviewPromptState(threshold = DEFAULT_REVIEW_PROMPT_THRESHOLD) {
     return { useCount: 0, nextPromptAt: threshold, status: "active" };

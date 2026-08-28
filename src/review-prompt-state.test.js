@@ -17,28 +17,28 @@ const {
   snoozeReviewPrompt,
 } = globalThis.YTVTReviewPrompt;
 
-test("review prompt starts after five qualifying uses", () => {
+test("review prompt starts after ten qualifying uses", () => {
   let state = createReviewPromptState();
 
-  assert.equal(DEFAULT_REVIEW_PROMPT_THRESHOLD, 5);
+  assert.equal(DEFAULT_REVIEW_PROMPT_THRESHOLD, 10);
   assert.equal(shouldShowReviewPrompt(state), false);
 
-  for (let use = 1; use <= 4; use += 1) {
+  for (let use = 1; use <= 9; use += 1) {
     state = recordReviewPromptUse(state);
     assert.equal(state.useCount, use);
     assert.equal(shouldShowReviewPrompt(state), false);
   }
 
   state = recordReviewPromptUse(state);
-  assert.equal(state.useCount, 5);
+  assert.equal(state.useCount, 10);
   assert.equal(shouldShowReviewPrompt(state), true);
 });
 
-test("review use qualifies only after playback and three seconds", () => {
-  assert.equal(DEFAULT_REVIEW_PROMPT_MIN_USE_MS, 3000);
-  assert.equal(shouldRecordReviewPromptUse({ startedAt: 0, endedAt: 2999, playbackTime: 1 }), false);
-  assert.equal(shouldRecordReviewPromptUse({ startedAt: 0, endedAt: 3000, playbackTime: 0 }), false);
-  assert.equal(shouldRecordReviewPromptUse({ startedAt: 0, endedAt: 3000, playbackTime: 1 }), true);
+test("review use qualifies only after playback and ten seconds", () => {
+  assert.equal(DEFAULT_REVIEW_PROMPT_MIN_USE_MS, 10000);
+  assert.equal(shouldRecordReviewPromptUse({ startedAt: 0, endedAt: 9999, playbackTime: 1 }), false);
+  assert.equal(shouldRecordReviewPromptUse({ startedAt: 0, endedAt: 10000, playbackTime: 0 }), false);
+  assert.equal(shouldRecordReviewPromptUse({ startedAt: 0, endedAt: 10000, playbackTime: 1 }), true);
 });
 
 test("Maybe Later snoozes the prompt for five more uses", () => {
@@ -49,7 +49,7 @@ test("Maybe Later snoozes the prompt for five more uses", () => {
 
   state = snoozeReviewPrompt(state);
   assert.equal(DEFAULT_REVIEW_PROMPT_SNOOZE_USES, 5);
-  assert.equal(state.nextPromptAt, 10);
+  assert.equal(state.nextPromptAt, 15);
   assert.equal(shouldShowReviewPrompt(state), false);
 
   for (let use = 0; use < 5; use += 1) {
@@ -59,7 +59,7 @@ test("Maybe Later snoozes the prompt for five more uses", () => {
 });
 
 test("rated and dismissed states never count or prompt again", () => {
-  const eligible = { useCount: 5, nextPromptAt: 5, status: "active" };
+  const eligible = { useCount: 10, nextPromptAt: 10, status: "active" };
 
   for (const status of ["rated", "dismissed"]) {
     const completed = completeReviewPrompt(eligible, status);

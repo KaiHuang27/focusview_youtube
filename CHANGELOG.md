@@ -4,16 +4,16 @@
 
 ### Added
 
-- Added a macOS-style in-player review prompt after five qualifying FocusView uses, with local-only state, five-use snooze behavior, accessible keyboard handling, and no new extension permission.
+- Added a macOS-style in-player review prompt after ten qualifying FocusView uses, with local-only state, five-use snooze behavior, accessible keyboard handling, and no new extension permission.
 
 ### Changed
 
 - Tightened the review prompt from 420 × 395 px to 388 × 326 px with a smaller icon, shorter spacing, and 44 px-or-larger action targets.
+- Changed a qualifying review use to complete automatically after video playback has started and Zoom mode remains on for ten seconds; the prompt now appears immediately on the tenth use.
 
 ### Fixed
 
 - Centered the review prompt correctly by restoring the missing review animation block delimiter.
-- Deferred review counting and display until a played Zoom mode session lasts at least three seconds and the user turns Zoom mode off or resets it.
 - Exposed only the FocusView review icon to YouTube so the dialog no longer shows a broken image.
 - Kept Safari wheel fallback active throughout Zoom mode so player wheel events cannot fall through to native page scrolling after player replacement or fullscreen transitions.
 - Hardened rapid wheel handling with event-path and pointer-state checks when Safari omits or misroutes wheel coordinates.

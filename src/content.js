@@ -55,7 +55,7 @@ const {
 const VIEWPORT_CONTROLS_HIDE_DELAY_MS = 3000;
 const PAN_LONG_PRESS_MS = 220;
 const PAN_MOVE_THRESHOLD_PX = 6;
-const REVIEW_PROMPT_STORAGE_KEY = "focusview-review-prompt-v1";
+const REVIEW_PROMPT_STORAGE_KEY = "focusview-review-prompt-v2";
 const CHROME_REVIEW_URL = "https://chromewebstore.google.com/detail/jbdndcjclbghkmbiehjigaapembpbgdb/reviews";
 const SAFARI_REVIEW_URL = "https://apps.apple.com/app/id0000000000?action=write-review";
 
@@ -91,8 +91,9 @@ let cleanupActiveSliderDrag = null;
 let isCancelingNativePress = false;
 let reviewPrompt = null;
 let reviewPromptPreviousFocus = null;
-let lastCountedReviewVideoKey = "";
+let reviewUseTimer = 0;
 let reviewUseStartedAt = null;
+let reviewUseCompleted = false;
 
 function getTransformStyleElement() {
   let styleElement = document.getElementById(TRANSFORM_STYLE_ID);
@@ -136,20 +137,15 @@ function clearTransformRule() {
   lastTransformCssText = "";
 }
 
-function resetState({ shouldCompleteReviewUse = false } = {}) {
-  const shouldCompleteUse = shouldCompleteReviewUse && state.panMode;
-  if (!shouldCompleteUse) {
-    reviewUseStartedAt = null;
-  }
+function resetState() {
+  clearFocusViewUseTimer();
+  reviewUseCompleted = false;
   cancelWheelZoomAnimation();
   state = resetTransformState();
   syncWheelTargetListenerMode();
   isMenuOpen = false;
   renderToolbar();
   applyTransform();
-  if (shouldCompleteUse) {
-    finishFocusViewUse();
-  }
 }
 
 function getVideoKey() {
@@ -304,15 +300,30 @@ function showReviewPrompt(promptState = readReviewPromptState()) {
   requestAnimationFrame(() => dialog.focus({ preventScroll: true }));
 }
 
-function beginFocusViewUse() {
-  reviewUseStartedAt = performance.now();
+function clearFocusViewUseTimer() {
+  if (reviewUseTimer) {
+    clearTimeout(reviewUseTimer);
+    reviewUseTimer = 0;
+  }
+  reviewUseStartedAt = null;
 }
 
-function finishFocusViewUse() {
+function scheduleFocusViewUseCompletion() {
+  const hasVideoStarted = Boolean(video && (!video.paused || video.currentTime > 0));
+  const promptState = readReviewPromptState();
+  if (!state.panMode || !hasVideoStarted || reviewUseTimer || reviewUseCompleted || promptState.status !== "active") {
+    return;
+  }
+
+  reviewUseStartedAt = performance.now();
+  reviewUseTimer = window.setTimeout(completeFocusViewUse, DEFAULT_REVIEW_PROMPT_MIN_USE_MS);
+}
+
+function completeFocusViewUse() {
   const startedAt = reviewUseStartedAt;
+  reviewUseTimer = 0;
   reviewUseStartedAt = null;
-  const videoKey = getVideoKey();
-  if (!videoKey || lastCountedReviewVideoKey === videoKey || !shouldRecordReviewPromptUse({
+  if (!state.panMode || reviewUseCompleted || !shouldRecordReviewPromptUse({
     startedAt,
     endedAt: performance.now(),
     playbackTime: video?.currentTime,
@@ -320,12 +331,16 @@ function finishFocusViewUse() {
     return;
   }
 
-  lastCountedReviewVideoKey = videoKey;
+  reviewUseCompleted = true;
   const nextState = recordReviewPromptUse(readReviewPromptState(), DEFAULT_REVIEW_PROMPT_THRESHOLD);
   writeReviewPromptState(nextState);
   if (shouldShowReviewPrompt(nextState)) {
     showReviewPrompt(nextState);
   }
+}
+
+function onVideoPlaybackStarted() {
+  scheduleFocusViewUseCompletion();
 }
 
 function isWatchPage() {
@@ -1015,9 +1030,11 @@ function togglePanMode() {
   renderToolbar();
   applyTransform();
   if (!wasPanMode) {
-    beginFocusViewUse();
+    reviewUseCompleted = false;
+    scheduleFocusViewUseCompletion();
   } else {
-    finishFocusViewUse();
+    clearFocusViewUseTimer();
+    reviewUseCompleted = false;
   }
 }
 
@@ -1117,7 +1134,7 @@ function renderToolbar({ shouldRenderMenu = true } = {}) {
   trigger.addEventListener("dblclick", (event) => {
     event.preventDefault();
     event.stopPropagation();
-    resetState({ shouldCompleteReviewUse: true });
+    resetState();
   });
 
   toolbar.append(trigger);
@@ -1158,7 +1175,7 @@ function renderMenu() {
   reset.className = "ytvt-menu-reset";
   reset.textContent = "Reset";
   reset.title = "Reset view and turn off zoom mode";
-  reset.addEventListener("click", () => resetState({ shouldCompleteReviewUse: true }));
+  reset.addEventListener("click", () => resetState());
 
   const fill = document.createElement("button");
   fill.type = "button";
@@ -1522,6 +1539,7 @@ function onVideoClick(event) {
 }
 
 function unbindVideo() {
+  clearFocusViewUseTimer();
   cleanupSliderDrag();
   cancelPanGesture();
   clearClickSuppression();
@@ -1531,6 +1549,8 @@ function unbindVideo() {
     video.removeEventListener("pointercancel", endDrag);
     video.removeEventListener("click", onVideoClick, true);
     video.removeEventListener("ratechange", onVideoRateChange);
+    video.removeEventListener("play", onVideoPlaybackStarted);
+    video.removeEventListener("timeupdate", onVideoPlaybackStarted);
     video.style.cursor = "";
   }
   videoStyleObserver?.disconnect();
@@ -1551,11 +1571,14 @@ function bindVideo(nextVideo) {
   video.addEventListener("pointercancel", endDrag);
   video.addEventListener("click", onVideoClick, true);
   video.addEventListener("ratechange", onVideoRateChange);
+  video.addEventListener("play", onVideoPlaybackStarted);
+  video.addEventListener("timeupdate", onVideoPlaybackStarted);
   videoStyleObserver = new MutationObserver(() => {
     scheduleTransformReapply();
   });
   videoStyleObserver.observe(video, { attributes: true, attributeFilter: ["style"] });
   applyTransform();
+  scheduleFocusViewUseCompletion();
 }
 
 function bindWheelTarget(nextPlayer) {
