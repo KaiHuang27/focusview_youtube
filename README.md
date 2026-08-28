@@ -1,19 +1,12 @@
 # FocusView
 
-Reveal video details in YouTube videos.
+Zoom, rotate, and mirror YouTube videos with simple, native-feeling controls.
 
-FocusView adds smooth zoom, rotate, and mirror controls to YouTube videos in your browser.
-
-Best for:
-
-- concerts and livestreams
-- sports clips
-- lectures and tutorials
-- any video where you want a closer look
-
-[Watch the YouTube demo](https://www.youtube.com/watch?v=x4EzsXcOo_A)
+FocusView helps you look closer without leaving YouTube. Whether you are watching a concert, a sports replay, a lecture, or a tutorial, FocusView gives you smooth video controls for the moments when the default player is not enough.
 
 [Download from the Chrome Web Store](https://chromewebstore.google.com/detail/jbdndcjclbghkmbiehjigaapembpbgdb?utm_source=github)
+
+[Watch the YouTube demo](https://www.youtube.com/watch?v=x4EzsXcOo_A)
 
 ## Preview
 
@@ -23,22 +16,35 @@ Best for:
 
 ![FocusView zoom mode](assets/focusview-zoom-mode.png)
 
-## Features
+## Why FocusView
 
-- Press `Alt/Option + Shift + Z` to turn zoom mode on or off.
-- After Zoom mode is first used on five videos, FocusView shows a macOS-style review prompt inside the player. **Maybe Later** snoozes it for five more qualifying uses, while rating or closing stops future prompts. The count stays in local YouTube storage and adds no extension permission.
-- In zoom mode, scroll to zoom videos from `100%` to `500%` around the mouse pointer, with each nonzero wheel or trackpad event capped at about fifteen percent and animated by at least one percent unless the zoom limit is reached.
-- Outside the player, page scrolling remains native so Safari trackpad and mouse wheel scrolling remains smooth, including while zoom mode is on. The Safari wheel fallback stays synchronized for the duration of Zoom mode and recognizes player event paths, pointer state, and player bounds so rapid wheel input cannot leak into native page scrolling. Wheel-time UI updates remain batched to keep non-fullscreen controls responsive.
-- Long-press and drag to move around a zoomed video without leaving YouTube's 2x hold indicator on screen, while normal single-click play and pause stays unchanged.
-- Use the zoom panel for centered `100%` to `500%` zoom control with aligned actions, matching label sizes, setting rows, the slider, and step buttons.
-- Click **Fill** in the zoom settings to enlarge the video until player black bars are covered.
-- Double-click the toolbar zoom control, or click **Reset**, to reset the video view and turn off zoom mode.
-- Rotate videos by `90°`, `180°`, or `270°`.
-- Mirror videos horizontally.
+- See small details in YouTube videos without changing tabs or downloading the video.
+- Zoom smoothly from `100%` to `500%` and move around the video naturally.
+- Fill the player to cover black bars when you want the video to use more space.
+- Rotate videos by `90°`, `180°`, or `270°` when the original angle is wrong.
+- Mirror videos horizontally for dance practice, tutorials, and side-by-side learning.
+- Reset everything instantly and return to the normal YouTube experience.
 
-## Privacy And Permissions
+## Great For
 
-FocusView does not collect data, does not track users, and does not send anything to external servers. All transforms happen locally in your browser.
+- Concerts and livestreams where you want a closer look at the stage.
+- Sports clips where small movements matter.
+- Lectures, tutorials, and screen recordings with tiny text or details.
+- Fitness, dance, music, craft, and repair videos that are easier to follow when mirrored or zoomed.
+- Any YouTube video where the important detail is just a little too small.
+
+## How It Works
+
+1. Install FocusView in your browser.
+2. Open a normal YouTube video.
+3. Turn on Zoom mode with `Alt/Option + Shift + Z` or the in-player FocusView controls.
+4. Scroll to zoom, drag to move around, and use the panel to rotate, mirror, fill, or reset the video.
+
+FocusView is designed to feel like part of YouTube: normal play, pause, scrolling, and fullscreen behavior stay familiar.
+
+## Privacy
+
+FocusView does not collect data, does not track users, and does not send anything to external servers. Video changes happen locally in your browser.
 
 The extension only runs on YouTube pages:
 
@@ -54,69 +60,15 @@ See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
 
 For support, feedback, or bug reports, email `kodin.gai.apps@gmail.com`.
 
-## Install For Development
+## Browser Support
 
-### Chrome
+FocusView is available on the Chrome Web Store. The project also includes development support for Microsoft Edge and a macOS Safari Web Extension package.
 
-1. Open `chrome://extensions`.
-2. Turn on **Developer mode**.
-3. Click **Load unpacked**.
-4. Select this project folder.
-5. Click the FocusView toolbar button and confirm the popup opens with the FocusView name, concise YouTube tagline, and zoom mode shortcut hint.
-6. Open a normal YouTube video page.
+## Compatibility Notes
 
-### Microsoft Edge
-
-1. Open `edge://extensions`.
-2. Turn on **Developer mode**.
-3. Click **Load unpacked**.
-4. Select this project folder.
-5. Click the FocusView toolbar button and confirm the popup opens with the FocusView name, concise YouTube tagline, and zoom mode shortcut hint.
-6. Open a normal YouTube video page.
-
-### Safari
-
-The macOS Safari Web Extension project is in `platforms/safari/FocusView`.
-
-1. Open `platforms/safari/FocusView/FocusView.xcodeproj` in Xcode.
-2. Select the `FocusView` scheme.
-3. Run the macOS app target.
-4. Open Safari Settings > Extensions.
-5. Enable FocusView and allow access to YouTube.
-6. Click the FocusView toolbar button and confirm the popup opens with the FocusView title, concise YouTube tagline, zoom mode shortcut hint, secondary App Store “Rate us” and feedback text links.
-7. Open a normal YouTube video page and confirm the in-player controls appear.
-
-## Mac App Store Release
-
-FocusView is packaged for Safari as a macOS app with an embedded Safari Web Extension.
-
-Planned store metadata:
-
-- Chrome Web Store name: `FocusView – Zoom, Rotate & Mirror for YouTube`
-- Apple App Store listing name: `FocusView - Zoom for YouTube`
-- Safari extension name: `FocusView - Zoom for YouTube`
-- Apple App Store subtitle: `Reveal Video Details`
-
-1. In App Store Connect, create a macOS app record for `com.kodingai.focusview`.
-2. In Xcode, open `platforms/safari/FocusView/FocusView.xcodeproj`.
-3. Select the `FocusView` scheme and set your Apple Developer Team for the app and extension targets.
-4. Confirm the app bundle ID is `com.kodingai.focusview`, the extension bundle ID is `com.kodingai.focusview.Extension`, and `ViewController.swift` uses the same extension identifier when opening Safari Extensions settings.
-5. Select `Any Mac` as the run destination.
-6. Choose Product > Archive.
-7. In Organizer, choose Distribute App > App Store Connect > Upload.
-8. In App Store Connect, select the uploaded build, complete the listing metadata, and submit it for review.
-
-## Safari App Review Checklist
-
-Before resubmitting after a Safari Web Extension rejection:
-
-1. Delete any older FocusView app from `/Applications`.
-2. In Safari Settings > Extensions, remove or disable older FocusView entries.
-3. Install the archived App Store build, then launch the macOS container app.
-4. Click **Quit and Open Safari Settings** and confirm Safari opens Extensions settings for FocusView.
-5. Enable FocusView, allow access to YouTube, then open `https://www.youtube.com/watch?v=x4EzsXcOo_A`.
-6. Click the Safari toolbar FocusView button and confirm the popup responds with the FocusView title, concise YouTube tagline, zoom mode shortcut hint, secondary App Store “Rate us” and feedback text links.
-7. Confirm the YouTube player shows FocusView controls and zoom, rotate, mirror, and fill actions work.
+- FocusView targets normal YouTube watch pages.
+- Shorts, embedded YouTube iframes, and special live-player layouts are not the focus of version 1.
+- Video transforms use browser-native CSS transforms to keep the extension lightweight.
 
 ## Development
 
@@ -142,15 +94,63 @@ The release zip includes only the runtime files required by the extension:
 - `src/`
 - `icons/`
 
-Before App Store submission, replace the Safari popup review placeholder URL `https://apps.apple.com/app/id0000000000?action=write-review` with the live Mac App Store app ID URL.
-The Safari popup feedback link opens `kodin.gai.apps@gmail.com` with a FocusView feedback subject.
+### Install For Development
 
-## Limitations
+#### Chrome
 
-- FocusView targets normal YouTube watch pages.
-- Shorts, embedded YouTube iframes, and special live-player layouts are not the focus of version 1.
-- FocusView prevents extra black borders caused by moving too far, and **Fill** can cover YouTube letterboxing or vertical-video side bars by cropping the video.
-- Video transforms use CSS transforms, not canvas rendering, to keep the extension lightweight.
+1. Open `chrome://extensions`.
+2. Turn on **Developer mode**.
+3. Click **Load unpacked**.
+4. Select this project folder.
+5. Click the FocusView toolbar button and confirm the popup opens.
+6. Open a normal YouTube video page.
+
+#### Microsoft Edge
+
+1. Open `edge://extensions`.
+2. Turn on **Developer mode**.
+3. Click **Load unpacked**.
+4. Select this project folder.
+5. Click the FocusView toolbar button and confirm the popup opens.
+6. Open a normal YouTube video page.
+
+#### Safari
+
+The macOS Safari Web Extension project is in `platforms/safari/FocusView`.
+
+1. Open `platforms/safari/FocusView/FocusView.xcodeproj` in Xcode.
+2. Select the `FocusView` scheme.
+3. Run the macOS app target.
+4. Open Safari Settings > Extensions.
+5. Enable FocusView and allow access to YouTube.
+6. Click the FocusView toolbar button and confirm the popup opens.
+7. Open a normal YouTube video page and confirm the in-player controls appear.
+
+<details>
+<summary>Release maintainer notes</summary>
+
+FocusView is packaged for Safari as a macOS app with an embedded Safari Web Extension.
+
+Planned store metadata:
+
+- Chrome Web Store name: `FocusView – Zoom, Rotate & Mirror for YouTube`
+- Apple App Store listing name: `FocusView - Zoom for YouTube`
+- Safari extension name: `FocusView - Zoom for YouTube`
+- Apple App Store subtitle: `Reveal Video Details`
+
+Before App Store submission, replace the Safari popup review placeholder URL `https://apps.apple.com/app/id0000000000?action=write-review` with the live Mac App Store app ID URL. The Safari popup feedback link opens `kodin.gai.apps@gmail.com` with a FocusView feedback subject.
+
+Before resubmitting after a Safari Web Extension rejection:
+
+1. Delete any older FocusView app from `/Applications`.
+2. In Safari Settings > Extensions, remove or disable older FocusView entries.
+3. Install the archived App Store build, then launch the macOS container app.
+4. Click **Quit and Open Safari Settings** and confirm Safari opens Extensions settings for FocusView.
+5. Enable FocusView, allow access to YouTube, then open `https://www.youtube.com/watch?v=x4EzsXcOo_A`.
+6. Click the Safari toolbar FocusView button and confirm the popup responds with the FocusView title, concise YouTube tagline, zoom mode shortcut hint, secondary App Store “Rate us” and feedback text links.
+7. Confirm the YouTube player shows FocusView controls and zoom, rotate, mirror, and fill actions work.
+
+</details>
 
 ## Release Notes
 
