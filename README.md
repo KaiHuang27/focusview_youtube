@@ -26,7 +26,6 @@ Best for:
 ## Features
 
 - Press `Alt/Option + Shift + Z` to turn zoom mode on or off.
-- After Zoom mode has been used for at least three seconds on five different played videos, FocusView shows a compact macOS-style review prompt when Zoom mode is turned off or reset. **Maybe Later** snoozes it for five more qualifying uses; rating or closing stops future prompts. The count stays in local YouTube storage and adds no extension permission.
 - In zoom mode, scroll to zoom videos from `100%` to `500%` around the mouse pointer, with each nonzero wheel or trackpad event capped at about fifteen percent and animated by at least one percent unless the zoom limit is reached.
 - Outside the player, page scrolling remains native so Safari trackpad and mouse wheel scrolling remains smooth, including while zoom mode is on. The Safari wheel fallback stays synchronized for the duration of Zoom mode and recognizes player event paths, pointer state, and player bounds so rapid wheel input cannot leak into native page scrolling. Wheel-time UI updates remain batched to keep non-fullscreen controls responsive.
 - Long-press and drag to move around a zoomed video without leaving YouTube's 2x hold indicator on screen, while normal single-click play and pause stays unchanged.
