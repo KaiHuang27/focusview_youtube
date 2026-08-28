@@ -3,7 +3,6 @@
 
   const DEFAULT_REVIEW_PROMPT_THRESHOLD = 10;
   const DEFAULT_REVIEW_PROMPT_SNOOZE_USES = 5;
-  const DEFAULT_REVIEW_PROMPT_MIN_USE_MS = 10000;
 
   function createReviewPromptState(threshold = DEFAULT_REVIEW_PROMPT_THRESHOLD) {
     return { useCount: 0, nextPromptAt: threshold, status: "active" };
@@ -36,14 +35,6 @@
     return current.status === "active" ? { ...current, useCount: current.useCount + 1 } : current;
   }
 
-  function shouldRecordReviewPromptUse({ startedAt, endedAt, playbackTime }, minimumUseMs = DEFAULT_REVIEW_PROMPT_MIN_USE_MS) {
-    return Number.isFinite(startedAt)
-      && Number.isFinite(endedAt)
-      && endedAt - startedAt >= minimumUseMs
-      && Number.isFinite(playbackTime)
-      && playbackTime > 0;
-  }
-
   function shouldShowReviewPrompt(state, threshold = DEFAULT_REVIEW_PROMPT_THRESHOLD) {
     const current = normalizeReviewPromptState(state, threshold);
     return current.status === "active" && current.useCount >= current.nextPromptAt;
@@ -61,7 +52,6 @@
   }
 
   root.YTVTReviewPrompt = {
-    DEFAULT_REVIEW_PROMPT_MIN_USE_MS,
     DEFAULT_REVIEW_PROMPT_SNOOZE_USES,
     DEFAULT_REVIEW_PROMPT_THRESHOLD,
     completeReviewPrompt,
@@ -69,7 +59,6 @@
     normalizeReviewPromptState,
     parseReviewPromptState,
     recordReviewPromptUse,
-    shouldRecordReviewPromptUse,
     shouldShowReviewPrompt,
     snoozeReviewPrompt,
   };

@@ -9,7 +9,7 @@
 ### Changed
 
 - Tightened the review prompt from 420 × 395 px to 388 × 326 px with a smaller icon, shorter spacing, and 44 px-or-larger action targets.
-- Changed a qualifying review use to complete automatically after video playback has started and Zoom mode remains on for ten seconds; the prompt now appears immediately on the tenth use.
+- Changed each Zoom mode activation to record a review use immediately, with no playback or duration requirement; the prompt appears immediately on the tenth use.
 
 ### Fixed
 

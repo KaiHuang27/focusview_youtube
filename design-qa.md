@@ -26,7 +26,7 @@ No actionable P0, P1, or P2 differences remain.
 - Image quality and asset fidelity: the shipped 128 px FocusView icon remains sharp at a more restrained 64 px CSS size and keeps the production brand intact.
 - Copy and content: headline, supporting sentence, `Rate FocusView`, and `Maybe Later` match the selected visual.
 - Accessibility and interactions: dialog semantics and descriptions are present; initial focus enters the dialog; Tab and Shift+Tab wrap inside it; Escape snoozes; primary, secondary, and close actions are keyboard reachable; reduced-motion styling is present.
-- Trigger timing: a qualifying use now completes automatically when video playback has started and Zoom mode remains on for ten seconds; the tenth use shows the prompt immediately without requiring Zoom mode to close or reset.
+- Trigger timing: each Zoom mode activation records one use immediately, with no playback or duration requirement; the tenth activation shows the prompt immediately.
 - Responsive behavior: the dialog keeps a 16 px minimum small-screen inset and scales icon, title, and padding below 720 px.
 - Console: no browser console or page errors.
 

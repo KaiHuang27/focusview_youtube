@@ -42,13 +42,11 @@ const {
   toggleMirrorState,
 } = globalThis.YTVTTransform;
 const {
-  DEFAULT_REVIEW_PROMPT_MIN_USE_MS,
   DEFAULT_REVIEW_PROMPT_SNOOZE_USES,
   DEFAULT_REVIEW_PROMPT_THRESHOLD,
   completeReviewPrompt,
   parseReviewPromptState,
   recordReviewPromptUse,
-  shouldRecordReviewPromptUse,
   shouldShowReviewPrompt,
   snoozeReviewPrompt,
 } = globalThis.YTVTReviewPrompt;
@@ -91,9 +89,6 @@ let cleanupActiveSliderDrag = null;
 let isCancelingNativePress = false;
 let reviewPrompt = null;
 let reviewPromptPreviousFocus = null;
-let reviewUseTimer = 0;
-let reviewUseStartedAt = null;
-let reviewUseCompleted = false;
 
 function getTransformStyleElement() {
   let styleElement = document.getElementById(TRANSFORM_STYLE_ID);
@@ -138,8 +133,6 @@ function clearTransformRule() {
 }
 
 function resetState() {
-  clearFocusViewUseTimer();
-  reviewUseCompleted = false;
   cancelWheelZoomAnimation();
   state = resetTransformState();
   syncWheelTargetListenerMode();
@@ -300,47 +293,12 @@ function showReviewPrompt(promptState = readReviewPromptState()) {
   requestAnimationFrame(() => dialog.focus({ preventScroll: true }));
 }
 
-function clearFocusViewUseTimer() {
-  if (reviewUseTimer) {
-    clearTimeout(reviewUseTimer);
-    reviewUseTimer = 0;
-  }
-  reviewUseStartedAt = null;
-}
-
-function scheduleFocusViewUseCompletion() {
-  const hasVideoStarted = Boolean(video && (!video.paused || video.currentTime > 0));
-  const promptState = readReviewPromptState();
-  if (!state.panMode || !hasVideoStarted || reviewUseTimer || reviewUseCompleted || promptState.status !== "active") {
-    return;
-  }
-
-  reviewUseStartedAt = performance.now();
-  reviewUseTimer = window.setTimeout(completeFocusViewUse, DEFAULT_REVIEW_PROMPT_MIN_USE_MS);
-}
-
-function completeFocusViewUse() {
-  const startedAt = reviewUseStartedAt;
-  reviewUseTimer = 0;
-  reviewUseStartedAt = null;
-  if (!state.panMode || reviewUseCompleted || !shouldRecordReviewPromptUse({
-    startedAt,
-    endedAt: performance.now(),
-    playbackTime: video?.currentTime,
-  }, DEFAULT_REVIEW_PROMPT_MIN_USE_MS)) {
-    return;
-  }
-
-  reviewUseCompleted = true;
+function recordZoomModeUse() {
   const nextState = recordReviewPromptUse(readReviewPromptState(), DEFAULT_REVIEW_PROMPT_THRESHOLD);
   writeReviewPromptState(nextState);
   if (shouldShowReviewPrompt(nextState)) {
     showReviewPrompt(nextState);
   }
-}
-
-function onVideoPlaybackStarted() {
-  scheduleFocusViewUseCompletion();
 }
 
 function isWatchPage() {
@@ -1030,11 +988,7 @@ function togglePanMode() {
   renderToolbar();
   applyTransform();
   if (!wasPanMode) {
-    reviewUseCompleted = false;
-    scheduleFocusViewUseCompletion();
-  } else {
-    clearFocusViewUseTimer();
-    reviewUseCompleted = false;
+    recordZoomModeUse();
   }
 }
 
@@ -1539,7 +1493,6 @@ function onVideoClick(event) {
 }
 
 function unbindVideo() {
-  clearFocusViewUseTimer();
   cleanupSliderDrag();
   cancelPanGesture();
   clearClickSuppression();
@@ -1549,8 +1502,6 @@ function unbindVideo() {
     video.removeEventListener("pointercancel", endDrag);
     video.removeEventListener("click", onVideoClick, true);
     video.removeEventListener("ratechange", onVideoRateChange);
-    video.removeEventListener("play", onVideoPlaybackStarted);
-    video.removeEventListener("timeupdate", onVideoPlaybackStarted);
     video.style.cursor = "";
   }
   videoStyleObserver?.disconnect();
@@ -1571,14 +1522,11 @@ function bindVideo(nextVideo) {
   video.addEventListener("pointercancel", endDrag);
   video.addEventListener("click", onVideoClick, true);
   video.addEventListener("ratechange", onVideoRateChange);
-  video.addEventListener("play", onVideoPlaybackStarted);
-  video.addEventListener("timeupdate", onVideoPlaybackStarted);
   videoStyleObserver = new MutationObserver(() => {
     scheduleTransformReapply();
   });
   videoStyleObserver.observe(video, { attributes: true, attributeFilter: ["style"] });
   applyTransform();
-  scheduleFocusViewUseCompletion();
 }
 
 function bindWheelTarget(nextPlayer) {

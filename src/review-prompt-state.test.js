@@ -5,19 +5,17 @@ import test from "node:test";
 await import("./review-prompt-state.js");
 
 const {
-  DEFAULT_REVIEW_PROMPT_MIN_USE_MS,
   DEFAULT_REVIEW_PROMPT_SNOOZE_USES,
   DEFAULT_REVIEW_PROMPT_THRESHOLD,
   completeReviewPrompt,
   createReviewPromptState,
   parseReviewPromptState,
   recordReviewPromptUse,
-  shouldRecordReviewPromptUse,
   shouldShowReviewPrompt,
   snoozeReviewPrompt,
 } = globalThis.YTVTReviewPrompt;
 
-test("review prompt starts after ten qualifying uses", () => {
+test("review prompt starts after ten Zoom mode activations", () => {
   let state = createReviewPromptState();
 
   assert.equal(DEFAULT_REVIEW_PROMPT_THRESHOLD, 10);
@@ -32,13 +30,6 @@ test("review prompt starts after ten qualifying uses", () => {
   state = recordReviewPromptUse(state);
   assert.equal(state.useCount, 10);
   assert.equal(shouldShowReviewPrompt(state), true);
-});
-
-test("review use qualifies only after playback and ten seconds", () => {
-  assert.equal(DEFAULT_REVIEW_PROMPT_MIN_USE_MS, 10000);
-  assert.equal(shouldRecordReviewPromptUse({ startedAt: 0, endedAt: 9999, playbackTime: 1 }), false);
-  assert.equal(shouldRecordReviewPromptUse({ startedAt: 0, endedAt: 10000, playbackTime: 0 }), false);
-  assert.equal(shouldRecordReviewPromptUse({ startedAt: 0, endedAt: 10000, playbackTime: 1 }), true);
 });
 
 test("Maybe Later snoozes the prompt for five more uses", () => {

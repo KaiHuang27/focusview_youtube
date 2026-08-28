@@ -197,7 +197,6 @@ test("review prompt is loaded and wired consistently across stores", async () =>
   for (const contentUrl of CONTENT_SCRIPT_PATHS) {
     const content = await readFile(contentUrl, "utf8");
 
-    assert.match(content, /window\.setTimeout\(completeFocusViewUse, DEFAULT_REVIEW_PROMPT_MIN_USE_MS\)/, `${contentUrl.pathname} completes a qualifying use automatically after the timer`);
     assert.match(content, /"Enjoying FocusView\?"/, `${contentUrl.pathname} uses the selected headline`);
     assert.match(content, /"A quick rating helps more people discover it\."/, `${contentUrl.pathname} uses concise supporting copy`);
     assert.match(content, /"Rate FocusView"/, `${contentUrl.pathname} exposes the primary CTA`);
@@ -205,14 +204,10 @@ test("review prompt is loaded and wired consistently across stores", async () =>
     assert.match(content, /localStorage/, `${contentUrl.pathname} stores state locally without a new extension permission`);
     assert.match(content, /onReviewPromptKeyDown/, `${contentUrl.pathname} supports keyboard dismissal and focus containment`);
     assert.match(content, /dialog\.tabIndex = -1/, `${contentUrl.pathname} moves initial focus into the dialog without forcing a button focus ring`);
-    assert.match(content, /shouldRecordReviewPromptUse/, `${contentUrl.pathname} waits for playback and the minimum use time`);
-    assert.match(content, /video\.addEventListener\("play", onVideoPlaybackStarted\)/, `${contentUrl.pathname} starts timing when playback begins`);
-    assert.match(content, /video\.addEventListener\("timeupdate", onVideoPlaybackStarted\)/, `${contentUrl.pathname} recovers timing when playback advances`);
-    assert.match(content, /reviewUseTimer \|\| reviewUseCompleted/, `${contentUrl.pathname} prevents duplicate timers within one Zoom session`);
-    assert.match(content, /reviewUseCompleted = true/, `${contentUrl.pathname} records at most one use per Zoom session`);
-    assert.match(content, /clearFocusViewUseTimer\(\)/, `${contentUrl.pathname} cancels incomplete use timers when Zoom mode ends or resets`);
-    assert.match(content, /focusview-review-prompt-v2/, `${contentUrl.pathname} resets the unreleased three-second counter state`);
-    assert.doesNotMatch(content, /finishFocusViewUse|shouldCompleteReviewUse/, `${contentUrl.pathname} no longer waits for Zoom mode to close or reset`);
-    assert.doesNotMatch(content, /recordFocusViewUse/, `${contentUrl.pathname} does not prompt when Zoom mode first turns on`);
+    assert.match(content, /function recordZoomModeUse\(\)/, `${contentUrl.pathname} records a review use through one focused path`);
+    assert.match(content, /if \(!wasPanMode\) \{[\s\S]*recordZoomModeUse\(\);/, `${contentUrl.pathname} records immediately when Zoom mode turns on`);
+    assert.match(content, /focusview-review-prompt-v2/, `${contentUrl.pathname} preserves existing review usage state`);
+    assert.doesNotMatch(content, /reviewUseTimer|completeFocusViewUse|onVideoPlaybackStarted|shouldRecordReviewPromptUse/, `${contentUrl.pathname} has no playback or duration requirement`);
+    assert.doesNotMatch(content, /window\.setTimeout\(completeFocusViewUse|video\.addEventListener\("play"/, `${contentUrl.pathname} does not defer review counting`);
   }
 });
