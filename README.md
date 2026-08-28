@@ -26,12 +26,9 @@ Best for:
 ## Features
 
 - Press `Alt/Option + Shift + Z` to turn zoom mode on or off.
-- In zoom mode, scroll to zoom videos from `100%` to `500%` around the mouse pointer, with each nonzero wheel or trackpad event capped at about fifteen percent and animated by at least one percent unless the zoom limit is reached.
-- Outside the player, page scrolling remains native so Safari trackpad and mouse wheel scrolling remains smooth, including while zoom mode is on. The Safari wheel fallback stays synchronized for the duration of Zoom mode and recognizes player event paths, pointer state, and player bounds so rapid wheel input cannot leak into native page scrolling. Wheel-time UI updates remain batched to keep non-fullscreen controls responsive.
-- Long-press and drag to move around a zoomed video without leaving YouTube's 2x hold indicator on screen, while normal single-click play and pause stays unchanged.
-- Use the zoom panel for centered `100%` to `500%` zoom control with aligned actions, matching label sizes, setting rows, the slider, and step buttons.
-- Click **Fill** in the zoom settings to enlarge the video until player black bars are covered.
-- Double-click the toolbar zoom control, or click **Reset**, to reset the video view and turn off zoom mode.
+- Scroll to zoom videos from `100%` to `500%` around the mouse pointer.
+- Long-press and drag to move around a zoomed video.
+- Use the zoom panel for centered `100%` to `500%` zoom control.
 - Rotate videos by `90°`, `180°`, or `270°`.
 - Mirror videos horizontally.
 
