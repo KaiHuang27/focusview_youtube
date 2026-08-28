@@ -79,7 +79,9 @@ test("wheel listener blocks native scrolling only while zoom mode is active", as
 
     assert.match(content, /syncWheelTargetListenerMode/, "syncs the wheel listener mode");
     assert.match(content, /syncDocumentWheelListener\(shouldBlockWheel\)/, "keeps the global fallback aligned with Zoom mode");
-    assert.match(content, /onDocumentWheel/, `${contentUrl.pathname} catches player wheel events that miss the player listener`);
+    assert.match(content, /onDocumentWheel/, "catches player wheel events that miss the player listener");
+    assert.match(content, /isEventInPlayer/, "recognizes player event paths during fallback wheel handling");
+    assert.match(content, /isPointerInPlayer/, "keeps a stable pointer-in-player fallback signal");
     assert.match(content, /shouldHandlePlayerWheel\(state, event\.clientX, event\.clientY, rect\)/, `${contentUrl.pathname} limits document wheel handling to the player bounds`);
     assert.match(content, /window\.addEventListener\("wheel", onDocumentWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} catches Safari wheel events before page scrolling`);
     assert.match(content, /document\.addEventListener\("wheel", onDocumentWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} blocks fallback wheel only while zoom mode is active`);
@@ -172,4 +174,32 @@ test("Chrome release package includes toolbar popup resources", async () => {
   assert.match(releaseScript, /manifest\.json \\/);
   assert.match(releaseScript, /popup\.html \\/);
   assert.match(releaseScript, /popup\.css \\/);
+});
+
+
+test("review prompt is loaded and wired consistently across stores", async () => {
+  for (const manifestUrl of MANIFEST_PATHS) {
+    const manifest = JSON.parse(await readFile(manifestUrl, "utf8"));
+    const scripts = manifest.content_scripts[0].js;
+
+    assert.deepEqual(
+      scripts,
+      ["src/transform-state.js", "src/review-prompt-state.js", "src/content.js"],
+      `${manifestUrl.pathname} loads review state before the content script`
+    );
+    assert.equal(manifest.permissions, undefined, `${manifestUrl.pathname} adds no storage permission`);
+  }
+
+  for (const contentUrl of CONTENT_SCRIPT_PATHS) {
+    const content = await readFile(contentUrl, "utf8");
+
+    assert.match(content, /recordFocusViewUse\(\)/, `${contentUrl.pathname} records a qualifying use`);
+    assert.match(content, /"Enjoying FocusView\?"/, `${contentUrl.pathname} uses the selected headline`);
+    assert.match(content, /"A quick rating helps more people discover it\."/, `${contentUrl.pathname} uses concise supporting copy`);
+    assert.match(content, /"Rate FocusView"/, `${contentUrl.pathname} exposes the primary CTA`);
+    assert.match(content, /"Maybe Later"/, `${contentUrl.pathname} exposes a snooze action`);
+    assert.match(content, /localStorage/, `${contentUrl.pathname} stores state locally without a new extension permission`);
+    assert.match(content, /onReviewPromptKeyDown/, `${contentUrl.pathname} supports keyboard dismissal and focus containment`);
+    assert.match(content, /dialog\.tabIndex = -1/, `${contentUrl.pathname} moves initial focus into the dialog without forcing a button focus ring`);
+  }
 });

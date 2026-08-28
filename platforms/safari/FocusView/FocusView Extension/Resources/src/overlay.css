@@ -441,7 +441,200 @@
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.22);
 }
 
+@keyframes ytvt-review-enter
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ytvt-review-overlay {
+  position: absolute;
+  z-index: 2147483647;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.52);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  text-shadow: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ytvt-review-dialog {
+  position: relative;
+  display: flex;
+  width: min(420px, calc(100% - 32px));
+  box-sizing: border-box;
+  padding: 40px 36px 34px;
+  flex-direction: column;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.88);
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 18px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: ytvt-review-enter 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ytvt-review-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  place-items: center;
+  color: rgba(60, 60, 67, 0.5);
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  font: 300 32px/1 -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  cursor: pointer;
+}
+
+.ytvt-review-close:hover {
+  color: rgba(60, 60, 67, 0.78);
+  background: rgba(60, 60, 67, 0.08);
+}
+
+.ytvt-review-icon {
+  display: block;
+  width: 80px;
+  height: 80px;
+  border-radius: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+}
+
+.ytvt-review-title {
+  margin: 24px 0 10px;
+  color: inherit;
+  font: 650 24px/1.2 -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.ytvt-review-description {
+  max-width: 286px;
+  margin: 0 0 24px;
+  color: rgba(60, 60, 67, 0.68);
+  font: 400 15px/1.42 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+}
+
+.ytvt-review-primary {
+  display: inline-flex;
+  width: 274px;
+  max-width: 100%;
+  min-height: 52px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  color: rgb(255, 255, 255);
+  background: rgb(0, 122, 255);
+  border-radius: 10px;
+  font: 600 16px/1.2 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  text-decoration: none;
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.ytvt-review-primary:hover {
+  color: rgb(255, 255, 255);
+  background: rgb(0, 113, 235);
+}
+
+.ytvt-review-primary:active {
+  transform: scale(0.985);
+}
+
+.ytvt-review-secondary {
+  min-height: 42px;
+  margin-top: 16px;
+  padding: 0 16px;
+  color: rgb(0, 122, 255);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  font: 550 15px/1.2 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  cursor: pointer;
+}
+
+.ytvt-review-secondary:hover {
+  background: rgba(0, 122, 255, 0.08);
+}
+
+.ytvt-review-dialog:focus {
+  outline: none;
+}
+
+.ytvt-review-close:focus-visible,
+.ytvt-review-primary:focus-visible,
+.ytvt-review-secondary:focus-visible {
+  outline: 3px solid rgba(0, 122, 255, 0.42);
+  outline-offset: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ytvt-review-dialog {
+    color: rgba(255, 255, 255, 0.94);
+    background: rgba(36, 36, 38, 0.98);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .ytvt-review-close {
+    color: rgba(235, 235, 245, 0.52);
+  }
+
+  .ytvt-review-description {
+    color: rgba(235, 235, 245, 0.68);
+  }
+
+  .ytvt-review-primary {
+    background: rgb(10, 132, 255);
+  }
+
+  .ytvt-review-secondary {
+    color: rgb(10, 132, 255);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ytvt-review-dialog {
+    animation: none;
+  }
+
+  .ytvt-review-primary {
+    transition: none;
+  }
+}
+
 @media (max-width: 720px) {
+  .ytvt-review-overlay {
+    padding: 16px;
+  }
+
+  .ytvt-review-dialog {
+    width: min(360px, 100%);
+    padding: 34px 24px 22px;
+  }
+
+  .ytvt-review-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+  }
+
+  .ytvt-review-title {
+    margin-top: 16px;
+    font-size: 21px;
+  }
   .ytvt-toolbar.is-floating {
     right: 8px;
   }

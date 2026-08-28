@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Added a macOS-style in-player review prompt after five qualifying FocusView uses, with local-only state, five-use snooze behavior, accessible keyboard handling, and no new extension permission.
+
 ### Fixed
 
 - Kept Safari wheel fallback active throughout Zoom mode so player wheel events cannot fall through to native page scrolling after player replacement or fullscreen transitions.

@@ -17,7 +17,7 @@
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*"],
-      "js": ["src/transform-state.js", "src/content.js"],
+      "js": ["src/transform-state.js", "src/review-prompt-state.js", "src/content.js"],
       "css": ["src/overlay.css"],
       "run_at": "document_start"
     }

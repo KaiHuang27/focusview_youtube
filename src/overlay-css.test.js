@@ -164,3 +164,20 @@ test("zoom value and slider read as one compact control group", async () => {
     assert.ok(spacing.valueBottom <= 2, `${cssUrl.pathname} keeps the zoom value close to the slider`);
   }
 });
+
+test("review prompt follows the selected macOS-style visual system", async () => {
+  for (const cssUrl of OVERLAY_CSS_PATHS) {
+    const css = await readFile(cssUrl, "utf8");
+
+    assert.match(css, /\.ytvt-review-overlay\s*\{[\s\S]*background: rgba\(0, 0, 0, 0\.52\);/);
+    assert.match(css, /\.ytvt-review-dialog\s*\{[\s\S]*width: min\(420px, calc\(100% - 32px\)\);/);
+    assert.match(css, /padding: 40px 36px 34px;/);
+    assert.match(css, /\.ytvt-review-icon\s*\{[\s\S]*width: 80px;/);
+    assert.match(css, /\.ytvt-review-primary\s*\{[\s\S]*width: 274px;[\s\S]*min-height: 52px;/);
+    assert.match(css, /border-radius: 18px;/);
+    assert.match(css, /background: rgb\(0, 122, 255\);/);
+    assert.match(css, /@media \(prefers-color-scheme: dark\)/);
+    assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
+    assert.match(css, /\.ytvt-review-primary:focus-visible/);
+  }
+});

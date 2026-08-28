@@ -41,9 +41,21 @@ const {
   shouldUseBlockingWheelListener,
   toggleMirrorState,
 } = globalThis.YTVTTransform;
+const {
+  DEFAULT_REVIEW_PROMPT_SNOOZE_USES,
+  DEFAULT_REVIEW_PROMPT_THRESHOLD,
+  completeReviewPrompt,
+  parseReviewPromptState,
+  recordReviewPromptUse,
+  shouldShowReviewPrompt,
+  snoozeReviewPrompt,
+} = globalThis.YTVTReviewPrompt;
 const VIEWPORT_CONTROLS_HIDE_DELAY_MS = 3000;
 const PAN_LONG_PRESS_MS = 220;
 const PAN_MOVE_THRESHOLD_PX = 6;
+const REVIEW_PROMPT_STORAGE_KEY = "focusview-review-prompt-v1";
+const CHROME_REVIEW_URL = "https://chromewebstore.google.com/detail/jbdndcjclbghkmbiehjigaapembpbgdb/reviews";
+const SAFARI_REVIEW_URL = "https://apps.apple.com/app/id0000000000?action=write-review";
 
 let state = createDefaultState();
 let video = null;
@@ -75,6 +87,9 @@ let lastPointerClientY = 0;
 let hasLastPointerPosition = false;
 let cleanupActiveSliderDrag = null;
 let isCancelingNativePress = false;
+let reviewPrompt = null;
+let reviewPromptPreviousFocus = null;
+let lastCountedReviewVideoKey = "";
 
 function getTransformStyleElement() {
   let styleElement = document.getElementById(TRANSFORM_STYLE_ID);
@@ -129,6 +144,168 @@ function resetState() {
 
 function getVideoKey() {
   return new URLSearchParams(window.location.search).get("v") || window.location.pathname;
+}
+
+function getReviewUrl() {
+  const userAgent = navigator.userAgent || "";
+  const isSafari = /Safari/.test(userAgent) && !/(Chrome|Chromium|Edg)/.test(userAgent);
+  return isSafari ? SAFARI_REVIEW_URL : CHROME_REVIEW_URL;
+}
+
+function readReviewPromptState() {
+  try {
+    return parseReviewPromptState(window.localStorage.getItem(REVIEW_PROMPT_STORAGE_KEY));
+  } catch {
+    return parseReviewPromptState(null);
+  }
+}
+
+function writeReviewPromptState(nextState) {
+  try {
+    window.localStorage.setItem(REVIEW_PROMPT_STORAGE_KEY, JSON.stringify(nextState));
+  } catch {
+    // Keep the prompt usable for this page when storage is unavailable.
+  }
+}
+
+function removeReviewPrompt({ shouldRestoreFocus = true } = {}) {
+  if (!reviewPrompt) {
+    return;
+  }
+
+  reviewPrompt.removeEventListener("keydown", onReviewPromptKeyDown);
+  reviewPrompt.remove();
+  reviewPrompt = null;
+  if (shouldRestoreFocus && reviewPromptPreviousFocus?.isConnected) {
+    reviewPromptPreviousFocus.focus();
+  }
+  reviewPromptPreviousFocus = null;
+}
+
+function snoozeCurrentReviewPrompt() {
+  writeReviewPromptState(snoozeReviewPrompt(readReviewPromptState(), DEFAULT_REVIEW_PROMPT_SNOOZE_USES));
+  removeReviewPrompt();
+}
+
+function dismissCurrentReviewPrompt() {
+  writeReviewPromptState(completeReviewPrompt(readReviewPromptState(), "dismissed"));
+  removeReviewPrompt();
+}
+
+function onReviewPromptKeyDown(event) {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    event.stopPropagation();
+    snoozeCurrentReviewPrompt();
+    return;
+  }
+
+  if (event.key !== "Tab" || !reviewPrompt) {
+    return;
+  }
+
+  const focusable = [...reviewPrompt.querySelectorAll("a[href], button:not([disabled])")];
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && (document.activeElement === first || document.activeElement === reviewPrompt.querySelector(".ytvt-review-dialog"))) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
+function showReviewPrompt(promptState = readReviewPromptState()) {
+  if (!player || reviewPrompt || !shouldShowReviewPrompt(promptState)) {
+    return;
+  }
+
+  isMenuOpen = false;
+  renderToolbar();
+  renderMinimap();
+  reviewPromptPreviousFocus = document.activeElement;
+
+  const overlay = document.createElement("div");
+  overlay.className = "ytvt-review-overlay";
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) {
+      snoozeCurrentReviewPrompt();
+    }
+  });
+
+  const dialog = document.createElement("section");
+  dialog.className = "ytvt-review-dialog";
+  dialog.setAttribute("role", "dialog");
+  dialog.setAttribute("aria-modal", "true");
+  dialog.setAttribute("aria-labelledby", "ytvt-review-title");
+  dialog.setAttribute("aria-describedby", "ytvt-review-description");
+  dialog.tabIndex = -1;
+
+  const close = document.createElement("button");
+  close.type = "button";
+  close.className = "ytvt-review-close";
+  close.setAttribute("aria-label", "Close and do not ask again");
+  close.title = "Do not ask again";
+  close.textContent = "×";
+  close.addEventListener("click", dismissCurrentReviewPrompt);
+
+  const icon = document.createElement("img");
+  icon.className = "ytvt-review-icon";
+  icon.src = globalThis.chrome?.runtime?.getURL?.("icons/icon-128.png")
+    || globalThis.browser?.runtime?.getURL?.("icons/icon-128.png")
+    || "";
+  icon.width = 64;
+  icon.height = 64;
+  icon.alt = "";
+
+  const title = document.createElement("h2");
+  title.id = "ytvt-review-title";
+  title.className = "ytvt-review-title";
+  title.textContent = "Enjoying FocusView?";
+
+  const description = document.createElement("p");
+  description.id = "ytvt-review-description";
+  description.className = "ytvt-review-description";
+  description.textContent = "A quick rating helps more people discover it.";
+
+  const rate = document.createElement("a");
+  rate.className = "ytvt-review-primary";
+  rate.href = getReviewUrl();
+  rate.target = "_blank";
+  rate.rel = "noopener noreferrer";
+  rate.textContent = "Rate FocusView";
+  rate.addEventListener("click", () => {
+    writeReviewPromptState(completeReviewPrompt(readReviewPromptState(), "rated"));
+    removeReviewPrompt();
+  });
+
+  const later = document.createElement("button");
+  later.type = "button";
+  later.className = "ytvt-review-secondary";
+  later.textContent = "Maybe Later";
+  later.addEventListener("click", snoozeCurrentReviewPrompt);
+
+  dialog.append(close, icon, title, description, rate, later);
+  overlay.append(dialog);
+  reviewPrompt = overlay;
+  reviewPrompt.addEventListener("keydown", onReviewPromptKeyDown);
+  player.append(reviewPrompt);
+  requestAnimationFrame(() => dialog.focus({ preventScroll: true }));
+}
+
+function recordFocusViewUse() {
+  const videoKey = getVideoKey();
+  if (!videoKey || lastCountedReviewVideoKey === videoKey) {
+    return;
+  }
+
+  lastCountedReviewVideoKey = videoKey;
+  const nextState = recordReviewPromptUse(readReviewPromptState(), DEFAULT_REVIEW_PROMPT_THRESHOLD);
+  writeReviewPromptState(nextState);
+  if (shouldShowReviewPrompt(nextState)) {
+    showReviewPrompt(nextState);
+  }
 }
 
 function isWatchPage() {
@@ -246,6 +423,7 @@ function clearTransform() {
 
 function clearOverlayElements() {
   cleanupSliderDrag();
+  removeReviewPrompt({ shouldRestoreFocus: false });
   minimap?.remove();
   minimap = null;
   settingsButton?.remove();
@@ -815,6 +993,9 @@ function togglePanMode() {
   }
   renderToolbar();
   applyTransform();
+  if (state.panMode) {
+    recordFocusViewUse();
+  }
 }
 
 function getTriggerTitle() {
