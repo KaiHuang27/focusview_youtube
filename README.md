@@ -32,6 +32,7 @@ Best for:
 - Use the zoom panel for centered `100%` to `500%` zoom control.
 - Rotate videos by `90°`, `180°`, or `270°`.
 - Mirror videos horizontally.
+- Player detection and resizing are event-driven, so idle YouTube tabs do not run recurring FocusView synchronization work.
 
 ## Privacy And Permissions
 

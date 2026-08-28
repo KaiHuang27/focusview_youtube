@@ -2,6 +2,7 @@ const ROTATIONS = [0, 90, 180, 270];
 const TOOLBAR_SELECTOR = '[data-ytvt-toolbar="true"]';
 const TRANSFORM_STYLE_ID = "ytvt-transform-style";
 const TRANSFORM_SELECTOR = "video.html5-main-video";
+const PLAYER_STRUCTURE_SELECTOR = ".html5-video-player, video.html5-main-video, .ytp-right-controls";
 const {
   applyZoomDelta,
   applyWheelZoomDelta,
@@ -69,6 +70,9 @@ let minimap = null;
 let settingsButton = null;
 let transformMenu = null;
 let resizeObserver = null;
+let playerStructureObserver = null;
+let observedPlayer = null;
+let syncFrame = 0;
 let videoStyleObserver = null;
 let reapplyFrame = 0;
 let wheelZoomFrame = 0;
@@ -1603,6 +1607,7 @@ function sync() {
     state = createDefaultState();
     isMenuOpen = false;
     currentVideoKey = "";
+    observePlayerSize(null);
     player = null;
     return;
   }
@@ -1615,6 +1620,7 @@ function sync() {
   }
 
   player = nextPlayer;
+  observePlayerSize(nextPlayer);
   bindWheelTarget(nextPlayer);
   ensureToolbar();
   bindVideo(nextVideo);
@@ -1626,26 +1632,63 @@ function sync() {
   currentVideoKey = nextVideoKey;
 }
 
-function observePlayerSize() {
-  if (!document.documentElement) {
-    window.addEventListener("DOMContentLoaded", observePlayerSize, { once: true });
+function scheduleSync() {
+  if (syncFrame) {
     return;
   }
 
-  if (resizeObserver) {
-    resizeObserver.disconnect();
+  syncFrame = requestAnimationFrame(() => {
+    syncFrame = 0;
+    sync();
+  });
+}
+
+function containsPlayerStructure(node) {
+  return node instanceof Element
+    && (node.matches(PLAYER_STRUCTURE_SELECTOR) || Boolean(node.querySelector(PLAYER_STRUCTURE_SELECTOR)));
+}
+
+function observePlayerStructure() {
+  if (!document.documentElement || playerStructureObserver) {
+    return;
   }
 
-  resizeObserver = new ResizeObserver(sync);
-  resizeObserver.observe(document.documentElement);
+  playerStructureObserver = new MutationObserver((mutations) => {
+    const playerWasReplaced = Boolean(player && !player.isConnected) || Boolean(video && !video.isConnected);
+    const playerStructureChanged = mutations.some(({ addedNodes, removedNodes }) =>
+      [...addedNodes, ...removedNodes].some(containsPlayerStructure));
+    if (playerWasReplaced || playerStructureChanged) {
+      scheduleSync();
+    }
+  });
+  playerStructureObserver.observe(document.documentElement, { childList: true, subtree: true });
+}
+
+function observePlayerSize(nextPlayer) {
+  if (observedPlayer === nextPlayer) {
+    return;
+  }
+
+  resizeObserver?.disconnect();
+  resizeObserver = null;
+  observedPlayer = nextPlayer;
+  if (!nextPlayer) {
+    return;
+  }
+
+  resizeObserver = new ResizeObserver(() => applyTransform());
+  resizeObserver.observe(nextPlayer);
 }
 
 function start() {
   sync();
-  observePlayerSize();
-  setInterval(sync, 800);
-  window.addEventListener("yt-navigate-finish", sync);
-  window.addEventListener("popstate", sync);
+  observePlayerStructure();
+  window.addEventListener("DOMContentLoaded", () => {
+    observePlayerStructure();
+    scheduleSync();
+  }, { once: true });
+  window.addEventListener("yt-navigate-finish", scheduleSync);
+  window.addEventListener("popstate", scheduleSync);
   window.addEventListener("keydown", blockYouTubeShortcutFromZoomInput, true);
   window.addEventListener("keyup", blockYouTubeShortcutFromZoomInput, true);
   window.addEventListener("keypress", blockYouTubeShortcutFromZoomInput, true);

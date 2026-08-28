@@ -94,6 +94,18 @@ test("wheel listener blocks native scrolling only while zoom mode is active", as
   }
 });
 
+test("player lifecycle is event-driven without idle polling", async () => {
+  for (const contentUrl of CONTENT_SCRIPT_PATHS) {
+    const content = await readFile(contentUrl, "utf8");
+
+    assert.doesNotMatch(content, /setInterval\(sync/, contentUrl.pathname + " does not poll while the tab is idle");
+    assert.match(content, /new MutationObserver\(\(mutations\) =>/, contentUrl.pathname + " detects player replacement from DOM changes");
+    assert.match(content, /scheduleSync\(\)/, contentUrl.pathname + " batches structural synchronization into one animation frame");
+    assert.match(content, /resizeObserver\.observe\(nextPlayer\)/, contentUrl.pathname + " observes only the active player size");
+    assert.doesNotMatch(content, /resizeObserver\.observe\(document\.documentElement\)/, contentUrl.pathname + " avoids observing the entire page size");
+  }
+});
+
 test("Safari app page points users to Safari Settings Extensions", async () => {
   const html = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Base.lproj/Main.html", import.meta.url), "utf8");
   const script = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Script.js", import.meta.url), "utf8");

@@ -13,6 +13,7 @@
 
 ### Fixed
 
+- Replaced recurring 800 ms player polling and whole-page resize observation with event-driven player discovery and player-scoped resize updates, reducing long-running Safari tab work.
 - Centered the review prompt correctly by restoring the missing review animation block delimiter.
 - Exposed only the FocusView review icon to YouTube so the dialog no longer shows a broken image.
 - Kept Safari wheel fallback active throughout Zoom mode so player wheel events cannot fall through to native page scrolling after player replacement or fullscreen transitions.
