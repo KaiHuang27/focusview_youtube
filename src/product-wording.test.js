@@ -188,12 +188,16 @@ test("review prompt is loaded and wired consistently across stores", async () =>
       `${manifestUrl.pathname} loads review state before the content script`
     );
     assert.equal(manifest.permissions, undefined, `${manifestUrl.pathname} adds no storage permission`);
+    assert.deepEqual(manifest.web_accessible_resources, [{
+      resources: ["icons/icon-128.png"],
+      matches: ["https://www.youtube.com/*"],
+    }], `${manifestUrl.pathname} exposes only the review icon to YouTube`);
   }
 
   for (const contentUrl of CONTENT_SCRIPT_PATHS) {
     const content = await readFile(contentUrl, "utf8");
 
-    assert.match(content, /recordFocusViewUse\(\)/, `${contentUrl.pathname} records a qualifying use`);
+    assert.match(content, /finishFocusViewUse\(\)/, `${contentUrl.pathname} completes a qualifying use`);
     assert.match(content, /"Enjoying FocusView\?"/, `${contentUrl.pathname} uses the selected headline`);
     assert.match(content, /"A quick rating helps more people discover it\."/, `${contentUrl.pathname} uses concise supporting copy`);
     assert.match(content, /"Rate FocusView"/, `${contentUrl.pathname} exposes the primary CTA`);
@@ -201,5 +205,7 @@ test("review prompt is loaded and wired consistently across stores", async () =>
     assert.match(content, /localStorage/, `${contentUrl.pathname} stores state locally without a new extension permission`);
     assert.match(content, /onReviewPromptKeyDown/, `${contentUrl.pathname} supports keyboard dismissal and focus containment`);
     assert.match(content, /dialog\.tabIndex = -1/, `${contentUrl.pathname} moves initial focus into the dialog without forcing a button focus ring`);
+    assert.match(content, /shouldRecordReviewPromptUse/, `${contentUrl.pathname} defers counting until playback and minimum use time qualify`);
+    assert.doesNotMatch(content, /recordFocusViewUse/, `${contentUrl.pathname} does not prompt when Zoom mode first turns on`);
   }
 });

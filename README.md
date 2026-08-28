@@ -42,6 +42,8 @@ FocusView helps you look closer without leaving YouTube. Whether you are watchin
 
 FocusView is designed to feel like part of YouTube: normal play, pause, scrolling, and fullscreen behavior stay familiar.
 
+The review prompt appears only after Zoom mode has been used for at least three seconds on five different played videos, and only after Zoom mode is turned off or reset. **Maybe Later** snoozes it for five more qualifying uses; rating or closing stops future prompts.
+
 ## Privacy
 
 FocusView does not collect data, does not track users, and does not send anything to external servers. Video changes happen locally in your browser.

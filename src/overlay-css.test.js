@@ -169,7 +169,8 @@ test("review prompt follows the selected macOS-style visual system", async () =>
   for (const cssUrl of OVERLAY_CSS_PATHS) {
     const css = await readFile(cssUrl, "utf8");
 
-    assert.match(css, /\.ytvt-review-overlay\s*\{[\s\S]*background: rgba\(0, 0, 0, 0\.52\);/);
+    assert.match(css, /@keyframes ytvt-review-enter\s*\{/);
+    assert.match(css, /\.ytvt-review-overlay\s*\{[\s\S]*place-items: center;[\s\S]*background: rgba\(0, 0, 0, 0\.52\);/);
     assert.match(css, /\.ytvt-review-dialog\s*\{[\s\S]*width: min\(420px, calc\(100% - 32px\)\);/);
     assert.match(css, /padding: 40px 36px 34px;/);
     assert.match(css, /\.ytvt-review-icon\s*\{[\s\S]*width: 80px;/);

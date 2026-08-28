@@ -42,11 +42,13 @@ const {
   toggleMirrorState,
 } = globalThis.YTVTTransform;
 const {
+  DEFAULT_REVIEW_PROMPT_MIN_USE_MS,
   DEFAULT_REVIEW_PROMPT_SNOOZE_USES,
   DEFAULT_REVIEW_PROMPT_THRESHOLD,
   completeReviewPrompt,
   parseReviewPromptState,
   recordReviewPromptUse,
+  shouldRecordReviewPromptUse,
   shouldShowReviewPrompt,
   snoozeReviewPrompt,
 } = globalThis.YTVTReviewPrompt;
@@ -90,6 +92,7 @@ let isCancelingNativePress = false;
 let reviewPrompt = null;
 let reviewPromptPreviousFocus = null;
 let lastCountedReviewVideoKey = "";
+let reviewUseStartedAt = null;
 
 function getTransformStyleElement() {
   let styleElement = document.getElementById(TRANSFORM_STYLE_ID);
@@ -133,13 +136,20 @@ function clearTransformRule() {
   lastTransformCssText = "";
 }
 
-function resetState() {
+function resetState({ shouldCompleteReviewUse = false } = {}) {
+  const shouldCompleteUse = shouldCompleteReviewUse && state.panMode;
+  if (!shouldCompleteUse) {
+    reviewUseStartedAt = null;
+  }
   cancelWheelZoomAnimation();
   state = resetTransformState();
   syncWheelTargetListenerMode();
   isMenuOpen = false;
   renderToolbar();
   applyTransform();
+  if (shouldCompleteUse) {
+    finishFocusViewUse();
+  }
 }
 
 function getVideoKey() {
@@ -294,9 +304,19 @@ function showReviewPrompt(promptState = readReviewPromptState()) {
   requestAnimationFrame(() => dialog.focus({ preventScroll: true }));
 }
 
-function recordFocusViewUse() {
+function beginFocusViewUse() {
+  reviewUseStartedAt = performance.now();
+}
+
+function finishFocusViewUse() {
+  const startedAt = reviewUseStartedAt;
+  reviewUseStartedAt = null;
   const videoKey = getVideoKey();
-  if (!videoKey || lastCountedReviewVideoKey === videoKey) {
+  if (!videoKey || lastCountedReviewVideoKey === videoKey || !shouldRecordReviewPromptUse({
+    startedAt,
+    endedAt: performance.now(),
+    playbackTime: video?.currentTime,
+  }, DEFAULT_REVIEW_PROMPT_MIN_USE_MS)) {
     return;
   }
 
@@ -976,6 +996,7 @@ function toggleMirror() {
 }
 
 function togglePanMode() {
+  const wasPanMode = state.panMode;
   state.panMode = !state.panMode;
   syncWheelTargetListenerMode();
   viewportControlsLastActivityAt = getViewportControlsActivityAfterPanToggle({
@@ -993,8 +1014,10 @@ function togglePanMode() {
   }
   renderToolbar();
   applyTransform();
-  if (state.panMode) {
-    recordFocusViewUse();
+  if (!wasPanMode) {
+    beginFocusViewUse();
+  } else {
+    finishFocusViewUse();
   }
 }
 
@@ -1094,7 +1117,7 @@ function renderToolbar({ shouldRenderMenu = true } = {}) {
   trigger.addEventListener("dblclick", (event) => {
     event.preventDefault();
     event.stopPropagation();
-    resetState();
+    resetState({ shouldCompleteReviewUse: true });
   });
 
   toolbar.append(trigger);
@@ -1135,7 +1158,7 @@ function renderMenu() {
   reset.className = "ytvt-menu-reset";
   reset.textContent = "Reset";
   reset.title = "Reset view and turn off zoom mode";
-  reset.addEventListener("click", resetState);
+  reset.addEventListener("click", () => resetState({ shouldCompleteReviewUse: true }));
 
   const fill = document.createElement("button");
   fill.type = "button";
