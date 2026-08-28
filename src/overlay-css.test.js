@@ -171,11 +171,12 @@ test("review prompt follows the selected macOS-style visual system", async () =>
 
     assert.match(css, /@keyframes ytvt-review-enter\s*\{/);
     assert.match(css, /\.ytvt-review-overlay\s*\{[\s\S]*place-items: center;[\s\S]*background: rgba\(0, 0, 0, 0\.52\);/);
-    assert.match(css, /\.ytvt-review-dialog\s*\{[\s\S]*width: min\(420px, calc\(100% - 32px\)\);/);
-    assert.match(css, /padding: 40px 36px 34px;/);
-    assert.match(css, /\.ytvt-review-icon\s*\{[\s\S]*width: 80px;/);
-    assert.match(css, /\.ytvt-review-primary\s*\{[\s\S]*width: 274px;[\s\S]*min-height: 52px;/);
-    assert.match(css, /border-radius: 18px;/);
+    assert.match(css, /\.ytvt-review-dialog\s*\{[\s\S]*width: min\(388px, calc\(100% - 32px\)\);/);
+    assert.match(css, /padding: 30px 30px 24px;/);
+    assert.match(css, /\.ytvt-review-icon\s*\{[\s\S]*width: 64px;/);
+    assert.match(css, /\.ytvt-review-primary\s*\{[\s\S]*width: 248px;[\s\S]*min-height: 48px;/);
+    assert.match(css, /border-radius: 16px;/);
+    assert.match(css, /\.ytvt-review-secondary\s*\{[\s\S]*min-height: 44px;/);
     assert.match(css, /background: rgb\(0, 122, 255\);/);
     assert.match(css, /@media \(prefers-color-scheme: dark\)/);
     assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
