@@ -49,6 +49,10 @@ It does not request storage, history, account, analytics, or extra network permi
 
 See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
 
+## Contact
+
+For support, feedback, or bug reports, email `kodin.gai.apps@gmail.com`.
+
 ## Install For Development
 
 ### Chrome
