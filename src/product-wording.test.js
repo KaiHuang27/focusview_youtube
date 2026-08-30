@@ -85,12 +85,12 @@ test("wheel listener blocks native scrolling only while zoom mode is active", as
     assert.match(content, /shouldHandlePlayerWheel\(state, event\.clientX, event\.clientY, rect\)/, `${contentUrl.pathname} limits document wheel handling to the player bounds`);
     assert.match(content, /window\.addEventListener\("wheel", onDocumentWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} catches Safari wheel events before page scrolling`);
     assert.match(content, /document\.addEventListener\("wheel", onDocumentWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} blocks fallback wheel only while zoom mode is active`);
-    assert.match(content, /passive: !shouldBlockWheel/, `${contentUrl.pathname} uses a passive player wheel listener outside zoom mode`);
+    assert.match(content, /if \(shouldBlockWheel\) \{[\s\S]*wheelTarget\.addEventListener\("wheel", onWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} binds the player wheel listener only while zoom mode is active`);
+    assert.doesNotMatch(content, /passive: !shouldBlockWheel/, `${contentUrl.pathname} does not invoke an idle player wheel listener`);
     assert.match(content, /scheduleWheelUiSync\(\)/, `${contentUrl.pathname} batches wheel UI updates`);
     assert.match(content, /applyTransform\(\{ shouldRenderMinimap: false \}\)/, `${contentUrl.pathname} avoids synchronous minimap rendering during wheel animation`);
     assert.match(content, /shouldUseBlockingWheelListener\(state\)/, `${contentUrl.pathname} derives blocking wheel behavior from zoom mode state`);
     assert.match(content, /state = resetTransformState\(\);\n  syncWheelTargetListenerMode\(\);/, `${contentUrl.pathname} releases blocking wheel behavior on reset`);
-    assert.doesNotMatch(content, /addEventListener\("wheel", onWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} avoids an always-blocking player wheel listener`);
   }
 });
 
@@ -101,6 +101,9 @@ test("player lifecycle is event-driven without idle polling", async () => {
     assert.doesNotMatch(content, /setInterval\(sync/, contentUrl.pathname + " does not poll while the tab is idle");
     assert.match(content, /new MutationObserver\(\(mutations\) =>/, contentUrl.pathname + " detects player replacement from DOM changes");
     assert.match(content, /scheduleSync\(\)/, contentUrl.pathname + " batches structural synchronization into one animation frame");
+    assert.match(content, /if \(!isWatchPage\(\) \|\| !document\.documentElement \|\| playerStructureObserver\)/, contentUrl.pathname + " observes player structure only on watch pages");
+    assert.match(content, /if \(!isWatchPage\(\)\) \{[\s\S]*stopObservingPlayerStructure\(\)/, contentUrl.pathname + " disconnects the player observer after leaving a watch page");
+    assert.match(content, /function stopObservingPlayerStructure\(\) \{[\s\S]*playerStructureObserver\?\.disconnect\(\)/, contentUrl.pathname + " releases the page observer");
     assert.match(content, /resizeObserver\.observe\(nextPlayer\)/, contentUrl.pathname + " observes only the active player size");
     assert.doesNotMatch(content, /resizeObserver\.observe\(document\.documentElement\)/, contentUrl.pathname + " avoids observing the entire page size");
   }
@@ -112,18 +115,11 @@ test("high-frequency pointer activity avoids redundant work", async () => {
 
     assert.match(content, /if \(viewportControlsHideTimer\) \{\n    return;/, contentUrl.pathname + " reuses one controls-hide timer");
     assert.match(content, /remainingDelayMs = Math\.max/, contentUrl.pathname + " reschedules from the latest activity time");
-    assert.match(content, /if \("PointerEvent" in window\)/, contentUrl.pathname + " feature-detects pointer movement support");
-    assert.match(content, /else \{\n    window\.addEventListener\("mousemove"/, contentUrl.pathname + " keeps mouse movement only as a fallback");
-    assert.equal(
-      content.match(/window\.addEventListener\(\s*"pointermove"/g)?.length,
-      1,
-      contentUrl.pathname + " has one pointer movement registration path"
-    );
-    assert.equal(
-      content.match(/window\.addEventListener\(\s*"mousemove"/g)?.length,
-      1,
-      contentUrl.pathname + " has one mouse fallback registration path"
-    );
+    assert.match(content, /const shouldTrackPointer = state\.panMode && isWatchPage\(\)/, contentUrl.pathname + " tracks pointer location only during watch-page Zoom mode");
+    assert.match(content, /const eventName = "PointerEvent" in window \? "pointermove" : "mousemove"/, contentUrl.pathname + " chooses one supported pointer event path");
+    assert.match(content, /window\.addEventListener\(eventName, updateLastPointerPosition, \{ passive: true \}\)/, contentUrl.pathname + " binds one passive pointer tracking listener");
+    assert.doesNotMatch(content, /wheelTarget\.addEventListener\("pointermove"/, contentUrl.pathname + " does not duplicate pointer movement work on the player");
+    assert.match(content, /syncPointerTracking\(\);\n  viewportControlsLastActivityAt/, contentUrl.pathname + " updates pointer tracking with Zoom mode");
   }
 });
 

@@ -32,8 +32,8 @@ Best for:
 - Use the zoom panel for centered `100%` to `500%` zoom control.
 - Rotate videos by `90°`, `180°`, or `270°`.
 - Mirror videos horizontally.
-- Player detection and resizing are event-driven, so idle YouTube tabs do not run recurring FocusView synchronization work.
-- Pointer tracking uses one supported event path, and transient controls reuse a single inactivity timer during continuous movement.
+- Player discovery is event-driven and its page observer runs only on watch pages, so other YouTube pages do not process player mutations.
+- Pointer tracking and player wheel listeners attach only while zoom mode is active, and transient controls reuse a single inactivity timer.
 
 ## Privacy And Permissions
 
