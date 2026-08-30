@@ -40,14 +40,14 @@ test("player controls use user-facing wording for reset and minimap labels", asy
   }
 });
 
-test("toolbar zoom trigger tooltips describe click and double-click outcomes", async () => {
+test("toolbar zoom trigger keeps one immediate click action", async () => {
   for (const contentUrl of CONTENT_SCRIPT_PATHS) {
     const content = await readFile(contentUrl, "utf8");
 
-    assert.match(content, /"Double-click to reset view and turn off zoom mode"/, `${contentUrl.pathname} explains double-click reset outcome`);
     assert.match(content, /"Turn on zoom mode"/, `${contentUrl.pathname} describes the off-state click outcome`);
     assert.match(content, /"Turn off zoom mode"/, `${contentUrl.pathname} describes the on-state click outcome`);
-    assert.doesNotMatch(content, /"Double-click to reset"/, `${contentUrl.pathname} avoids vague double-click reset wording`);
+    assert.doesNotMatch(content, /addEventListener\("dblclick"/, `${contentUrl.pathname} avoids double-click toggles and review-use side effects`);
+    assert.match(content, /reset\.addEventListener\("click", \(\) => resetState\(\)\)/, `${contentUrl.pathname} keeps reset as an explicit settings action`);
     assert.doesNotMatch(content, /"Zoom mode on"/, `${contentUrl.pathname} avoids state-only on wording`);
     assert.doesNotMatch(content, /"Zoom mode off"/, `${contentUrl.pathname} avoids state-only off wording`);
   }

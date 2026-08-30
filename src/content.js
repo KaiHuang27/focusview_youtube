@@ -1011,10 +1011,6 @@ function togglePanMode() {
 }
 
 function getTriggerTitle() {
-  if (state.zoom !== 100) {
-    return "Double-click to reset view and turn off zoom mode";
-  }
-
   return state.panMode ? "Turn off zoom mode" : "Turn on zoom mode";
 }
 
@@ -1102,11 +1098,6 @@ function renderToolbar({ shouldRenderMenu = true } = {}) {
 
   trigger.addEventListener("click", () => {
     togglePanMode();
-  });
-  trigger.addEventListener("dblclick", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    resetState();
   });
 
   toolbar.append(trigger);

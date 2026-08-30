@@ -32,6 +32,7 @@ Best for:
 - Use the zoom panel for centered `100%` to `500%` zoom control.
 - Rotate videos by `90°`, `180°`, or `270°`.
 - Mirror videos horizontally.
+- Use Reset in zoom settings to restore the view and turn off zoom mode.
 - Player discovery and transform refresh are event-driven; player structure is observed only on watch pages, with no frame retry loop for inline style changes.
 - Pointer tracking and player wheel listeners attach only while zoom mode is active, and transient controls reuse a single inactivity timer.
 - Each transform frame reuses one viewport geometry snapshot, and continuous slider movement is batched to the display frame rate.
