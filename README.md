@@ -41,6 +41,8 @@ Best for:
 
 FocusView does not collect data, does not track users, and does not send anything to external servers. All transforms happen locally in your browser.
 
+The Safari wrapper validates bundled resources and messages, surfaces setup errors, and does not log or echo native messages.
+
 The extension only runs on YouTube pages:
 
 ```json

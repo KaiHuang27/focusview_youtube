@@ -167,6 +167,23 @@ test("Safari wrapper uses the shipped extension bundle identifier", async () => 
   assert.match(xcodeProject, /INFOPLIST_KEY_CFBundleDisplayName = "FocusView - Zoom for YouTube";/);
 });
 
+test("Safari wrapper handles resources and messages without unsafe assumptions", async () => {
+  const viewController = await readFile(new URL("../platforms/safari/FocusView/FocusView/ViewController.swift", import.meta.url), "utf8");
+  const nativeHandler = await readFile(new URL("../platforms/safari/FocusView/FocusView Extension/SafariWebExtensionHandler.swift", import.meta.url), "utf8");
+  const appDelegate = await readFile(new URL("../platforms/safari/FocusView/FocusView/AppDelegate.swift", import.meta.url), "utf8");
+
+  assert.match(viewController, /let mainURL = Bundle\.main\.url[\s\S]*let resourceURL = Bundle\.main\.resourceURL/);
+  assert.match(viewController, /guard message\.body as\? String == "open-preferences" else/);
+  assert.match(viewController, /title: "Unable to check the Safari extension"/);
+  assert.match(viewController, /\[weak self, weak webView\]/);
+  assert.doesNotMatch(viewController, /Bundle\.main\.(?:url|resourceURL)[^\n]*!/);
+  assert.doesNotMatch(viewController, /as!/);
+
+  assert.match(nativeHandler, /completeRequest\(returningItems: \[\], completionHandler: nil\)/);
+  assert.doesNotMatch(nativeHandler, /os_log|SFExtensionMessageKey|"echo"/);
+  assert.doesNotMatch(appDelegate, /applicationDidFinishLaunching/);
+});
+
 test("Safari toolbar button opens a visible popup", async () => {
   const manifestText = await readFile(new URL("../platforms/safari/FocusView/FocusView Extension/Resources/manifest.json", import.meta.url), "utf8");
   const popup = await readFile(new URL("../platforms/safari/FocusView/FocusView Extension/Resources/popup.html", import.meta.url), "utf8");
