@@ -106,14 +106,13 @@ function getTransformStyleElement() {
   return styleElement;
 }
 
-function updateTransformRule() {
+function updateTransformRule({ sourceWidth, sourceHeight, viewportWidth, viewportHeight }) {
   if (!video) {
     return;
   }
 
   let cssText = "";
   if (shouldReapplyTransformAfterMutation(state)) {
-    const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
     cssText = `${TRANSFORM_SELECTOR} { ${createImportantTransformCssText(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight)} }`;
   }
 
@@ -332,11 +331,6 @@ function getViewportGeometry() {
   };
 }
 
-function clampCurrentPanState() {
-  const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
-  state = clampPanStateToViewport(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
-}
-
 function blockYouTubeWheel(event) {
   event.preventDefault();
   event.stopPropagation();
@@ -348,14 +342,16 @@ function applyTransform({ shouldRenderMinimap = true } = {}) {
     return;
   }
 
-  clampCurrentPanState();
-  updateTransformRule();
+  const geometry = getViewportGeometry();
+  const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = geometry;
+  state = clampPanStateToViewport(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
+  updateTransformRule(geometry);
   const cursor = state.panMode ? "grab" : "";
   if (video.style.cursor !== cursor) {
     video.style.cursor = cursor;
   }
   if (shouldRenderMinimap) {
-    renderMinimap();
+    renderMinimap(geometry);
   }
 }
 
@@ -523,7 +519,7 @@ function startPanDrag() {
   restorePanPlaybackRate();
 }
 
-function renderMinimap() {
+function renderMinimap(geometry = getViewportGeometry()) {
   if (!player || !video) {
     return;
   }
@@ -578,7 +574,7 @@ function renderMinimap() {
   settingsButton.classList.toggle("is-active", isMenuOpen);
   settingsButton.setAttribute("aria-expanded", String(isMenuOpen));
 
-  const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = getViewportGeometry();
+  const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = geometry;
   const minimapSize = createMinimapSize(sourceWidth, sourceHeight, state.rotation, viewportWidth, viewportHeight);
   const viewportPreviewSize = createMinimapSize(viewportWidth, viewportHeight);
   const indicator = createViewportIndicator(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
@@ -667,7 +663,6 @@ function setZoom(zoom, shouldRender = true) {
 
   cancelWheelZoomAnimation();
   state = createViewportCenteredZoomState(state, zoom);
-  clampCurrentPanState();
   if (shouldRender) {
     renderToolbar();
   }
@@ -692,7 +687,6 @@ function setWheelZoom(zoom, event) {
     wheelZoomFrame = 0;
     const nextZoom = getWheelZoomAnimationStep(state.zoom, zoom);
     state = createCursorCenteredZoomState(state, nextZoom, cursorOffsetX, cursorOffsetY);
-    clampCurrentPanState();
     applyTransform({ shouldRenderMinimap: false });
     if (state.zoom !== zoom) {
       wheelZoomFrame = requestAnimationFrame(animate);
@@ -713,6 +707,9 @@ function createZoomPanel() {
   let isSliderDragging = false;
   let activeSliderPointerId = null;
   let ignoreSliderMouseUpUntil = 0;
+  let sliderDragRect = null;
+  let pendingSliderClientX = null;
+  let sliderZoomFrame = 0;
 
   const value = document.createElement("input");
   value.className = "ytvt-zoom-value";
@@ -795,9 +792,26 @@ function createZoomPanel() {
   sliderTrack.append(sliderFill, sliderThumb);
   sliderHitArea.append(sliderTrack);
 
-  const updateZoomFromPointer = (event) => {
-    setZoom(getZoomFromPointerPosition(sliderHitArea.getBoundingClientRect(), event.clientX, state.zoom), false);
+  const applyZoomFromClientX = (clientX) => {
+    setZoom(getZoomFromPointerPosition(sliderDragRect, clientX, state.zoom), false);
     syncZoomControls();
+  };
+
+  const scheduleZoomFromPointer = (event) => {
+    pendingSliderClientX = event.clientX;
+    if (sliderZoomFrame) {
+      return;
+    }
+
+    sliderZoomFrame = requestAnimationFrame(() => {
+      sliderZoomFrame = 0;
+      const clientX = pendingSliderClientX;
+      pendingSliderClientX = null;
+      if (!isSliderDragging) {
+        return;
+      }
+      applyZoomFromClientX(clientX);
+    });
   };
 
   const onSliderMouseMove = (event) => {
@@ -807,7 +821,7 @@ function createZoomPanel() {
 
     event.preventDefault();
     event.stopPropagation();
-    updateZoomFromPointer(event);
+    scheduleZoomFromPointer(event);
   };
 
   const onSliderPointerMove = (event) => {
@@ -817,13 +831,19 @@ function createZoomPanel() {
 
     event.preventDefault();
     event.stopPropagation();
-    updateZoomFromPointer(event);
+    scheduleZoomFromPointer(event);
   };
 
   const cleanupDrag = ({ shouldSyncControls = true } = {}) => {
     isSliderDragging = false;
     activeSliderPointerId = null;
     ignoreSliderMouseUpUntil = 0;
+    if (sliderZoomFrame) {
+      cancelAnimationFrame(sliderZoomFrame);
+      sliderZoomFrame = 0;
+    }
+    pendingSliderClientX = null;
+    sliderDragRect = null;
     document.removeEventListener("pointermove", onSliderPointerMove, true);
     document.removeEventListener("pointerup", stopSliderDrag, true);
     document.removeEventListener("pointercancel", onSliderPointerCancel, true);
@@ -897,7 +917,8 @@ function createZoomPanel() {
     document.addEventListener("selectstart", blockSliderGesture, true);
     document.addEventListener("dragstart", blockSliderGesture, true);
     document.addEventListener("contextmenu", blockSliderGesture, true);
-    updateZoomFromPointer(event);
+    sliderDragRect = sliderHitArea.getBoundingClientRect();
+    applyZoomFromClientX(event.clientX);
   });
 
   sliderHitArea.addEventListener("mousedown", (event) => {
@@ -914,7 +935,8 @@ function createZoomPanel() {
     document.addEventListener("selectstart", blockSliderGesture, true);
     document.addEventListener("dragstart", blockSliderGesture, true);
     document.addEventListener("contextmenu", blockSliderGesture, true);
-    updateZoomFromPointer(event);
+    sliderDragRect = sliderHitArea.getBoundingClientRect();
+    applyZoomFromClientX(event.clientX);
   });
   sliderHitArea.addEventListener("keydown", (event) => {
     const nextZoom = getZoomFromSliderKey(event.key, state.zoom);
@@ -1319,7 +1341,6 @@ function onPointerMove(event) {
 
   state.panX = Math.round(dragStart.panX + event.clientX - dragStart.x);
   state.panY = Math.round(dragStart.panY + event.clientY - dragStart.y);
-  clampCurrentPanState();
   viewportControlsLastActivityAt = Date.now();
   applyTransform();
   event.preventDefault();

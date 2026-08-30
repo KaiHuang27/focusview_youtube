@@ -123,6 +123,19 @@ test("high-frequency pointer activity avoids redundant work", async () => {
   }
 });
 
+test("transform and slider updates avoid repeated layout work", async () => {
+  for (const contentUrl of CONTENT_SCRIPT_PATHS) {
+    const content = await readFile(contentUrl, "utf8");
+
+    assert.match(content, /const geometry = getViewportGeometry\(\);[\s\S]*updateTransformRule\(geometry\)/, contentUrl.pathname + " captures viewport geometry once per transform update");
+    assert.match(content, /renderMinimap\(geometry\)/, contentUrl.pathname + " reuses the transform geometry for the minimap");
+    assert.doesNotMatch(content, /function clampCurrentPanState/, contentUrl.pathname + " avoids a duplicate pan-clamp geometry read");
+    assert.match(content, /sliderDragRect = sliderHitArea\.getBoundingClientRect\(\)/, contentUrl.pathname + " captures slider geometry once when dragging starts");
+    assert.match(content, /sliderZoomFrame = requestAnimationFrame/, contentUrl.pathname + " batches slider movement into animation frames");
+    assert.doesNotMatch(content, /getZoomFromPointerPosition\(sliderHitArea\.getBoundingClientRect\(\)/, contentUrl.pathname + " does not force a layout read for every slider move");
+  }
+});
+
 test("Safari app page points users to Safari Settings Extensions", async () => {
   const html = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Base.lproj/Main.html", import.meta.url), "utf8");
   const script = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Script.js", import.meta.url), "utf8");

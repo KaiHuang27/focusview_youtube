@@ -34,6 +34,7 @@ Best for:
 - Mirror videos horizontally.
 - Player discovery is event-driven and its page observer runs only on watch pages, so other YouTube pages do not process player mutations.
 - Pointer tracking and player wheel listeners attach only while zoom mode is active, and transient controls reuse a single inactivity timer.
+- Each transform frame reuses one viewport geometry snapshot, and continuous slider movement is batched to the display frame rate.
 
 ## Privacy And Permissions
 
