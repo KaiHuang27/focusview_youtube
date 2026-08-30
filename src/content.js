@@ -73,8 +73,6 @@ let resizeObserver = null;
 let playerStructureObserver = null;
 let observedPlayer = null;
 let syncFrame = 0;
-let videoStyleObserver = null;
-let reapplyFrame = 0;
 let wheelZoomFrame = 0;
 let wheelUiFrame = 0;
 let currentVideoKey = "";
@@ -355,25 +353,6 @@ function applyTransform({ shouldRenderMinimap = true } = {}) {
   }
 }
 
-function scheduleTransformReapply(frames = 6) {
-  if (!shouldReapplyTransformAfterMutation(state) || reapplyFrame) {
-    return;
-  }
-
-  sync();
-  let remainingFrames = frames;
-  const reapply = () => {
-    reapplyFrame = 0;
-    applyTransform({ shouldRenderMinimap: false });
-    remainingFrames -= 1;
-    if (remainingFrames > 0) {
-      reapplyFrame = requestAnimationFrame(reapply);
-    }
-  };
-
-  reapplyFrame = requestAnimationFrame(reapply);
-}
-
 function cancelWheelZoomAnimation() {
   if (wheelZoomFrame) {
     cancelAnimationFrame(wheelZoomFrame);
@@ -404,8 +383,6 @@ function scheduleWheelUiSync() {
 function clearTransform() {
   if (video) {
     clearTransformRule();
-    video.style.transform = "";
-    video.style.transformOrigin = "";
     video.style.cursor = "";
   }
 
@@ -1555,8 +1532,6 @@ function unbindVideo() {
     video.removeEventListener("ratechange", onVideoRateChange);
     video.style.cursor = "";
   }
-  videoStyleObserver?.disconnect();
-  videoStyleObserver = null;
   video = null;
 }
 
@@ -1573,10 +1548,6 @@ function bindVideo(nextVideo) {
   video.addEventListener("pointercancel", endDrag);
   video.addEventListener("click", onVideoClick, true);
   video.addEventListener("ratechange", onVideoRateChange);
-  videoStyleObserver = new MutationObserver(() => {
-    scheduleTransformReapply();
-  });
-  videoStyleObserver.observe(video, { attributes: true, attributeFilter: ["style"] });
   applyTransform();
 }
 
@@ -1638,10 +1609,6 @@ function sync() {
     toolbar?.remove();
     toolbar = null;
     unbindVideo();
-    if (reapplyFrame) {
-      cancelAnimationFrame(reapplyFrame);
-      reapplyFrame = 0;
-    }
     wheelTarget?.removeEventListener("wheel", onWheel, true);
     wheelTarget?.removeEventListener("pointerenter", onPlayerPointerEnter);
     wheelTarget?.removeEventListener("pointerleave", onPlayerPointerLeave);
@@ -1747,8 +1714,8 @@ function start() {
   document.addEventListener("keydown", onShortcutKeyDown, true);
   document.addEventListener("pointerdown", closeMenuOnOutsidePointer, true);
   document.addEventListener("keydown", closeMenuOnEscape);
-  document.addEventListener("fullscreenchange", () => scheduleTransformReapply(12));
-  document.addEventListener("webkitfullscreenchange", () => scheduleTransformReapply(12));
+  document.addEventListener("fullscreenchange", scheduleSync);
+  document.addEventListener("webkitfullscreenchange", scheduleSync);
 }
 
 start();

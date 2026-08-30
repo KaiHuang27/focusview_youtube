@@ -136,6 +136,18 @@ test("transform and slider updates avoid repeated layout work", async () => {
   }
 });
 
+test("transform refresh stays event driven without frame retry loops", async () => {
+  for (const contentUrl of CONTENT_SCRIPT_PATHS) {
+    const content = await readFile(contentUrl, "utf8");
+
+    assert.doesNotMatch(content, /videoStyleObserver/, contentUrl.pathname + " does not observe YouTube inline style churn");
+    assert.doesNotMatch(content, /scheduleTransformReapply|remainingFrames/, contentUrl.pathname + " does not retry identical transforms across frames");
+    assert.match(content, /new ResizeObserver\(\(\) => applyTransform\(\)\)/, contentUrl.pathname + " reapplies transforms from player size changes");
+    assert.match(content, /addEventListener\("fullscreenchange", scheduleSync\)/, contentUrl.pathname + " resynchronizes once when fullscreen changes");
+    assert.doesNotMatch(content, /video\.style\.transform = ""/, contentUrl.pathname + " does not clear YouTube-owned inline transforms");
+  }
+});
+
 test("Safari app page points users to Safari Settings Extensions", async () => {
   const html = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Base.lproj/Main.html", import.meta.url), "utf8");
   const script = await readFile(new URL("../platforms/safari/FocusView/FocusView/Resources/Script.js", import.meta.url), "utf8");

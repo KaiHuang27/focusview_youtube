@@ -32,7 +32,7 @@ Best for:
 - Use the zoom panel for centered `100%` to `500%` zoom control.
 - Rotate videos by `90°`, `180°`, or `270°`.
 - Mirror videos horizontally.
-- Player discovery is event-driven and its page observer runs only on watch pages, so other YouTube pages do not process player mutations.
+- Player discovery and transform refresh are event-driven; player structure is observed only on watch pages, with no frame retry loop for inline style changes.
 - Pointer tracking and player wheel listeners attach only while zoom mode is active, and transient controls reuse a single inactivity timer.
 - Each transform frame reuses one viewport geometry snapshot, and continuous slider movement is batched to the display frame rate.
 
