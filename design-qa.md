@@ -62,7 +62,7 @@ No actionable P0, P1, or P2 differences remain.
 
 ## Follow-up Polish
 
-- P3: replace the placeholder Safari App Store review URL after the live app ID is available.
+- Done: replaced the placeholder Safari App Store review URL with the live FocusView product page rating link.
 
 ## Implementation Checklist
 

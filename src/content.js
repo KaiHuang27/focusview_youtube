@@ -56,7 +56,7 @@ const PAN_LONG_PRESS_MS = 220;
 const PAN_MOVE_THRESHOLD_PX = 6;
 const REVIEW_PROMPT_STORAGE_KEY = "focusview-review-prompt-v2";
 const CHROME_REVIEW_URL = "https://chromewebstore.google.com/detail/jbdndcjclbghkmbiehjigaapembpbgdb/reviews";
-const SAFARI_REVIEW_URL = "https://apps.apple.com/app/id0000000000?action=write-review";
+const SAFARI_REVIEW_URL = "https://apps.apple.com/us/app/focusview-zoom-for-youtube/id6786108302?action=write-review";
 
 let state = createDefaultState();
 let video = null;
