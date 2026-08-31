@@ -1,7 +1,8 @@
 (function (root) {
   "use strict";
 
-  const DEFAULT_REVIEW_PROMPT_THRESHOLD = 10;
+  const DEFAULT_REVIEW_PROMPT_THRESHOLD = 2;
+  const LEGACY_REVIEW_PROMPT_THRESHOLD = 10;
   const DEFAULT_REVIEW_PROMPT_SNOOZE_USES = 5;
 
   function createReviewPromptState(threshold = DEFAULT_REVIEW_PROMPT_THRESHOLD) {
@@ -14,8 +15,13 @@
     }
 
     const useCount = Number.isInteger(value.useCount) && value.useCount >= 0 ? value.useCount : 0;
-    const nextPromptAt = Number.isInteger(value.nextPromptAt) && value.nextPromptAt > 0 ? value.nextPromptAt : threshold;
+    const storedNextPromptAt = Number.isInteger(value.nextPromptAt) && value.nextPromptAt > 0 ? value.nextPromptAt : threshold;
     const status = ["active", "rated", "dismissed"].includes(value.status) ? value.status : "active";
+    const nextPromptAt = status === "active"
+      && storedNextPromptAt === LEGACY_REVIEW_PROMPT_THRESHOLD
+      && useCount < LEGACY_REVIEW_PROMPT_THRESHOLD
+      ? threshold
+      : storedNextPromptAt;
     return { useCount, nextPromptAt, status };
   }
 

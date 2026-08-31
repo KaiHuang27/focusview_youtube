@@ -15,21 +15,30 @@ const {
   snoozeReviewPrompt,
 } = globalThis.YTVTReviewPrompt;
 
-test("review prompt starts after ten Zoom mode activations", () => {
+test("review prompt starts after two Zoom mode activations", () => {
   let state = createReviewPromptState();
 
-  assert.equal(DEFAULT_REVIEW_PROMPT_THRESHOLD, 10);
+  assert.equal(DEFAULT_REVIEW_PROMPT_THRESHOLD, 2);
   assert.equal(shouldShowReviewPrompt(state), false);
 
-  for (let use = 1; use <= 9; use += 1) {
-    state = recordReviewPromptUse(state);
-    assert.equal(state.useCount, use);
-    assert.equal(shouldShowReviewPrompt(state), false);
-  }
+  state = recordReviewPromptUse(state);
+  assert.equal(state.useCount, 1);
+  assert.equal(shouldShowReviewPrompt(state), false);
 
   state = recordReviewPromptUse(state);
-  assert.equal(state.useCount, 10);
+  assert.equal(state.useCount, 2);
   assert.equal(shouldShowReviewPrompt(state), true);
+});
+
+test("active states migrate from the old ten-use threshold", () => {
+  const migrated = parseReviewPromptState(JSON.stringify({ useCount: 1, nextPromptAt: 10, status: "active" }));
+  const snoozed = parseReviewPromptState(JSON.stringify({ useCount: 10, nextPromptAt: 15, status: "active" }));
+  const dismissed = parseReviewPromptState(JSON.stringify({ useCount: 1, nextPromptAt: 10, status: "dismissed" }));
+
+  assert.deepEqual(migrated, { useCount: 1, nextPromptAt: 2, status: "active" });
+  assert.equal(shouldShowReviewPrompt(recordReviewPromptUse(migrated)), true);
+  assert.deepEqual(snoozed, { useCount: 10, nextPromptAt: 15, status: "active" });
+  assert.deepEqual(dismissed, { useCount: 1, nextPromptAt: 10, status: "dismissed" });
 });
 
 test("Maybe Later snoozes the prompt for five more uses", () => {
@@ -40,7 +49,7 @@ test("Maybe Later snoozes the prompt for five more uses", () => {
 
   state = snoozeReviewPrompt(state);
   assert.equal(DEFAULT_REVIEW_PROMPT_SNOOZE_USES, 5);
-  assert.equal(state.nextPromptAt, 15);
+  assert.equal(state.nextPromptAt, 7);
   assert.equal(shouldShowReviewPrompt(state), false);
 
   for (let use = 0; use < 5; use += 1) {
@@ -50,7 +59,7 @@ test("Maybe Later snoozes the prompt for five more uses", () => {
 });
 
 test("rated and dismissed states never count or prompt again", () => {
-  const eligible = { useCount: 10, nextPromptAt: 10, status: "active" };
+  const eligible = { useCount: 2, nextPromptAt: 2, status: "active" };
 
   for (const status of ["rated", "dismissed"]) {
     const completed = completeReviewPrompt(eligible, status);

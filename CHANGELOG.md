@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Changed the in-player review prompt to appear when Zoom mode is turned on for the second time, including migration from the former ten-use threshold.
+
 ## 1.1.4 - 2026-08-28
 
 ### Added
