@@ -9,6 +9,7 @@
 
 ### Fixed
 
+- Migrated active review prompt state left by the former two-use threshold so existing local installs can show the first-use prompt immediately after updating.
 - Kept review counting functional in memory when browser and page storage are unavailable.
 - Cleared detached review dialogs after YouTube replaces the active player so later prompts can render normally.
 

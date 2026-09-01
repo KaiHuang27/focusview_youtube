@@ -27,12 +27,14 @@ test("review prompt starts after the first Zoom mode activation", () => {
   assert.equal(shouldShowReviewPrompt(state), true);
 });
 
-test("active states migrate from the old ten-use threshold", () => {
+test("active states migrate from older review thresholds", () => {
   const migrated = parseReviewPromptState(JSON.stringify({ useCount: 1, nextPromptAt: 10, status: "active" }));
+  const previous = parseReviewPromptState(JSON.stringify({ useCount: 1, nextPromptAt: 2, status: "active" }));
   const snoozed = parseReviewPromptState(JSON.stringify({ useCount: 10, nextPromptAt: 15, status: "active" }));
   const dismissed = parseReviewPromptState(JSON.stringify({ useCount: 1, nextPromptAt: 10, status: "dismissed" }));
 
   assert.deepEqual(migrated, { useCount: 1, nextPromptAt: 1, status: "active" });
+  assert.deepEqual(previous, { useCount: 1, nextPromptAt: 1, status: "active" });
   assert.equal(shouldShowReviewPrompt(recordReviewPromptUse(migrated)), true);
   assert.deepEqual(snoozed, { useCount: 10, nextPromptAt: 15, status: "active" });
   assert.deepEqual(dismissed, { useCount: 1, nextPromptAt: 10, status: "dismissed" });
