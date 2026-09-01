@@ -9,7 +9,6 @@ const {
   completeReviewPrompt,
   createReviewPromptStore,
   createReviewPromptState,
-  markReviewPromptShown,
   parseReviewPromptState,
   recordMeaningfulReviewUse,
   shouldShowReviewPrompt,
@@ -34,6 +33,10 @@ test("legacy activation counts reset while terminal decisions are preserved", ()
   assert.deepEqual(
     parseReviewPromptState(JSON.stringify({ useCount: 1, nextPromptAt: 1, status: "rated" })),
     { meaningfulUseCount: 0, status: "rated" }
+  );
+  assert.deepEqual(
+    parseReviewPromptState(JSON.stringify({ meaningfulUseCount: 3, status: "prompted" })),
+    { meaningfulUseCount: 3, status: "active" }
   );
 });
 
@@ -121,16 +124,13 @@ test("legacy page state remains recoverable when extension migration fails", asy
   assert.equal(pageData.get(key), serialized);
 });
 
-test("shown, rated, and dismissed states never count or prompt again", () => {
+test("only explicit rated and dismissed decisions stop future prompts", () => {
   let state = createReviewPromptState();
   for (let use = 0; use < DEFAULT_REVIEW_PROMPT_THRESHOLD; use += 1) {
     state = recordMeaningfulReviewUse(state);
   }
 
-  state = markReviewPromptShown(state);
-  assert.equal(state.status, "prompted");
-  assert.equal(shouldShowReviewPrompt(state), false);
-  assert.deepEqual(recordMeaningfulReviewUse(state), state);
+  assert.equal(shouldShowReviewPrompt(state), true);
 
   for (const status of ["rated", "dismissed"]) {
     const completed = completeReviewPrompt(state, status);

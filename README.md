@@ -26,7 +26,7 @@ Best for:
 ## Features
 
 - Press `Alt/Option + Shift + Z` to turn zoom mode on or off.
-- After three videos are meaningfully zoomed, a compact review card appears when zoom mode is turned off without covering the video.
+- After three videos are meaningfully zoomed, a compact review card appears when zoom mode is turned off without covering the video; unanswered cards can return until Rate or No thanks is selected.
 - Scroll to zoom videos from `100%` to `500%` around the mouse pointer.
 - Long-press and drag to move around a zoomed video.
 - Use the zoom panel for centered `100%` to `500%` zoom control.

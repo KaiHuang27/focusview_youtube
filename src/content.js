@@ -45,7 +45,6 @@ const {
 const {
   completeReviewPrompt,
   createReviewPromptStore,
-  markReviewPromptShown,
   recordMeaningfulReviewUse,
   shouldShowReviewPrompt,
 } = globalThis.YTVTReviewPrompt;
@@ -240,12 +239,13 @@ function recordMeaningfulZoomUse(zoom) {
 
 async function showEligibleReviewPrompt() {
   const promptState = await reviewPromptStatePromise || await reviewPromptStore.read();
+  if (reviewPrompt && !reviewPrompt.isConnected) {
+    removeReviewPrompt();
+  }
   if (state.panMode || reviewPrompt || !player?.isConnected || !shouldShowReviewPrompt(promptState)) {
     return;
   }
 
-  reviewPromptStatePromise = reviewPromptStore.update(markReviewPromptShown);
-  await reviewPromptStatePromise;
   showReviewPrompt();
 }
 

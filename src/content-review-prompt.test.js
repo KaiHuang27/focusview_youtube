@@ -371,9 +371,16 @@ test("review card appears after the third meaningful use exits and Chrome Rate o
   zoomAndExit(document);
   await flushPromises();
 
-  const prompt = document.querySelector(".ytvt-review-card");
+  let prompt = document.querySelector(".ytvt-review-card");
   assert.ok(prompt, "review prompt should render after a third meaningful zoom session exits");
 
+  document.querySelector(".ytvt-trigger").click();
+  assert.equal(document.querySelector(".ytvt-review-card"), null, "re-entering Zoom mode removes the card");
+  document.querySelector(".ytvt-trigger").click();
+  await flushPromises();
+
+  prompt = document.querySelector(".ytvt-review-card");
+  assert.ok(prompt, "an unanswered card should retry after Zoom mode exits again");
   const rate = prompt.querySelector(".ytvt-review-primary");
   assert.equal(rate.href, CHROME_REVIEW_URL);
 
@@ -387,7 +394,7 @@ test("review card appears after the third meaningful use exits and Chrome Rate o
 test("Safari Rate opens the App Store product review page", async () => {
   const { document } = await loadContentScript({
     userAgent: "Mozilla/5.0 Version/17.0 Safari/605.1.15",
-    reviewState: { meaningfulUseCount: 2, status: "active" },
+    reviewState: { meaningfulUseCount: 3, status: "prompted" },
   });
 
   zoomAndExit(document);

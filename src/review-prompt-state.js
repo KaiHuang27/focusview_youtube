@@ -15,9 +15,7 @@
     const meaningfulUseCount = Number.isInteger(value.meaningfulUseCount) && value.meaningfulUseCount >= 0
       ? value.meaningfulUseCount
       : 0;
-    const status = ["active", "prompted", "rated", "dismissed"].includes(value.status)
-      ? value.status
-      : "active";
+    const status = ["rated", "dismissed"].includes(value.status) ? value.status : "active";
     return { meaningfulUseCount, status };
   }
 
@@ -42,11 +40,6 @@
   function shouldShowReviewPrompt(state) {
     const current = normalizeReviewPromptState(state);
     return current.status === "active" && current.meaningfulUseCount >= DEFAULT_REVIEW_PROMPT_THRESHOLD;
-  }
-
-  function markReviewPromptShown(state) {
-    const current = normalizeReviewPromptState(state);
-    return shouldShowReviewPrompt(current) ? { ...current, status: "prompted" } : current;
   }
 
   function completeReviewPrompt(state, status) {
@@ -128,7 +121,6 @@
     completeReviewPrompt,
     createReviewPromptStore,
     createReviewPromptState,
-    markReviewPromptShown,
     normalizeReviewPromptState,
     parseReviewPromptState,
     recordMeaningfulReviewUse,
