@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Changed the in-player review prompt to appear when Zoom mode is turned on for the second time, including migration from the former ten-use threshold.
+- Changed the in-player review prompt to appear when Zoom mode is turned on for the first time, including migration from the former ten-use threshold.
 - Moved review prompt state into extension-owned local storage while retaining migration from existing YouTube page storage.
 
 ### Fixed

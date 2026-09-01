@@ -1,7 +1,7 @@
 (function (root) {
   "use strict";
 
-  const DEFAULT_REVIEW_PROMPT_THRESHOLD = 2;
+  const DEFAULT_REVIEW_PROMPT_THRESHOLD = 1;
   const LEGACY_REVIEW_PROMPT_THRESHOLD = 10;
   const DEFAULT_REVIEW_PROMPT_SNOOZE_USES = 5;
 
