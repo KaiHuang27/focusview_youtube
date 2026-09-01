@@ -441,108 +441,57 @@
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.22);
 }
 
-@keyframes ytvt-review-enter {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.ytvt-review-overlay {
+.ytvt-review-card {
   position: absolute;
   z-index: 2147483647;
-  inset: 0;
-  display: grid;
-  place-items: center;
+  right: 16px;
+  bottom: 64px;
+  width: min(300px, calc(100% - 32px));
   box-sizing: border-box;
-  padding: 24px;
-  background: rgba(0, 0, 0, 0.52);
+  padding: 16px;
+  color: rgba(0, 0, 0, 0.88);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
   text-shadow: none;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.ytvt-review-dialog {
-  position: relative;
-  display: flex;
-  width: min(388px, calc(100% - 32px));
-  box-sizing: border-box;
-  padding: 30px 30px 24px;
-  flex-direction: column;
-  align-items: center;
-  color: rgba(0, 0, 0, 0.88);
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 16px;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.3);
-  text-align: center;
-  animation: ytvt-review-enter 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.ytvt-review-close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: grid;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  place-items: center;
-  color: rgba(60, 60, 67, 0.5);
-  background: transparent;
-  border: 0;
-  border-radius: 50%;
-  font: 300 32px/1 -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-  cursor: pointer;
-}
-
-.ytvt-review-close:hover {
-  color: rgba(60, 60, 67, 0.78);
-  background: rgba(60, 60, 67, 0.08);
-}
-
-.ytvt-review-icon {
-  display: block;
-  width: 64px;
-  height: 64px;
-  border-radius: 15px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.14);
 }
 
 .ytvt-review-title {
-  margin: 16px 0 6px;
-  color: inherit;
-  font: 650 22px/1.2 -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-  letter-spacing: -0.02em;
+  display: block;
+  font: 650 15px/1.3 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
 }
 
 .ytvt-review-description {
-  max-width: 260px;
-  margin: 0 0 18px;
+  margin: 4px 0 14px;
   color: rgba(60, 60, 67, 0.68);
-  font: 400 14px/1.42 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  font: 400 13px/1.4 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+}
+
+.ytvt-review-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ytvt-review-primary,
+.ytvt-review-secondary {
+  display: inline-flex;
+  min-height: 36px;
+  box-sizing: border-box;
+  padding: 0 14px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 9px;
+  font: 600 13px/1.2 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .ytvt-review-primary {
-  display: inline-flex;
-  width: 248px;
-  max-width: 100%;
-  min-height: 48px;
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: center;
   color: rgb(255, 255, 255);
   background: rgb(0, 122, 255);
-  border-radius: 10px;
-  font: 600 16px/1.2 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-  text-decoration: none;
-  transition: background-color 120ms ease, transform 120ms ease;
 }
 
 .ytvt-review-primary:hover {
@@ -550,31 +499,15 @@
   background: rgb(0, 113, 235);
 }
 
-.ytvt-review-primary:active {
-  transform: scale(0.985);
-}
-
 .ytvt-review-secondary {
-  min-height: 44px;
-  margin-top: 8px;
-  padding: 0 16px;
-  color: rgb(0, 122, 255);
-  background: transparent;
-  border: 0;
-  border-radius: 8px;
-  font: 550 14px/1.2 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-  cursor: pointer;
+  color: rgba(60, 60, 67, 0.78);
+  background: rgba(60, 60, 67, 0.08);
 }
 
 .ytvt-review-secondary:hover {
-  background: rgba(0, 122, 255, 0.08);
+  background: rgba(60, 60, 67, 0.14);
 }
 
-.ytvt-review-dialog:focus {
-  outline: none;
-}
-
-.ytvt-review-close:focus-visible,
 .ytvt-review-primary:focus-visible,
 .ytvt-review-secondary:focus-visible {
   outline: 3px solid rgba(0, 122, 255, 0.42);
@@ -582,14 +515,10 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .ytvt-review-dialog {
+  .ytvt-review-card {
     color: rgba(255, 255, 255, 0.94);
     background: rgba(36, 36, 38, 0.98);
     border-color: rgba(255, 255, 255, 0.12);
-  }
-
-  .ytvt-review-close {
-    color: rgba(235, 235, 245, 0.52);
   }
 
   .ytvt-review-description {
@@ -601,40 +530,18 @@
   }
 
   .ytvt-review-secondary {
-    color: rgb(10, 132, 255);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ytvt-review-dialog {
-    animation: none;
-  }
-
-  .ytvt-review-primary {
-    transition: none;
+    color: rgba(235, 235, 245, 0.82);
+    background: rgba(235, 235, 245, 0.12);
   }
 }
 
 @media (max-width: 720px) {
-  .ytvt-review-overlay {
-    padding: 16px;
+  .ytvt-review-card {
+    right: 8px;
+    bottom: 56px;
+    width: min(280px, calc(100% - 16px));
   }
 
-  .ytvt-review-dialog {
-    width: min(340px, 100%);
-    padding: 26px 20px 18px;
-  }
-
-  .ytvt-review-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 14px;
-  }
-
-  .ytvt-review-title {
-    margin-top: 14px;
-    font-size: 20px;
-  }
   .ytvt-toolbar.is-floating {
     right: 8px;
   }

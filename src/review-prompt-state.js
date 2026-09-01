@@ -1,62 +1,56 @@
 (function (root) {
   "use strict";
 
-  const DEFAULT_REVIEW_PROMPT_THRESHOLD = 1;
-  const LEGACY_REVIEW_PROMPT_THRESHOLD = 10;
-  const PREVIOUS_REVIEW_PROMPT_THRESHOLD = 2;
-  const DEFAULT_REVIEW_PROMPT_SNOOZE_USES = 5;
+  const DEFAULT_REVIEW_PROMPT_THRESHOLD = 3;
 
-  function createReviewPromptState(threshold = DEFAULT_REVIEW_PROMPT_THRESHOLD) {
-    return { useCount: 0, nextPromptAt: threshold, status: "active" };
+  function createReviewPromptState() {
+    return { meaningfulUseCount: 0, status: "active" };
   }
 
-  function normalizeReviewPromptState(value, threshold = DEFAULT_REVIEW_PROMPT_THRESHOLD) {
+  function normalizeReviewPromptState(value) {
     if (!value || typeof value !== "object") {
-      return createReviewPromptState(threshold);
+      return createReviewPromptState();
     }
 
-    const useCount = Number.isInteger(value.useCount) && value.useCount >= 0 ? value.useCount : 0;
-    const storedNextPromptAt = Number.isInteger(value.nextPromptAt) && value.nextPromptAt > 0 ? value.nextPromptAt : threshold;
-    const status = ["active", "rated", "dismissed"].includes(value.status) ? value.status : "active";
-    const shouldMigrateThreshold = storedNextPromptAt === LEGACY_REVIEW_PROMPT_THRESHOLD
-      || storedNextPromptAt === PREVIOUS_REVIEW_PROMPT_THRESHOLD;
-    const nextPromptAt = status === "active"
-      && shouldMigrateThreshold
-      && useCount < LEGACY_REVIEW_PROMPT_THRESHOLD
-      ? threshold
-      : storedNextPromptAt;
-    return { useCount, nextPromptAt, status };
+    const meaningfulUseCount = Number.isInteger(value.meaningfulUseCount) && value.meaningfulUseCount >= 0
+      ? value.meaningfulUseCount
+      : 0;
+    const status = ["active", "prompted", "rated", "dismissed"].includes(value.status)
+      ? value.status
+      : "active";
+    return { meaningfulUseCount, status };
   }
 
-  function parseReviewPromptState(serialized, threshold = DEFAULT_REVIEW_PROMPT_THRESHOLD) {
+  function parseReviewPromptState(serialized) {
     if (!serialized) {
-      return createReviewPromptState(threshold);
+      return createReviewPromptState();
     }
     try {
-      return normalizeReviewPromptState(JSON.parse(serialized), threshold);
+      return normalizeReviewPromptState(JSON.parse(serialized));
     } catch {
-      return createReviewPromptState(threshold);
+      return createReviewPromptState();
     }
   }
 
-  function recordReviewPromptUse(state, threshold = DEFAULT_REVIEW_PROMPT_THRESHOLD) {
-    const current = normalizeReviewPromptState(state, threshold);
-    return current.status === "active" ? { ...current, useCount: current.useCount + 1 } : current;
+  function recordMeaningfulReviewUse(state) {
+    const current = normalizeReviewPromptState(state);
+    return current.status === "active"
+      ? { ...current, meaningfulUseCount: current.meaningfulUseCount + 1 }
+      : current;
   }
 
-  function shouldShowReviewPrompt(state, threshold = DEFAULT_REVIEW_PROMPT_THRESHOLD) {
-    const current = normalizeReviewPromptState(state, threshold);
-    return current.status === "active" && current.useCount >= current.nextPromptAt;
+  function shouldShowReviewPrompt(state) {
+    const current = normalizeReviewPromptState(state);
+    return current.status === "active" && current.meaningfulUseCount >= DEFAULT_REVIEW_PROMPT_THRESHOLD;
   }
 
-  function snoozeReviewPrompt(state, snoozeUses = DEFAULT_REVIEW_PROMPT_SNOOZE_USES, threshold = DEFAULT_REVIEW_PROMPT_THRESHOLD) {
-    const current = normalizeReviewPromptState(state, threshold);
-    const safeSnoozeUses = Number.isInteger(snoozeUses) && snoozeUses > 0 ? snoozeUses : DEFAULT_REVIEW_PROMPT_SNOOZE_USES;
-    return { ...current, nextPromptAt: current.useCount + safeSnoozeUses, status: "active" };
+  function markReviewPromptShown(state) {
+    const current = normalizeReviewPromptState(state);
+    return shouldShowReviewPrompt(current) ? { ...current, status: "prompted" } : current;
   }
 
-  function completeReviewPrompt(state, status, threshold = DEFAULT_REVIEW_PROMPT_THRESHOLD) {
-    const current = normalizeReviewPromptState(state, threshold);
+  function completeReviewPrompt(state, status) {
+    const current = normalizeReviewPromptState(state);
     return { ...current, status: status === "rated" ? "rated" : "dismissed" };
   }
 
@@ -72,6 +66,29 @@
       } catch {
         return null;
       }
+    }
+
+    function clearPageState() {
+      try {
+        pageStorage?.removeItem?.(key);
+      } catch {
+        // Legacy page storage is best-effort migration input only.
+      }
+    }
+
+    async function write(state, { shouldClearPageState = false } = {}) {
+      fallbackState = normalizeReviewPromptState(state);
+      if (activeStorageArea?.set) {
+        try {
+          await activeStorageArea.set({ [key]: fallbackState });
+          if (shouldClearPageState) {
+            clearPageState();
+          }
+        } catch {
+          activeStorageArea = null;
+        }
+      }
+      return fallbackState;
     }
 
     async function read() {
@@ -90,24 +107,9 @@
         }
       }
 
-      fallbackState = readPageState() || fallbackState;
-      return fallbackState;
-    }
-
-    async function write(state) {
-      fallbackState = normalizeReviewPromptState(state);
-      const serialized = JSON.stringify(fallbackState);
-      try {
-        pageStorage?.setItem?.(key, serialized);
-      } catch {
-        // The in-memory state remains available for this page.
-      }
-      if (activeStorageArea?.set) {
-        try {
-          await activeStorageArea.set({ [key]: serialized });
-        } catch {
-          activeStorageArea = null;
-        }
+      const pageState = readPageState();
+      if (pageState) {
+        return write(pageState, { shouldClearPageState: true });
       }
       return fallbackState;
     }
@@ -122,15 +124,14 @@
   }
 
   root.YTVTReviewPrompt = {
-    DEFAULT_REVIEW_PROMPT_SNOOZE_USES,
     DEFAULT_REVIEW_PROMPT_THRESHOLD,
     completeReviewPrompt,
     createReviewPromptStore,
     createReviewPromptState,
+    markReviewPromptShown,
     normalizeReviewPromptState,
     parseReviewPromptState,
-    recordReviewPromptUse,
+    recordMeaningfulReviewUse,
     shouldShowReviewPrompt,
-    snoozeReviewPrompt,
   };
 })(typeof globalThis !== "undefined" ? globalThis : window);

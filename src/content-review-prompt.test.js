@@ -267,13 +267,19 @@ function createFakeStorage() {
       setItem: (key, value) => {
         data[key] = value;
       },
+      removeItem: (key) => {
+        delete data[key];
+      },
     },
   };
 }
 
-async function loadContentScript({ userAgent }) {
+async function loadContentScript({ userAgent, reviewState = null }) {
   const document = new FakeDocument();
   const storage = createFakeStorage();
+  if (reviewState) {
+    storage.data[REVIEW_STORAGE_KEY] = reviewState;
+  }
   const player = document.createElement("div");
   player.className = "html5-video-player";
   const controls = document.createElement("div");
@@ -341,16 +347,32 @@ async function flushPromises() {
   await new Promise((resolve) => setImmediate(resolve));
 }
 
-test("review popup appears on first Zoom mode use and Chrome Rate opens the product page", async () => {
+function zoomAndExit(document) {
+  document.querySelector(".ytvt-trigger").click();
+  document.querySelector(".html5-video-player").dispatchEvent({
+    type: "wheel",
+    deltaY: -100,
+    deltaMode: 0,
+    clientX: 640,
+    clientY: 360,
+    preventDefault() {},
+    stopPropagation() {},
+    stopImmediatePropagation() {},
+  });
+  document.querySelector(".ytvt-trigger").click();
+}
+
+test("review card appears after the third meaningful use exits and Chrome Rate opens the product page", async () => {
   const { document, storage } = await loadContentScript({
     userAgent: "Mozilla/5.0 Chrome/120 Safari/537.36",
+    reviewState: { meaningfulUseCount: 2, status: "active" },
   });
 
-  document.querySelector(".ytvt-trigger").click();
+  zoomAndExit(document);
   await flushPromises();
 
-  const prompt = document.querySelector(".ytvt-review-overlay");
-  assert.ok(prompt, "review prompt should render after the first Zoom mode activation");
+  const prompt = document.querySelector(".ytvt-review-card");
+  assert.ok(prompt, "review prompt should render after a third meaningful zoom session exits");
 
   const rate = prompt.querySelector(".ytvt-review-primary");
   assert.equal(rate.href, CHROME_REVIEW_URL);
@@ -358,17 +380,31 @@ test("review popup appears on first Zoom mode use and Chrome Rate opens the prod
   rate.click();
   await flushPromises();
 
-  assert.equal(JSON.parse(storage.data[REVIEW_STORAGE_KEY]).status, "rated");
-  assert.equal(document.querySelector(".ytvt-review-overlay"), null);
+  assert.equal(storage.data[REVIEW_STORAGE_KEY].status, "rated");
+  assert.equal(document.querySelector(".ytvt-review-card"), null);
 });
 
 test("Safari Rate opens the App Store product review page", async () => {
   const { document } = await loadContentScript({
     userAgent: "Mozilla/5.0 Version/17.0 Safari/605.1.15",
+    reviewState: { meaningfulUseCount: 2, status: "active" },
   });
 
-  document.querySelector(".ytvt-trigger").click();
+  zoomAndExit(document);
   await flushPromises();
 
   assert.equal(document.querySelector(".ytvt-review-primary").href, SAFARI_REVIEW_URL);
+});
+
+test("opening Zoom mode alone never shows or counts a review use", async () => {
+  const { document, storage } = await loadContentScript({
+    userAgent: "Mozilla/5.0 Chrome/120 Safari/537.36",
+  });
+
+  document.querySelector(".ytvt-trigger").click();
+  document.querySelector(".ytvt-trigger").click();
+  await flushPromises();
+
+  assert.equal(document.querySelector(".ytvt-review-card"), null);
+  assert.equal(storage.data[REVIEW_STORAGE_KEY], undefined);
 });

@@ -4,14 +4,14 @@
 
 ### Changed
 
-- Changed the in-player review prompt to appear when Zoom mode is turned on for the first time, including migration from the former ten-use threshold.
-- Moved review prompt state into extension-owned local storage while retaining migration from existing YouTube page storage.
+- Replaced the blocking review dialog with a compact card that appears after Zoom mode exits following the third meaningfully zoomed video.
+- Simplified review actions to Rate and No thanks, asks only once, and keeps the toolbar popup rating link permanently available.
+- Stores review state only in extension-local storage after a one-time migration from legacy YouTube page storage.
 
 ### Fixed
 
-- Migrated active review prompt state left by the former two-use threshold so existing local installs can show the first-use prompt immediately after updating.
-- Kept review counting functional in memory when browser and page storage are unavailable.
-- Cleared detached review dialogs after YouTube replaces the active player so later prompts can render normally.
+- Opening Zoom mode without actually zooming no longer counts toward the review prompt.
+- Prevented delayed storage reads from showing the review card after Zoom mode has been re-enabled or the player has been replaced.
 
 ## 1.1.4 - 2026-08-28
 

@@ -26,7 +26,7 @@ Best for:
 ## Features
 
 - Press `Alt/Option + Shift + Z` to turn zoom mode on or off.
-- The review prompt appears when zoom mode is turned on for the first time and links Safari users to the live App Store review page.
+- After three videos are meaningfully zoomed, a compact review card appears when zoom mode is turned off without covering the video.
 - Scroll to zoom videos from `100%` to `500%` around the mouse pointer.
 - Long-press and drag to move around a zoomed video.
 - Use the zoom panel for centered `100%` to `500%` zoom control.
