@@ -57,10 +57,72 @@
     return { ...current, status: status === "rated" ? "rated" : "dismissed" };
   }
 
+  function createReviewPromptStore({ key, storageArea = null, pageStorage = null } = {}) {
+    let activeStorageArea = storageArea;
+    let fallbackState = createReviewPromptState();
+    let updateQueue = Promise.resolve();
+
+    function readPageState() {
+      try {
+        const serialized = pageStorage?.getItem?.(key);
+        return serialized ? parseReviewPromptState(serialized) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    async function read() {
+      if (activeStorageArea?.get) {
+        try {
+          const stored = await activeStorageArea.get(key);
+          const value = stored?.[key];
+          if (value !== undefined && value !== null) {
+            fallbackState = typeof value === "string"
+              ? parseReviewPromptState(value)
+              : normalizeReviewPromptState(value);
+            return fallbackState;
+          }
+        } catch {
+          activeStorageArea = null;
+        }
+      }
+
+      fallbackState = readPageState() || fallbackState;
+      return fallbackState;
+    }
+
+    async function write(state) {
+      fallbackState = normalizeReviewPromptState(state);
+      const serialized = JSON.stringify(fallbackState);
+      try {
+        pageStorage?.setItem?.(key, serialized);
+      } catch {
+        // The in-memory state remains available for this page.
+      }
+      if (activeStorageArea?.set) {
+        try {
+          await activeStorageArea.set({ [key]: serialized });
+        } catch {
+          activeStorageArea = null;
+        }
+      }
+      return fallbackState;
+    }
+
+    function update(transform) {
+      const operation = updateQueue.then(async () => write(transform(await read())));
+      updateQueue = operation.catch(() => fallbackState);
+      return operation;
+    }
+
+    return { read, update, write };
+  }
+
   root.YTVTReviewPrompt = {
     DEFAULT_REVIEW_PROMPT_SNOOZE_USES,
     DEFAULT_REVIEW_PROMPT_THRESHOLD,
     completeReviewPrompt,
+    createReviewPromptStore,
     createReviewPromptState,
     normalizeReviewPromptState,
     parseReviewPromptState,

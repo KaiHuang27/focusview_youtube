@@ -46,7 +46,7 @@ const {
   DEFAULT_REVIEW_PROMPT_SNOOZE_USES,
   DEFAULT_REVIEW_PROMPT_THRESHOLD,
   completeReviewPrompt,
-  parseReviewPromptState,
+  createReviewPromptStore,
   recordReviewPromptUse,
   shouldShowReviewPrompt,
   snoozeReviewPrompt,
@@ -57,6 +57,20 @@ const PAN_MOVE_THRESHOLD_PX = 6;
 const REVIEW_PROMPT_STORAGE_KEY = "focusview-review-prompt-v2";
 const CHROME_REVIEW_URL = "https://chromewebstore.google.com/detail/jbdndcjclbghkmbiehjigaapembpbgdb/reviews";
 const SAFARI_REVIEW_URL = "https://apps.apple.com/us/app/focusview-zoom-for-youtube/id6786108302?action=write-review";
+
+function getPageStorage() {
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+}
+
+const reviewPromptStore = createReviewPromptStore({
+  key: REVIEW_PROMPT_STORAGE_KEY,
+  storageArea: globalThis.browser?.storage?.local || globalThis.chrome?.storage?.local || null,
+  pageStorage: getPageStorage(),
+});
 
 let state = createDefaultState();
 let video = null;
@@ -154,22 +168,6 @@ function getReviewUrl() {
   return isSafari ? SAFARI_REVIEW_URL : CHROME_REVIEW_URL;
 }
 
-function readReviewPromptState() {
-  try {
-    return parseReviewPromptState(window.localStorage.getItem(REVIEW_PROMPT_STORAGE_KEY));
-  } catch {
-    return parseReviewPromptState(null);
-  }
-}
-
-function writeReviewPromptState(nextState) {
-  try {
-    window.localStorage.setItem(REVIEW_PROMPT_STORAGE_KEY, JSON.stringify(nextState));
-  } catch {
-    // Keep the prompt usable for this page when storage is unavailable.
-  }
-}
-
 function removeReviewPrompt({ shouldRestoreFocus = true } = {}) {
   if (!reviewPrompt) {
     return;
@@ -185,12 +183,12 @@ function removeReviewPrompt({ shouldRestoreFocus = true } = {}) {
 }
 
 function snoozeCurrentReviewPrompt() {
-  writeReviewPromptState(snoozeReviewPrompt(readReviewPromptState(), DEFAULT_REVIEW_PROMPT_SNOOZE_USES));
+  void reviewPromptStore.update((promptState) => snoozeReviewPrompt(promptState, DEFAULT_REVIEW_PROMPT_SNOOZE_USES));
   removeReviewPrompt();
 }
 
 function dismissCurrentReviewPrompt() {
-  writeReviewPromptState(completeReviewPrompt(readReviewPromptState(), "dismissed"));
+  void reviewPromptStore.update((promptState) => completeReviewPrompt(promptState, "dismissed"));
   removeReviewPrompt();
 }
 
@@ -218,8 +216,11 @@ function onReviewPromptKeyDown(event) {
   }
 }
 
-function showReviewPrompt(promptState = readReviewPromptState()) {
-  if (!player || reviewPrompt || !shouldShowReviewPrompt(promptState)) {
+function showReviewPrompt(promptState) {
+  if (reviewPrompt && !reviewPrompt.isConnected) {
+    removeReviewPrompt({ shouldRestoreFocus: false });
+  }
+  if (!player?.isConnected || reviewPrompt || !shouldShowReviewPrompt(promptState)) {
     return;
   }
 
@@ -278,7 +279,7 @@ function showReviewPrompt(promptState = readReviewPromptState()) {
   rate.rel = "noopener noreferrer";
   rate.textContent = "Rate FocusView";
   rate.addEventListener("click", () => {
-    writeReviewPromptState(completeReviewPrompt(readReviewPromptState(), "rated"));
+    void reviewPromptStore.update((currentState) => completeReviewPrompt(currentState, "rated"));
     removeReviewPrompt();
   });
 
@@ -297,11 +298,13 @@ function showReviewPrompt(promptState = readReviewPromptState()) {
 }
 
 function recordZoomModeUse() {
-  const nextState = recordReviewPromptUse(readReviewPromptState(), DEFAULT_REVIEW_PROMPT_THRESHOLD);
-  writeReviewPromptState(nextState);
-  if (shouldShowReviewPrompt(nextState)) {
-    showReviewPrompt(nextState);
-  }
+  void reviewPromptStore
+    .update((promptState) => recordReviewPromptUse(promptState, DEFAULT_REVIEW_PROMPT_THRESHOLD))
+    .then((nextState) => {
+      if (shouldShowReviewPrompt(nextState)) {
+        showReviewPrompt(nextState);
+      }
+    });
 }
 
 function isWatchPage() {

@@ -49,7 +49,7 @@ The extension only runs on YouTube pages:
 "matches": ["https://www.youtube.com/*"]
 ```
 
-It does not request storage, history, account, analytics, or extra network permissions.
+It requests browser-local storage only to remember review prompt state. It does not request history, account, analytics, or extra network permissions.
 
 See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
 

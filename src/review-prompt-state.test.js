@@ -8,6 +8,7 @@ const {
   DEFAULT_REVIEW_PROMPT_SNOOZE_USES,
   DEFAULT_REVIEW_PROMPT_THRESHOLD,
   completeReviewPrompt,
+  createReviewPromptStore,
   createReviewPromptState,
   parseReviewPromptState,
   recordReviewPromptUse,
@@ -39,6 +40,65 @@ test("active states migrate from the old ten-use threshold", () => {
   assert.equal(shouldShowReviewPrompt(recordReviewPromptUse(migrated)), true);
   assert.deepEqual(snoozed, { useCount: 10, nextPromptAt: 15, status: "active" });
   assert.deepEqual(dismissed, { useCount: 1, nextPromptAt: 10, status: "dismissed" });
+});
+
+test("review store migrates page state into extension storage", async () => {
+  const key = "review-state";
+  const extensionData = {};
+  const pageData = new Map([[key, JSON.stringify({ useCount: 1, nextPromptAt: 10, status: "active" })]]);
+  const store = createReviewPromptStore({
+    key,
+    storageArea: {
+      async get(requestedKey) {
+        return requestedKey in extensionData ? { [requestedKey]: extensionData[requestedKey] } : {};
+      },
+      async set(entries) {
+        Object.assign(extensionData, entries);
+      },
+    },
+    pageStorage: {
+      getItem: (requestedKey) => pageData.get(requestedKey) || null,
+      setItem: (requestedKey, value) => pageData.set(requestedKey, value),
+    },
+  });
+
+  const nextState = await store.update(recordReviewPromptUse);
+
+  assert.deepEqual(nextState, { useCount: 2, nextPromptAt: 2, status: "active" });
+  assert.deepEqual(JSON.parse(extensionData[key]), nextState);
+  assert.deepEqual(JSON.parse(pageData.get(key)), nextState);
+});
+
+test("review store serializes updates with unavailable browser storage", async () => {
+  const unavailableStorage = {
+    getItem() {
+      throw new Error("unavailable");
+    },
+    setItem() {
+      throw new Error("unavailable");
+    },
+  };
+  const store = createReviewPromptStore({
+    key: "review-state",
+    storageArea: {
+      async get() {
+        throw new Error("unavailable");
+      },
+      async set() {
+        throw new Error("unavailable");
+      },
+    },
+    pageStorage: unavailableStorage,
+  });
+
+  const [firstState, secondState] = await Promise.all([
+    store.update(recordReviewPromptUse),
+    store.update(recordReviewPromptUse),
+  ]);
+
+  assert.equal(firstState.useCount, 1);
+  assert.equal(secondState.useCount, 2);
+  assert.equal(shouldShowReviewPrompt(secondState), true);
 });
 
 test("Maybe Later snoozes the prompt for five more uses", () => {

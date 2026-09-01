@@ -258,7 +258,7 @@ test("review prompt is loaded and wired consistently across stores", async () =>
       ["src/transform-state.js", "src/review-prompt-state.js", "src/content.js"],
       `${manifestUrl.pathname} loads review state before the content script`
     );
-    assert.equal(manifest.permissions, undefined, `${manifestUrl.pathname} adds no storage permission`);
+    assert.deepEqual(manifest.permissions, ["storage"], `${manifestUrl.pathname} persists review state in extension storage`);
     assert.deepEqual(manifest.web_accessible_resources, [{
       resources: ["icons/icon-128.png"],
       matches: ["https://www.youtube.com/*"],
@@ -272,12 +272,15 @@ test("review prompt is loaded and wired consistently across stores", async () =>
     assert.match(content, /"A quick rating helps more people discover it\."/, `${contentUrl.pathname} uses concise supporting copy`);
     assert.match(content, /"Rate FocusView"/, `${contentUrl.pathname} exposes the primary CTA`);
     assert.match(content, /"Maybe Later"/, `${contentUrl.pathname} exposes a snooze action`);
-    assert.match(content, /localStorage/, `${contentUrl.pathname} stores state locally without a new extension permission`);
+    assert.match(content, /storage\?\.local/, `${contentUrl.pathname} uses extension-owned review storage`);
+    assert.match(content, /createReviewPromptStore/, `${contentUrl.pathname} retains a page-storage migration and memory fallback`);
     assert.match(content, /onReviewPromptKeyDown/, `${contentUrl.pathname} supports keyboard dismissal and focus containment`);
     assert.match(content, /dialog\.tabIndex = -1/, `${contentUrl.pathname} moves initial focus into the dialog without forcing a button focus ring`);
     assert.match(content, /function recordZoomModeUse\(\)/, `${contentUrl.pathname} records a review use through one focused path`);
     assert.match(content, /if \(!wasPanMode\) \{[\s\S]*recordZoomModeUse\(\);/, `${contentUrl.pathname} records immediately when Zoom mode turns on`);
     assert.match(content, /focusview-review-prompt-v2/, `${contentUrl.pathname} preserves existing review usage state`);
+    assert.match(content, /reviewPrompt && !reviewPrompt\.isConnected/, `${contentUrl.pathname} clears a stale prompt after player replacement`);
+    assert.match(content, /!player\?\.isConnected/, `${contentUrl.pathname} never mounts a prompt into a detached player`);
     assert.doesNotMatch(content, /reviewUseTimer|completeFocusViewUse|onVideoPlaybackStarted|shouldRecordReviewPromptUse/, `${contentUrl.pathname} has no playback or duration requirement`);
     assert.doesNotMatch(content, /window\.setTimeout\(completeFocusViewUse|video\.addEventListener\("play"/, `${contentUrl.pathname} does not defer review counting`);
   }
