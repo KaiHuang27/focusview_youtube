@@ -573,7 +573,7 @@ function createZoomPanel() {
     const progress = getSliderProgress();
     sliderFill.style.width = progress;
     sliderThumb.style.left = progress;
-    sliderHitArea.setAttribute("aria-valuenow", String(state.zoom));
+    sliderHitArea.setAttribute("aria-valuenow", String(Math.round(state.zoom)));
     sliderHitArea.setAttribute("aria-valuetext", formatZoomPercent(state.zoom));
     if (document.activeElement !== value) {
       value.value = formatZoomPercent(state.zoom);
@@ -581,7 +581,7 @@ function createZoomPanel() {
 
     const triggerLabel = toolbar.querySelector(".ytvt-trigger-label");
     if (triggerLabel) {
-      triggerLabel.textContent = `${state.zoom}%`;
+      triggerLabel.textContent = formatZoomPercent(state.zoom);
     }
   };
 
@@ -893,7 +893,7 @@ function syncToolbarTrigger() {
   const title = getTriggerTitle();
   trigger.setAttribute("aria-label", title);
   trigger.title = title;
-  label.textContent = `${state.zoom}%`;
+  label.textContent = formatZoomPercent(state.zoom);
 }
 
 function syncOpenZoomPanelControls() {
@@ -914,7 +914,7 @@ function syncOpenZoomPanelControls() {
     sliderThumb.style.left = progress;
   }
   if (sliderHitArea) {
-    sliderHitArea.setAttribute("aria-valuenow", String(state.zoom));
+    sliderHitArea.setAttribute("aria-valuenow", String(Math.round(state.zoom)));
     sliderHitArea.setAttribute("aria-valuetext", formatZoomPercent(state.zoom));
   }
   if (zoomValue && document.activeElement !== zoomValue) {
@@ -948,7 +948,7 @@ function renderToolbar({ shouldRenderMenu = true } = {}) {
   if (shouldShowText) {
     const label = document.createElement("span");
     label.className = "ytvt-trigger-label";
-    label.textContent = `${state.zoom}%`;
+    label.textContent = formatZoomPercent(state.zoom);
     trigger.append(label);
   } else {
     const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");

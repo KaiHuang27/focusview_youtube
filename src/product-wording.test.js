@@ -40,6 +40,16 @@ test("player controls use user-facing wording for reset and minimap labels", asy
   }
 });
 
+test("user-facing zoom percentages stay integer while transform state remains precise", async () => {
+  for (const contentUrl of CONTENT_SCRIPT_PATHS) {
+    const content = await readFile(contentUrl, "utf8");
+
+    assert.doesNotMatch(content, /textContent = `\$\{state\.zoom\}%`/, `${contentUrl.pathname} does not expose fractional zoom state`);
+    assert.match(content, /label\.textContent = formatZoomPercent\(state\.zoom\)/, `${contentUrl.pathname} formats the toolbar percentage`);
+    assert.match(content, /String\(Math\.round\(state\.zoom\)\)/, `${contentUrl.pathname} exposes an integer slider value to assistive technology`);
+  }
+});
+
 test("toolbar zoom trigger keeps one immediate click action", async () => {
   for (const contentUrl of CONTENT_SCRIPT_PATHS) {
     const content = await readFile(contentUrl, "utf8");

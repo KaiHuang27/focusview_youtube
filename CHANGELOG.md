@@ -11,6 +11,7 @@
 
 - Made Safari trackpad zoom accumulate every wheel delta in one elapsed-time-based animation instead of canceling unfinished input on each event.
 - Preserved fractional zoom and pan values, reused one geometry snapshot per animation frame, reduced auxiliary control updates to 30 fps, and limited transform writes to the active video.
+- Rounded every user-facing zoom percentage and accessibility value to an integer while retaining precise internal animation state.
 
 ## 1.1.4 - 2026-08-28
 

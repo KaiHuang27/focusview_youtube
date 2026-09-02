@@ -264,6 +264,7 @@ test("createCursorCenteredZoomState recenters when returning to 100 percent", ()
 test("formatZoomPercent displays zoom as a percentage", () => {
   assert.equal(formatZoomPercent(100), "100%");
   assert.equal(formatZoomPercent(150), "150%");
+  assert.equal(formatZoomPercent(145.208), "145%");
 });
 
 test("parseZoomPercentInput accepts numeric percent input and clamps it", () => {
