@@ -42,32 +42,9 @@ const {
   shouldUseBlockingWheelListener,
   toggleMirrorState,
 } = globalThis.YTVTTransform;
-const {
-  completeReviewPrompt,
-  createReviewPromptStore,
-  recordMeaningfulReviewUse,
-  shouldShowReviewPrompt,
-} = globalThis.YTVTReviewPrompt;
 const VIEWPORT_CONTROLS_HIDE_DELAY_MS = 3000;
 const PAN_LONG_PRESS_MS = 220;
 const PAN_MOVE_THRESHOLD_PX = 6;
-const REVIEW_PROMPT_STORAGE_KEY = "focusview-review-prompt-v2";
-const CHROME_REVIEW_URL = "https://chromewebstore.google.com/detail/jbdndcjclbghkmbiehjigaapembpbgdb/reviews";
-const SAFARI_REVIEW_URL = "https://apps.apple.com/us/app/focusview-zoom-for-youtube/id6786108302?action=write-review";
-
-function getPageStorage() {
-  try {
-    return window.localStorage;
-  } catch {
-    return null;
-  }
-}
-
-const reviewPromptStore = createReviewPromptStore({
-  key: REVIEW_PROMPT_STORAGE_KEY,
-  storageArea: globalThis.browser?.storage?.local || globalThis.chrome?.storage?.local || null,
-  pageStorage: getPageStorage(),
-});
 
 let state = createDefaultState();
 let video = null;
@@ -101,9 +78,6 @@ let hasLastPointerPosition = false;
 let pointerTrackingBound = false;
 let cleanupActiveSliderDrag = null;
 let isCancelingNativePress = false;
-let reviewPrompt = null;
-let hasRecordedReviewUseForCurrentVideo = false;
-let reviewPromptStatePromise = Promise.resolve(null);
 
 function getTransformStyleElement() {
   let styleElement = document.getElementById(TRANSFORM_STYLE_ID);
@@ -146,8 +120,7 @@ function clearTransformRule() {
   lastTransformCssText = "";
 }
 
-function resetState({ shouldPromptReview = false } = {}) {
-  const shouldShowReview = shouldPromptReview && state.panMode && hasRecordedReviewUseForCurrentVideo;
+function resetState() {
   cancelWheelZoomAnimation();
   state = resetTransformState();
   syncWheelTargetListenerMode();
@@ -155,98 +128,10 @@ function resetState({ shouldPromptReview = false } = {}) {
   isMenuOpen = false;
   renderToolbar();
   applyTransform();
-  if (shouldShowReview) {
-    showEligibleReviewPrompt();
-  }
 }
 
 function getVideoKey() {
   return new URLSearchParams(window.location.search).get("v") || window.location.pathname;
-}
-
-function getReviewUrl() {
-  const userAgent = navigator.userAgent || "";
-  const isSafari = /Safari/.test(userAgent) && !/(Chrome|Chromium|Edg)/.test(userAgent);
-  return isSafari ? SAFARI_REVIEW_URL : CHROME_REVIEW_URL;
-}
-
-function removeReviewPrompt() {
-  if (!reviewPrompt) {
-    return;
-  }
-
-  reviewPrompt.remove();
-  reviewPrompt = null;
-}
-
-function completeCurrentReviewPrompt(status) {
-  reviewPromptStatePromise = reviewPromptStore.update((promptState) => completeReviewPrompt(promptState, status));
-  removeReviewPrompt();
-}
-
-function showReviewPrompt() {
-  if (reviewPrompt && !reviewPrompt.isConnected) {
-    removeReviewPrompt();
-  }
-  if (!player?.isConnected || reviewPrompt || state.panMode) {
-    return;
-  }
-
-  const card = document.createElement("aside");
-  card.className = "ytvt-review-card";
-  card.setAttribute("aria-labelledby", "ytvt-review-title");
-
-  const title = document.createElement("strong");
-  title.id = "ytvt-review-title";
-  title.className = "ytvt-review-title";
-  title.textContent = "Enjoying FocusView?";
-
-  const description = document.createElement("p");
-  description.className = "ytvt-review-description";
-  description.textContent = "A quick rating helps others discover it.";
-
-  const actions = document.createElement("div");
-  actions.className = "ytvt-review-actions";
-
-  const rate = document.createElement("a");
-  rate.className = "ytvt-review-primary";
-  rate.href = getReviewUrl();
-  rate.target = "_blank";
-  rate.rel = "noopener noreferrer";
-  rate.textContent = "Rate";
-  rate.addEventListener("click", () => completeCurrentReviewPrompt("rated"));
-
-  const dismiss = document.createElement("button");
-  dismiss.type = "button";
-  dismiss.className = "ytvt-review-secondary";
-  dismiss.textContent = "No thanks";
-  dismiss.addEventListener("click", () => completeCurrentReviewPrompt("dismissed"));
-
-  actions.append(rate, dismiss);
-  card.append(title, description, actions);
-  reviewPrompt = card;
-  player.append(reviewPrompt);
-}
-
-function recordMeaningfulZoomUse(zoom) {
-  if (!state.panMode || zoom <= 100 || hasRecordedReviewUseForCurrentVideo) {
-    return;
-  }
-
-  hasRecordedReviewUseForCurrentVideo = true;
-  reviewPromptStatePromise = reviewPromptStore.update(recordMeaningfulReviewUse);
-}
-
-async function showEligibleReviewPrompt() {
-  const promptState = await reviewPromptStatePromise || await reviewPromptStore.read();
-  if (reviewPrompt && !reviewPrompt.isConnected) {
-    removeReviewPrompt();
-  }
-  if (state.panMode || reviewPrompt || !player?.isConnected || !shouldShowReviewPrompt(promptState)) {
-    return;
-  }
-
-  showReviewPrompt();
 }
 
 function isWatchPage() {
@@ -340,7 +225,6 @@ function clearTransform() {
 
 function clearOverlayElements() {
   cleanupSliderDrag();
-  removeReviewPrompt();
   minimap?.remove();
   minimap = null;
   settingsButton?.remove();
@@ -585,7 +469,6 @@ function setZoom(zoom, shouldRender = true) {
 
   cancelWheelZoomAnimation();
   state = createViewportCenteredZoomState(state, zoom);
-  recordMeaningfulZoomUse(state.zoom);
   if (shouldRender) {
     renderToolbar();
   }
@@ -604,7 +487,6 @@ function setWheelZoom(zoom, event) {
   }
 
   cancelWheelZoomAnimation();
-  recordMeaningfulZoomUse(zoom);
   const cursorOffsetX = event.clientX - (rect.left + rect.width / 2);
   const cursorOffsetY = event.clientY - (rect.top + rect.height / 2);
   const animate = () => {
@@ -946,11 +828,7 @@ function togglePanMode() {
     clearTimeout(viewportControlsHideTimer);
     viewportControlsHideTimer = 0;
     isMenuOpen = false;
-    if (hasRecordedReviewUseForCurrentVideo) {
-      showEligibleReviewPrompt();
-    }
   } else {
-    removeReviewPrompt();
     scheduleViewportControlsHide();
   }
   renderToolbar();
@@ -1085,7 +963,7 @@ function renderMenu() {
   reset.className = "ytvt-menu-reset";
   reset.textContent = "Reset";
   reset.title = "Reset view and turn off zoom mode";
-  reset.addEventListener("click", () => resetState({ shouldPromptReview: true }));
+  reset.addEventListener("click", () => resetState());
 
   const fill = document.createElement("button");
   fill.type = "button";
@@ -1557,7 +1435,6 @@ function sync() {
     syncPointerTracking();
     isMenuOpen = false;
     currentVideoKey = "";
-    hasRecordedReviewUseForCurrentVideo = false;
     observePlayerSize(null);
     player = null;
     return;
@@ -1581,7 +1458,6 @@ function sync() {
   const nextVideoKey = getVideoKey();
   if (shouldResetForVideoKey(currentVideoKey, nextVideoKey)) {
     resetState();
-    hasRecordedReviewUseForCurrentVideo = false;
   }
   currentVideoKey = nextVideoKey;
 }

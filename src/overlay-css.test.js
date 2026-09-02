@@ -165,19 +165,10 @@ test("zoom value and slider read as one compact control group", async () => {
   }
 });
 
-test("review prompt is a compact non-blocking macOS-style card", async () => {
+test("review prompt styles are removed", async () => {
   for (const cssUrl of OVERLAY_CSS_PATHS) {
     const css = await readFile(cssUrl, "utf8");
 
-    assert.match(css, /\.ytvt-review-card\s*\{[\s\S]*right: 16px;[\s\S]*bottom: 64px;/);
-    assert.match(css, /width: min\(300px, calc\(100% - 32px\)\);/);
-    assert.match(css, /padding: 16px;/);
-    assert.match(css, /border-radius: 14px;/);
-    assert.match(css, /\.ytvt-review-actions\s*\{[\s\S]*display: flex;/);
-    assert.match(css, /\.ytvt-review-primary,[\s\S]*\.ytvt-review-secondary\s*\{[\s\S]*min-height: 36px;/);
-    assert.match(css, /background: rgb\(0, 122, 255\);/);
-    assert.match(css, /@media \(prefers-color-scheme: dark\)/);
-    assert.match(css, /\.ytvt-review-primary:focus-visible/);
-    assert.doesNotMatch(css, /\.ytvt-review-overlay/);
+    assert.doesNotMatch(css, /ytvt-review/);
   }
 });

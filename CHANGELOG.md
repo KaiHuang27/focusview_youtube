@@ -4,15 +4,8 @@
 
 ### Changed
 
-- Replaced the blocking review dialog with a compact card that appears after Zoom mode exits following the third meaningfully zoomed video.
-- Simplified review actions to Rate and No thanks, retries unanswered cards after later Zoom mode exits, and keeps the toolbar popup rating link permanently available.
-- Stores review state only in extension-local storage after a one-time migration from legacy YouTube page storage.
-
-### Fixed
-
-- Opening Zoom mode without actually zooming no longer counts toward the review prompt.
-- Prevented delayed storage reads from showing the review card after Zoom mode has been re-enabled or the player has been replaced.
-- Prevented failed or interrupted card mounting from permanently consuming review eligibility, including recovery from previously stored `prompted` states.
+- Removed all in-player and toolbar review solicitation UI, state handling, styles, and tests.
+- Removed the now-unused storage permission and web-accessible review asset declaration.
 
 ## 1.1.4 - 2026-08-28
 

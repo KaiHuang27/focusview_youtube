@@ -26,7 +26,6 @@ Best for:
 ## Features
 
 - Press `Alt/Option + Shift + Z` to turn zoom mode on or off.
-- After three videos are meaningfully zoomed, a compact review card appears when zoom mode is turned off without covering the video; unanswered cards can return until Rate or No thanks is selected.
 - Scroll to zoom videos from `100%` to `500%` around the mouse pointer.
 - Long-press and drag to move around a zoomed video.
 - Use the zoom panel for centered `100%` to `500%` zoom control.
@@ -49,7 +48,7 @@ The extension only runs on YouTube pages:
 "matches": ["https://www.youtube.com/*"]
 ```
 
-It requests browser-local storage only to remember review prompt state. It does not request history, account, analytics, or extra network permissions.
+It does not request browser permissions for storage, history, accounts, analytics, or network access.
 
 See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
 

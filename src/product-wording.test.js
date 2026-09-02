@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
 const CONTENT_SCRIPT_PATHS = [
@@ -46,8 +46,8 @@ test("toolbar zoom trigger keeps one immediate click action", async () => {
 
     assert.match(content, /"Turn on zoom mode"/, `${contentUrl.pathname} describes the off-state click outcome`);
     assert.match(content, /"Turn off zoom mode"/, `${contentUrl.pathname} describes the on-state click outcome`);
-    assert.doesNotMatch(content, /addEventListener\("dblclick"/, `${contentUrl.pathname} avoids double-click toggles and review-use side effects`);
-    assert.match(content, /reset\.addEventListener\("click", \(\) => resetState\(\{ shouldPromptReview: true \}\)\)/, `${contentUrl.pathname} keeps reset as an explicit settings action`);
+    assert.doesNotMatch(content, /addEventListener\("dblclick"/, `${contentUrl.pathname} avoids duplicate toggle actions`);
+    assert.match(content, /reset\.addEventListener\("click", \(\) => resetState\(\)\)/, `${contentUrl.pathname} keeps reset as an explicit settings action`);
     assert.doesNotMatch(content, /"Zoom mode on"/, `${contentUrl.pathname} avoids state-only on wording`);
     assert.doesNotMatch(content, /"Zoom mode off"/, `${contentUrl.pathname} avoids state-only off wording`);
   }
@@ -197,21 +197,12 @@ test("Safari toolbar button opens a visible popup", async () => {
   assert.match(popup, /<span class="zoom-icon"/);
   assert.match(popup, /<circle cx="15" cy="15" r="8"><\/circle>/);
   assert.match(popup, /width="40" height="40"/);
-  assert.match(popup, /<p>Enjoying FocusView\? <a href="https:\/\/apps\.apple\.com\/us\/app\/focusview-zoom-for-youtube\/id6786108302\?action=write-review"[^>]*>Rate us<\/a> or <a href="mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback">share feedback<\/a>\.<\/p>/);
-  assert.doesNotMatch(popup, /Rate on App Store|quick rating|Send feedback/);
-  assert.match(popup, /mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback/);
-  assert.doesNotMatch(popup, /five-star|5-star|5 stars/i);
+  assert.doesNotMatch(popup, /review|rate us|share feedback|mailto:/i);
   assert.match(popupCss, /width: 340px;/);
   assert.match(popupCss, /font-size: 17px;/);
   assert.match(popupCss, /\.brand-copy \{[\s\S]*min-width: 0;/);
   assert.match(popupCss, /\.brand-copy \{/);
-  assert.match(popupCss, /\.review \{/);
-  assert.match(popupCss, /\.review a \{/);
-  assert.match(popupCss, /gap: 4px;/);
-  assert.match(popupCss, /color: var\(--accent-color\);/);
-  assert.match(popupCss, /--accent-color: #007aff;/);
-  assert.match(popupCss, /border-top: 1px solid var\(--separator-color\);/);
-  assert.doesNotMatch(popupCss, /\.review-button/);
+  assert.doesNotMatch(popupCss, /\.review|--accent-color|--button-text/);
   assert.doesNotMatch(popupCss, /color-mix/);
   assert.match(popupCss, /padding: 14px;/);
 });
@@ -229,13 +220,11 @@ test("Chrome toolbar button opens a visible popup", async () => {
   assert.match(popup, /Alt\/Option<\/kbd>[\s\S]*Shift<\/kbd>[\s\S]*Z<\/kbd>[\s\S]*in the player to toggle zoom mode\./);
   assert.match(popup, /<span class="zoom-icon"/);
   assert.match(popup, /<circle cx="15" cy="15" r="8"><\/circle>/);
-  assert.match(popup, /<p>Enjoying FocusView\? <a href="https:\/\/chromewebstore\.google\.com\/detail\/jbdndcjclbghkmbiehjigaapembpbgdb\/reviews"[^>]*>Rate us<\/a> or <a href="mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback">share feedback<\/a>\.<\/p>/);
+  assert.doesNotMatch(popup, /review|rate us|share feedback|mailto:/i);
   assert.match(popupCss, /width: 340px;/);
   assert.match(popupCss, /font-size: 17px;/);
   assert.match(popupCss, /\.brand-copy \{[\s\S]*min-width: 0;/);
-  assert.match(popupCss, /\.review \{/);
-  assert.match(popupCss, /\.review a \{/);
-  assert.match(popupCss, /color: var\(--accent-color\);/);
+  assert.doesNotMatch(popupCss, /\.review|--accent-color|--button-text/);
   assert.doesNotMatch(popup, /apps\.apple\.com/);
 });
 
@@ -248,36 +237,21 @@ test("Chrome release package includes toolbar popup resources", async () => {
 });
 
 
-test("review prompt is loaded and wired consistently across stores", async () => {
+test("review solicitation is fully removed across stores", async () => {
   for (const manifestUrl of MANIFEST_PATHS) {
     const manifest = JSON.parse(await readFile(manifestUrl, "utf8"));
-    const scripts = manifest.content_scripts[0].js;
 
-    assert.deepEqual(
-      scripts,
-      ["src/transform-state.js", "src/review-prompt-state.js", "src/content.js"],
-      `${manifestUrl.pathname} loads review state before the content script`
-    );
-    assert.deepEqual(manifest.permissions, ["storage"], `${manifestUrl.pathname} persists review state in extension storage`);
-    assert.equal(manifest.web_accessible_resources, undefined, `${manifestUrl.pathname} exposes no review-only resources to YouTube`);
+    assert.deepEqual(manifest.content_scripts[0].js, ["src/transform-state.js", "src/content.js"]);
+    assert.equal(manifest.permissions, undefined, `${manifestUrl.pathname} requests no review storage permission`);
+    assert.equal(manifest.web_accessible_resources, undefined, `${manifestUrl.pathname} exposes no review assets`);
   }
 
   for (const contentUrl of CONTENT_SCRIPT_PATHS) {
     const content = await readFile(contentUrl, "utf8");
 
-    assert.match(content, /"Enjoying FocusView\?"/, `${contentUrl.pathname} uses the selected headline`);
-    assert.match(content, /"A quick rating helps others discover it\."/, `${contentUrl.pathname} uses concise supporting copy`);
-    assert.match(content, /"Rate"/, `${contentUrl.pathname} exposes the primary CTA`);
-    assert.match(content, /"No thanks"/, `${contentUrl.pathname} exposes a clear terminal action`);
-    assert.match(content, /storage\?\.local/, `${contentUrl.pathname} uses extension-owned review storage`);
-    assert.match(content, /createReviewPromptStore/, `${contentUrl.pathname} retains a page-storage migration and memory fallback`);
-    assert.match(content, /function recordMeaningfulZoomUse\(zoom\)/, `${contentUrl.pathname} records meaningful zoom through one focused path`);
-    assert.match(content, /zoom <= 100 \|\| hasRecordedReviewUseForCurrentVideo/, `${contentUrl.pathname} counts only one real zoom per video`);
-    assert.match(content, /if \(hasRecordedReviewUseForCurrentVideo\) \{[\s\S]*showEligibleReviewPrompt\(\);/, `${contentUrl.pathname} prompts only after Zoom mode exits`);
-    assert.match(content, /focusview-review-prompt-v2/, `${contentUrl.pathname} preserves existing review usage state`);
-    assert.match(content, /reviewPrompt && !reviewPrompt\.isConnected/, `${contentUrl.pathname} clears a stale prompt after player replacement`);
-    assert.match(content, /!player\?\.isConnected/, `${contentUrl.pathname} never mounts a prompt into a detached player`);
-    assert.doesNotMatch(content, /reviewUseTimer|completeFocusViewUse|onVideoPlaybackStarted|shouldRecordReviewPromptUse|onReviewPromptKeyDown/, `${contentUrl.pathname} has no timer or modal focus trap`);
-    assert.doesNotMatch(content, /window\.setTimeout\(completeFocusViewUse|video\.addEventListener\("play"/, `${contentUrl.pathname} does not defer review counting`);
+    assert.doesNotMatch(content, /ReviewPrompt|review-prompt|ytvt-review|Rate FocusView|No thanks/);
   }
+
+  await assert.rejects(access(new URL("./review-prompt-state.js", import.meta.url)));
+  await assert.rejects(access(new URL("../platforms/safari/FocusView/FocusView Extension/Resources/src/review-prompt-state.js", import.meta.url)));
 });
