@@ -36,7 +36,7 @@ Best for:
 - Player discovery and transform refresh are event-driven; player structure is observed only on watch pages, with no frame retry loop for inline style changes.
 - Pointer tracking and player wheel listeners attach only while zoom mode is active, and transient controls reuse a single inactivity timer.
 - Each transform frame reuses one viewport geometry snapshot, and continuous slider movement is batched to the display frame rate.
-- Wheel input accumulates into one frame-rate-independent animation, preserving precise internal trackpad deltas while displaying a clear integer percentage.
+- Wheel input uses fine-grained sensitivity with a capped per-event change, then accumulates into one frame-rate-independent animation while displaying a clear integer percentage.
 
 ## Privacy And Permissions
 
