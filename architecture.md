@@ -31,3 +31,9 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 - The Safari extension manifest mirrors the Chrome manifest version and content script configuration while using the shorter `FocusView - Zoom for YouTube` product name for Apple listing consistency. The compact Safari-style toolbar popup uses explicit macOS-style spacing, dynamic light/dark colors, the FocusView icon, compact FocusView title, a concise YouTube tagline, a zoom mode shortcut hint, an App Store rating link, and a feedback email link.
 - The macOS app bundle ID is `com.kodingai.focusview`; the embedded extension bundle ID is `com.kodingai.focusview.Extension`, and the container app uses that exact identifier when opening Safari Extensions settings. The wrapper validates bundled resources and script messages, reports extension-state errors, and keeps the required native handler free of unused payload logging and echo behavior.
 - The Xcode project marketing version is kept aligned with the extension manifest version before App Store upload.
+
+## Improvement Roadmap
+
+The current product maturity review identifies the next architecture priorities as browser-level integration coverage, accessible settings semantics, an immediate primary interaction, explicit runtime lifecycle boundaries, generated Safari runtime resources, and automated release gates.
+
+See [docs/product-audit-2026-09-02.md](docs/product-audit-2026-09-02.md) for evidence, priorities, acceptance criteria, and the phased roadmap.

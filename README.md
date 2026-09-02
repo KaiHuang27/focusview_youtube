@@ -58,3 +58,7 @@ For support, feedback, or bug reports, email `kodin.gai.apps@gmail.com`.
 Latest release: `1.1.6`.
 
 See [CHANGELOG.md](CHANGELOG.md).
+
+## Product Quality
+
+See the [2026-09-02 product maturity audit](docs/product-audit-2026-09-02.md) for the current UX, accessibility, architecture, testing, and release roadmap.
