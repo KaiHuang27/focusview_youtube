@@ -143,27 +143,27 @@ test("applyZoomDelta changes zoom and clamps it to the supported range", () => {
 });
 
 test("applyWheelZoomDelta scales zoom from wheel pixel delta", () => {
-  assert.equal(applyWheelZoomDelta(100, { deltaY: -10, deltaMode: 0 }), 100.501);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -10, deltaMode: 0 }), 100.803);
   assert.equal(applyWheelZoomDelta(100, { deltaY: 10, deltaMode: 0 }), 100);
-  assert.equal(applyWheelZoomDelta(200, { deltaY: 10, deltaMode: 0 }), 199.002);
+  assert.equal(applyWheelZoomDelta(200, { deltaY: 10, deltaMode: 0 }), 198.406);
 });
 
 test("applyWheelZoomDelta preserves fractional trackpad input", () => {
-  assert.equal(applyWheelZoomDelta(150, { deltaY: -1, deltaMode: 0 }), 150.075);
-  assert.equal(applyWheelZoomDelta(150, { deltaY: 1, deltaMode: 0 }), 149.925);
+  assert.equal(applyWheelZoomDelta(150, { deltaY: -1, deltaMode: 0 }), 150.12);
+  assert.equal(applyWheelZoomDelta(150, { deltaY: 1, deltaMode: 0 }), 149.88);
   assert.equal(applyWheelZoomDelta(100, { deltaY: 1, deltaMode: 0 }), 100);
   assert.equal(applyWheelZoomDelta(500, { deltaY: -1, deltaMode: 0 }), 500);
 });
 
 test("applyWheelZoomDelta makes larger wheel deltas zoom faster", () => {
-  assert.equal(applyWheelZoomDelta(100, { deltaY: -40, deltaMode: 0 }), 102.02);
-  assert.equal(applyWheelZoomDelta(100, { deltaY: -80, deltaMode: 0 }), 104.081);
-  assert.equal(applyWheelZoomDelta(100, { deltaY: -120, deltaMode: 0 }), 105.127);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -40, deltaMode: 0 }), 103.252);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -80, deltaMode: 0 }), 106.609);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -120, deltaMode: 0 }), 109.199);
 });
 
 test("applyWheelZoomDelta normalizes delta modes and clamps extreme events", () => {
-  assert.equal(applyWheelZoomDelta(100, { deltaY: -3, deltaMode: 1 }), 102.429);
-  assert.equal(applyWheelZoomDelta(100, { deltaY: -1, deltaMode: 2 }), 105.127);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -3, deltaMode: 1 }), 103.915);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -1, deltaMode: 2 }), 109.199);
   assert.equal(applyWheelZoomDelta(490, { deltaY: -1000, deltaMode: 0 }), 500);
   assert.equal(applyWheelZoomDelta(101, { deltaY: 1000, deltaMode: 0 }), 100);
 });
@@ -173,11 +173,11 @@ test("rapid wheel deltas accumulate without discarding unfinished input", () => 
   for (let index = 0; index < 4; index += 1) {
     targetZoom = applyWheelZoomDelta(targetZoom, { deltaY: -25, deltaMode: 0 });
   }
-  assert.ok(targetZoom > 105.1 && targetZoom < 105.2);
+  assert.ok(targetZoom > 108.3 && targetZoom < 108.4);
 
   targetZoom = applyWheelZoomDelta(targetZoom, { deltaY: 25, deltaMode: 0 });
   targetZoom = applyWheelZoomDelta(targetZoom, { deltaY: 25, deltaMode: 0 });
-  assert.ok(targetZoom > 102.5 && targetZoom < 102.6);
+  assert.ok(targetZoom > 104 && targetZoom < 104.1);
 });
 
 test("getWheelZoomAnimationStep is consistent across display refresh rates", () => {
