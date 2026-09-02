@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Restored double-click Reset on the Zoom toolbar button with single-click arbitration, while keeping keyboard activation immediate and the settings Reset action available.
+
 ### Changed
 
 - Removed all in-player and toolbar review solicitation UI, state handling, styles, and tests.

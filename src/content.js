@@ -45,6 +45,7 @@ const {
 } = globalThis.YTVTTransform;
 const VIEWPORT_CONTROLS_HIDE_DELAY_MS = 3000;
 const WHEEL_UI_UPDATE_INTERVAL_MS = 1000 / 30;
+const TOOLBAR_SINGLE_CLICK_DELAY_MS = 300;
 const PAN_LONG_PRESS_MS = 220;
 const PAN_MOVE_THRESHOLD_PX = 6;
 
@@ -69,6 +70,7 @@ let wheelAnchorClientX = 0;
 let wheelAnchorClientY = 0;
 let wheelLastFrameTime = 0;
 let wheelLastUiUpdateTime = 0;
+let toolbarClickTimer = 0;
 let currentVideoKey = "";
 let dragStart = null;
 let panLongPressTimer = 0;
@@ -132,6 +134,7 @@ function clearTransformRule() {
 }
 
 function resetState() {
+  clearToolbarClickTimer();
   cancelWheelZoomAnimation();
   state = resetTransformState();
   syncWheelTargetListenerMode();
@@ -210,6 +213,7 @@ function clearTransform() {
   }
 
   cancelWheelZoomAnimation();
+  clearToolbarClickTimer();
   clearOverlayElements();
   cancelPanGesture();
   clearClickSuppression();
@@ -858,6 +862,7 @@ function toggleMirror() {
 }
 
 function togglePanMode() {
+  clearToolbarClickTimer();
   state.panMode = !state.panMode;
   syncWheelTargetListenerMode();
   syncPointerTracking();
@@ -882,6 +887,43 @@ function getTriggerTitle() {
   return state.panMode ? "Turn off zoom mode" : "Turn on zoom mode";
 }
 
+function getTriggerTooltip() {
+  return `${getTriggerTitle()}. Double-click to reset view`;
+}
+
+function clearToolbarClickTimer() {
+  clearTimeout(toolbarClickTimer);
+  toolbarClickTimer = 0;
+}
+
+function onToolbarTriggerClick(event) {
+  if (event.detail === 0) {
+    clearToolbarClickTimer();
+    togglePanMode();
+    return;
+  }
+
+  if (event.detail !== 1) {
+    clearToolbarClickTimer();
+    return;
+  }
+
+  clearToolbarClickTimer();
+  toolbarClickTimer = setTimeout(() => {
+    toolbarClickTimer = 0;
+    if (video && isWatchPage()) {
+      togglePanMode();
+    }
+  }, TOOLBAR_SINGLE_CLICK_DELAY_MS);
+}
+
+function onToolbarTriggerDoubleClick(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  clearToolbarClickTimer();
+  resetState();
+}
+
 function syncToolbarTrigger() {
   const trigger = toolbar?.querySelector(".ytvt-trigger");
   const label = trigger?.querySelector(".ytvt-trigger-label");
@@ -892,7 +934,7 @@ function syncToolbarTrigger() {
 
   const title = getTriggerTitle();
   trigger.setAttribute("aria-label", title);
-  trigger.title = title;
+  trigger.title = getTriggerTooltip();
   label.textContent = formatZoomPercent(state.zoom);
 }
 
@@ -938,7 +980,7 @@ function renderToolbar({ shouldRenderMenu = true } = {}) {
   trigger.classList.toggle("is-text", shouldShowText);
   trigger.setAttribute("aria-pressed", String(state.panMode));
   trigger.setAttribute("aria-label", getTriggerTitle());
-  trigger.title = getTriggerTitle();
+  trigger.title = getTriggerTooltip();
 
   const triggerBackground = document.createElement("span");
   triggerBackground.className = "ytvt-trigger-bg";
@@ -964,9 +1006,8 @@ function renderToolbar({ shouldRenderMenu = true } = {}) {
     trigger.append(icon);
   }
 
-  trigger.addEventListener("click", () => {
-    togglePanMode();
-  });
+  trigger.addEventListener("click", onToolbarTriggerClick);
+  trigger.addEventListener("dblclick", onToolbarTriggerDoubleClick);
 
   toolbar.append(trigger);
   if (shouldRenderMenu) {

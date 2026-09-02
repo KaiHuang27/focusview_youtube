@@ -50,13 +50,19 @@ test("user-facing zoom percentages stay integer while transform state remains pr
   }
 });
 
-test("toolbar zoom trigger keeps one immediate click action", async () => {
+test("toolbar zoom trigger separates single-click toggle from double-click reset", async () => {
   for (const contentUrl of CONTENT_SCRIPT_PATHS) {
     const content = await readFile(contentUrl, "utf8");
 
     assert.match(content, /"Turn on zoom mode"/, `${contentUrl.pathname} describes the off-state click outcome`);
     assert.match(content, /"Turn off zoom mode"/, `${contentUrl.pathname} describes the on-state click outcome`);
-    assert.doesNotMatch(content, /addEventListener\("dblclick"/, `${contentUrl.pathname} avoids duplicate toggle actions`);
+    assert.match(content, /Double-click to reset view/, `${contentUrl.pathname} explains the double-click action`);
+    assert.match(content, /trigger\.addEventListener\("click", onToolbarTriggerClick\)/, `${contentUrl.pathname} routes single clicks through arbitration`);
+    assert.match(content, /trigger\.addEventListener\("dblclick", onToolbarTriggerDoubleClick\)/, `${contentUrl.pathname} restores double-click reset`);
+    assert.match(content, /TOOLBAR_SINGLE_CLICK_DELAY_MS = 300/, `${contentUrl.pathname} waits briefly before committing pointer single clicks`);
+    assert.match(content, /if \(event\.detail === 0\) \{[\s\S]*togglePanMode\(\)/, `${contentUrl.pathname} keeps keyboard activation immediate`);
+    assert.match(content, /if \(event\.detail !== 1\) \{\n    clearToolbarClickTimer\(\);/, `${contentUrl.pathname} cancels the pending toggle on a second click`);
+    assert.match(content, /function onToolbarTriggerDoubleClick\(event\) \{[\s\S]*clearToolbarClickTimer\(\);\n  resetState\(\);/, `${contentUrl.pathname} cancels the pending toggle before reset`);
     assert.match(content, /reset\.addEventListener\("click", \(\) => resetState\(\)\)/, `${contentUrl.pathname} keeps reset as an explicit settings action`);
     assert.doesNotMatch(content, /"Zoom mode on"/, `${contentUrl.pathname} avoids state-only on wording`);
     assert.doesNotMatch(content, /"Zoom mode off"/, `${contentUrl.pathname} avoids state-only off wording`);
