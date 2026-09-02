@@ -10,7 +10,7 @@
 
 - Removed all in-player and toolbar review solicitation UI, state handling, styles, and tests.
 - Removed the now-unused storage permission and web-accessible review asset declaration.
-- Tuned mouse wheel and trackpad zoom sensitivity to 0.0008 and capped each event to about a 9.2% zoom increase for balanced control.
+- Tuned mouse wheel and trackpad zoom sensitivity to 0.0007 and capped each event to about a 7.25% zoom increase for finer control.
 
 ### Fixed
 
