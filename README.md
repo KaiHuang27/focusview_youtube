@@ -61,6 +61,6 @@ For support, feedback, or bug reports, email `kodin.gai.apps@gmail.com`.
 
 ## Release Notes
 
-Latest release: `1.1.5`.
+Latest release: `1.1.6`.
 
 See [CHANGELOG.md](CHANGELOG.md).
