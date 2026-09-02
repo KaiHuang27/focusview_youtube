@@ -15,6 +15,8 @@ Best for:
 
 [Download from the Chrome Web Store](https://chromewebstore.google.com/detail/jbdndcjclbghkmbiehjigaapembpbgdb?utm_source=github)
 
+[Download from the Apple App Store](https://apps.apple.com/us/app/focusview-zoom-for-youtube/id6786108302)
+
 ## Preview
 
 ![FocusView promotional tile](assets/focusview-promo-tile.png)

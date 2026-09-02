@@ -12,6 +12,13 @@ const MANIFEST_PATHS = [
   new URL("../platforms/safari/FocusView/FocusView Extension/Resources/manifest.json", import.meta.url),
 ];
 
+test("README links to both supported browser stores", async () => {
+  const readme = await readFile(new URL("../README.md", import.meta.url), "utf8");
+
+  assert.match(readme, /chromewebstore\.google\.com\/detail\/jbdndcjclbghkmbiehjigaapembpbgdb/);
+  assert.match(readme, /apps\.apple\.com\/us\/app\/focusview-zoom-for-youtube\/id6786108302/);
+});
+
 test("extension manifests use store-specific product metadata", async () => {
   for (const manifestUrl of MANIFEST_PATHS) {
     const manifest = JSON.parse(await readFile(manifestUrl, "utf8"));
