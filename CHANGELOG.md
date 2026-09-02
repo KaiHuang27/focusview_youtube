@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Restored the macOS-style Rate us and feedback links in the Chrome and Safari toolbar popups without restoring in-player review prompts.
+
 ## 1.1.5 - 2026-09-02
 
 ### Added

@@ -215,12 +215,16 @@ test("Safari toolbar button opens a visible popup", async () => {
   assert.match(popup, /<span class="zoom-icon"/);
   assert.match(popup, /<circle cx="15" cy="15" r="8"><\/circle>/);
   assert.match(popup, /width="40" height="40"/);
-  assert.doesNotMatch(popup, /review|rate us|share feedback|mailto:/i);
+  assert.match(popup, /aria-label="App Store review"/);
+  assert.match(popup, /apps\.apple\.com\/us\/app\/focusview-zoom-for-youtube\/id6786108302\?action=write-review/);
+  assert.match(popup, /Rate us[\s\S]*mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback[\s\S]*share feedback/);
   assert.match(popupCss, /width: 340px;/);
   assert.match(popupCss, /font-size: 17px;/);
   assert.match(popupCss, /\.brand-copy \{[\s\S]*min-width: 0;/);
   assert.match(popupCss, /\.brand-copy \{/);
-  assert.doesNotMatch(popupCss, /\.review|--accent-color|--button-text/);
+  assert.match(popupCss, /--accent-color: #007aff;/);
+  assert.match(popupCss, /\.review a:focus-visible/);
+  assert.doesNotMatch(popupCss, /--button-text/);
   assert.doesNotMatch(popupCss, /color-mix/);
   assert.match(popupCss, /padding: 14px;/);
 });
@@ -238,11 +242,15 @@ test("Chrome toolbar button opens a visible popup", async () => {
   assert.match(popup, /Alt\/Option<\/kbd>[\s\S]*Shift<\/kbd>[\s\S]*Z<\/kbd>[\s\S]*in the player to toggle zoom mode\./);
   assert.match(popup, /<span class="zoom-icon"/);
   assert.match(popup, /<circle cx="15" cy="15" r="8"><\/circle>/);
-  assert.doesNotMatch(popup, /review|rate us|share feedback|mailto:/i);
+  assert.match(popup, /aria-label="Chrome Web Store review"/);
+  assert.match(popup, /chromewebstore\.google\.com\/detail\/jbdndcjclbghkmbiehjigaapembpbgdb\/reviews/);
+  assert.match(popup, /Rate us[\s\S]*mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback[\s\S]*share feedback/);
   assert.match(popupCss, /width: 340px;/);
   assert.match(popupCss, /font-size: 17px;/);
   assert.match(popupCss, /\.brand-copy \{[\s\S]*min-width: 0;/);
-  assert.doesNotMatch(popupCss, /\.review|--accent-color|--button-text/);
+  assert.match(popupCss, /--accent-color: #007aff;/);
+  assert.match(popupCss, /\.review a:focus-visible/);
+  assert.doesNotMatch(popupCss, /--button-text/);
   assert.doesNotMatch(popup, /apps\.apple\.com/);
 });
 
@@ -255,7 +263,7 @@ test("Chrome release package includes toolbar popup resources", async () => {
 });
 
 
-test("review solicitation is fully removed across stores", async () => {
+test("in-player review solicitation remains removed across stores", async () => {
   for (const manifestUrl of MANIFEST_PATHS) {
     const manifest = JSON.parse(await readFile(manifestUrl, "utf8"));
 

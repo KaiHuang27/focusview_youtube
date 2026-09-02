@@ -26,6 +26,7 @@ Best for:
 ## Features
 
 - Press `Alt/Option + Shift + Z` to turn zoom mode on or off.
+- Use the toolbar popup to rate FocusView or send feedback.
 - Double-click the Zoom toolbar button to reset the view and turn off zoom mode; single-click continues to toggle zoom mode.
 - Scroll to zoom videos from `100%` to `500%` around the mouse pointer.
 - Long-press and drag to move around a zoomed video.
