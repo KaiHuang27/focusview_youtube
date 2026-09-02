@@ -63,13 +63,14 @@ test("fill action uses concise button text with a descriptive tooltip", async ()
   }
 });
 
-test("wheel zoom animates by measured zoom steps", async () => {
+test("wheel zoom accumulates input in one frame-rate-independent animation", async () => {
   for (const contentUrl of CONTENT_SCRIPT_PATHS) {
     const content = await readFile(contentUrl, "utf8");
 
-    assert.match(content, /getWheelZoomAnimationStep/, `${contentUrl.pathname} uses measured wheel zoom steps`);
-    assert.match(content, /wheelZoomFrame = requestAnimationFrame\(animate\)/, `${contentUrl.pathname} animates wheel zoom across frames`);
-    assert.match(content, /cancelWheelZoomAnimation\(\);/, `${contentUrl.pathname} cancels stale wheel zoom animation`);
+    assert.match(content, /applyWheelZoomDelta\(wheelTargetZoom \?\? state\.zoom, event\)/, `${contentUrl.pathname} accumulates every wheel delta on the pending target`);
+    assert.match(content, /getWheelZoomAnimationStep\(state\.zoom, wheelTargetZoom, elapsedMs\)/, `${contentUrl.pathname} smooths zoom by elapsed time`);
+    assert.match(content, /wheelZoomFrame = requestAnimationFrame\(animateWheelZoom\)/, `${contentUrl.pathname} keeps one wheel animation controller`);
+    assert.doesNotMatch(content, /cancelWheelZoomAnimation\(\);\n  const cursorOffset/, `${contentUrl.pathname} does not cancel unfinished input for every wheel event`);
   }
 });
 
@@ -87,8 +88,8 @@ test("wheel listener blocks native scrolling only while zoom mode is active", as
     assert.match(content, /document\.addEventListener\("wheel", onDocumentWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} blocks fallback wheel only while zoom mode is active`);
     assert.match(content, /if \(shouldBlockWheel\) \{[\s\S]*wheelTarget\.addEventListener\("wheel", onWheel, \{ capture: true, passive: false \}\)/, `${contentUrl.pathname} binds the player wheel listener only while zoom mode is active`);
     assert.doesNotMatch(content, /passive: !shouldBlockWheel/, `${contentUrl.pathname} does not invoke an idle player wheel listener`);
-    assert.match(content, /scheduleWheelUiSync\(\)/, `${contentUrl.pathname} batches wheel UI updates`);
-    assert.match(content, /applyTransform\(\{ shouldRenderMinimap: false \}\)/, `${contentUrl.pathname} avoids synchronous minimap rendering during wheel animation`);
+    assert.match(content, /WHEEL_UI_UPDATE_INTERVAL_MS = 1000 \/ 30/, `${contentUrl.pathname} throttles auxiliary wheel UI to 30 fps`);
+    assert.match(content, /applyTransform\(\{ shouldRenderMinimap: false, geometry \}\)/, `${contentUrl.pathname} reuses one geometry snapshot during wheel animation`);
     assert.match(content, /shouldUseBlockingWheelListener\(state\)/, `${contentUrl.pathname} derives blocking wheel behavior from zoom mode state`);
     assert.match(content, /state = resetTransformState\(\);\n  syncWheelTargetListenerMode\(\);/, `${contentUrl.pathname} releases blocking wheel behavior on reset`);
   }
@@ -127,8 +128,9 @@ test("transform and slider updates avoid repeated layout work", async () => {
   for (const contentUrl of CONTENT_SCRIPT_PATHS) {
     const content = await readFile(contentUrl, "utf8");
 
-    assert.match(content, /const geometry = getViewportGeometry\(\);[\s\S]*updateTransformRule\(geometry\)/, contentUrl.pathname + " captures viewport geometry once per transform update");
+    assert.match(content, /geometry = getViewportGeometry\(\)/, contentUrl.pathname + " accepts one shared viewport geometry snapshot");
     assert.match(content, /renderMinimap\(geometry\)/, contentUrl.pathname + " reuses the transform geometry for the minimap");
+    assert.match(content, /video\.style\.setProperty\(TRANSFORM_PROPERTY, transformValue\)/, contentUrl.pathname + " updates only the active video's transform variable");
     assert.doesNotMatch(content, /function clampCurrentPanState/, contentUrl.pathname + " avoids a duplicate pan-clamp geometry read");
     assert.match(content, /sliderDragRect = sliderHitArea\.getBoundingClientRect\(\)/, contentUrl.pathname + " captures slider geometry once when dragging starts");
     assert.match(content, /sliderZoomFrame = requestAnimationFrame/, contentUrl.pathname + " batches slider movement into animation frames");

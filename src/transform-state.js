@@ -5,7 +5,9 @@
   const WHEEL_DELTA_LINE_HEIGHT = 16;
   const WHEEL_DELTA_PAGE_HEIGHT = 800;
   const MAX_WHEEL_DELTA = 140;
-  const WHEEL_ZOOM_ANIMATION_FOLLOW_RATIO = 0.35;
+  const WHEEL_ZOOM_ANIMATION_TIME_CONSTANT_MS = 14;
+  const WHEEL_ZOOM_ANIMATION_MAX_FRAME_MS = 32;
+  const WHEEL_ZOOM_ANIMATION_SNAP_THRESHOLD = 0.5;
   const MIN_ZOOM = 100;
   const MAX_ZOOM = 500;
   const DEFAULT_MINIMAP_SIZE = {
@@ -95,28 +97,23 @@
   function applyWheelZoomDelta(zoom, event) {
     const wheelDelta = normalizeWheelDelta(event);
     const scale = Math.exp(-wheelDelta * WHEEL_ZOOM_SENSITIVITY);
-    const nextZoom = Math.round(clamp(zoom * scale, MIN_ZOOM, MAX_ZOOM));
-    if (wheelDelta !== 0 && nextZoom === zoom) {
-      const direction = wheelDelta < 0 ? 1 : -1;
-      return clamp(zoom + direction, MIN_ZOOM, MAX_ZOOM);
-    }
-
-    return nextZoom;
+    return Number(clamp(zoom * scale, MIN_ZOOM, MAX_ZOOM).toFixed(3));
   }
 
-  function getWheelZoomAnimationStep(currentZoom, targetZoom) {
+  function getWheelZoomAnimationStep(currentZoom, targetZoom, elapsedMs = 1000 / 60) {
     if (currentZoom === targetZoom) {
       return targetZoom;
     }
 
     const remaining = Math.abs(targetZoom - currentZoom);
-    if (remaining <= 1) {
+    if (remaining <= WHEEL_ZOOM_ANIMATION_SNAP_THRESHOLD) {
       return targetZoom;
     }
 
-    const direction = targetZoom > currentZoom ? 1 : -1;
-    const step = Math.max(1, Math.round(remaining * WHEEL_ZOOM_ANIMATION_FOLLOW_RATIO));
-    return currentZoom + direction * step;
+    const frameMs = clamp(elapsedMs, 0, WHEEL_ZOOM_ANIMATION_MAX_FRAME_MS);
+    const followRatio = 1 - Math.exp(-frameMs / WHEEL_ZOOM_ANIMATION_TIME_CONSTANT_MS);
+    const nextZoom = currentZoom + (targetZoom - currentZoom) * followRatio;
+    return Math.abs(targetZoom - nextZoom) <= WHEEL_ZOOM_ANIMATION_SNAP_THRESHOLD ? targetZoom : nextZoom;
   }
 
   function createViewportCenteredZoomState(state, zoom) {
@@ -129,8 +126,8 @@
     return {
       ...state,
       zoom: nextZoom,
-      panX: Math.round(state.panX * scaleChange),
-      panY: Math.round(state.panY * scaleChange),
+      panX: state.panX * scaleChange,
+      panY: state.panY * scaleChange,
     };
   }
 
@@ -155,8 +152,8 @@
     return {
       ...state,
       zoom: nextZoom,
-      panX: Math.round(state.panX * scaleChange + cursorOffsetX * (1 - scaleChange)),
-      panY: Math.round(state.panY * scaleChange + cursorOffsetY * (1 - scaleChange)),
+      panX: state.panX * scaleChange + cursorOffsetX * (1 - scaleChange),
+      panY: state.panY * scaleChange + cursorOffsetY * (1 - scaleChange),
     };
   }
 

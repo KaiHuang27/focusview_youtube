@@ -143,38 +143,60 @@ test("applyZoomDelta changes zoom and clamps it to the supported range", () => {
 });
 
 test("applyWheelZoomDelta scales zoom from wheel pixel delta", () => {
-  assert.equal(applyWheelZoomDelta(100, { deltaY: -10, deltaMode: 0 }), 101);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -10, deltaMode: 0 }), 101.005);
   assert.equal(applyWheelZoomDelta(100, { deltaY: 10, deltaMode: 0 }), 100);
-  assert.equal(applyWheelZoomDelta(200, { deltaY: 10, deltaMode: 0 }), 198);
+  assert.equal(applyWheelZoomDelta(200, { deltaY: 10, deltaMode: 0 }), 198.01);
 });
 
-test("applyWheelZoomDelta applies at least one percent for nonzero wheel delta", () => {
-  assert.equal(applyWheelZoomDelta(150, { deltaY: -1, deltaMode: 0 }), 151);
-  assert.equal(applyWheelZoomDelta(150, { deltaY: 1, deltaMode: 0 }), 149);
+test("applyWheelZoomDelta preserves fractional trackpad input", () => {
+  assert.equal(applyWheelZoomDelta(150, { deltaY: -1, deltaMode: 0 }), 150.15);
+  assert.equal(applyWheelZoomDelta(150, { deltaY: 1, deltaMode: 0 }), 149.85);
   assert.equal(applyWheelZoomDelta(100, { deltaY: 1, deltaMode: 0 }), 100);
   assert.equal(applyWheelZoomDelta(500, { deltaY: -1, deltaMode: 0 }), 500);
 });
 
 test("applyWheelZoomDelta makes larger wheel deltas zoom faster", () => {
-  assert.equal(applyWheelZoomDelta(100, { deltaY: -40, deltaMode: 0 }), 104);
-  assert.equal(applyWheelZoomDelta(100, { deltaY: -80, deltaMode: 0 }), 108);
-  assert.equal(applyWheelZoomDelta(100, { deltaY: -120, deltaMode: 0 }), 113);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -40, deltaMode: 0 }), 104.081);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -80, deltaMode: 0 }), 108.329);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -120, deltaMode: 0 }), 112.75);
 });
 
 test("applyWheelZoomDelta normalizes delta modes and clamps extreme events", () => {
-  assert.equal(applyWheelZoomDelta(100, { deltaY: -3, deltaMode: 1 }), 105);
-  assert.equal(applyWheelZoomDelta(100, { deltaY: -1, deltaMode: 2 }), 115);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -3, deltaMode: 1 }), 104.917);
+  assert.equal(applyWheelZoomDelta(100, { deltaY: -1, deltaMode: 2 }), 115.027);
   assert.equal(applyWheelZoomDelta(490, { deltaY: -1000, deltaMode: 0 }), 500);
   assert.equal(applyWheelZoomDelta(101, { deltaY: 1000, deltaMode: 0 }), 100);
 });
 
-test("getWheelZoomAnimationStep moves proportionally toward the target", () => {
-  assert.equal(getWheelZoomAnimationStep(150, 180), 161);
-  assert.equal(getWheelZoomAnimationStep(161, 180), 168);
-  assert.equal(getWheelZoomAnimationStep(160, 150), 156);
-  assert.equal(getWheelZoomAnimationStep(150, 151.4), 151);
+test("rapid wheel deltas accumulate without discarding unfinished input", () => {
+  let targetZoom = 100;
+  for (let index = 0; index < 4; index += 1) {
+    targetZoom = applyWheelZoomDelta(targetZoom, { deltaY: -25, deltaMode: 0 });
+  }
+  assert.ok(targetZoom > 110.5 && targetZoom < 110.6);
+
+  targetZoom = applyWheelZoomDelta(targetZoom, { deltaY: 25, deltaMode: 0 });
+  targetZoom = applyWheelZoomDelta(targetZoom, { deltaY: 25, deltaMode: 0 });
+  assert.ok(targetZoom > 105.1 && targetZoom < 105.2);
+});
+
+test("getWheelZoomAnimationStep is consistent across display refresh rates", () => {
+  const oneFrameAt60Hz = getWheelZoomAnimationStep(150, 180, 1000 / 60);
+  const firstFrameAt120Hz = getWheelZoomAnimationStep(150, 180, 1000 / 120);
+  const twoFramesAt120Hz = getWheelZoomAnimationStep(firstFrameAt120Hz, 180, 1000 / 120);
+  assert.ok(Math.abs(oneFrameAt60Hz - twoFramesAt120Hz) < 1e-10);
+  assert.ok(oneFrameAt60Hz > 150 && oneFrameAt60Hz < 180);
+  assert.ok(getWheelZoomAnimationStep(160, 150, 1000 / 60) < 160);
   assert.equal(getWheelZoomAnimationStep(150, 150.4), 150.4);
   assert.equal(getWheelZoomAnimationStep(150, 150), 150);
+});
+
+test("wheel zoom settles a full-range gesture within 100 milliseconds at 60 Hz", () => {
+  let zoom = 100;
+  for (let frame = 0; frame < 6; frame += 1) {
+    zoom = getWheelZoomAnimationStep(zoom, 500, 1000 / 60);
+  }
+  assert.equal(zoom, 500);
 });
 
 test("createViewportCenteredZoomState preserves the viewport-center content while zooming", () => {

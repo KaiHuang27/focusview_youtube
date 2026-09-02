@@ -7,6 +7,11 @@
 - Removed all in-player and toolbar review solicitation UI, state handling, styles, and tests.
 - Removed the now-unused storage permission and web-accessible review asset declaration.
 
+### Fixed
+
+- Made Safari trackpad zoom accumulate every wheel delta in one elapsed-time-based animation instead of canceling unfinished input on each event.
+- Preserved fractional zoom and pan values, reused one geometry snapshot per animation frame, reduced auxiliary control updates to 30 fps, and limited transform writes to the active video.
+
 ## 1.1.4 - 2026-08-28
 
 ### Added

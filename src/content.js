@@ -2,6 +2,7 @@ const ROTATIONS = [0, 90, 180, 270];
 const TOOLBAR_SELECTOR = '[data-ytvt-toolbar="true"]';
 const TRANSFORM_STYLE_ID = "ytvt-transform-style";
 const TRANSFORM_SELECTOR = "video.html5-main-video";
+const TRANSFORM_PROPERTY = "--ytvt-transform";
 const PLAYER_STRUCTURE_SELECTOR = ".html5-video-player, video.html5-main-video, .ytp-right-controls";
 const {
   applyZoomDelta,
@@ -17,7 +18,7 @@ const {
   createTransformMenuTop,
   createDefaultState,
   resetTransformState,
-  createImportantTransformCssText,
+  createTransformStyle,
   formatZoomPercent,
   getViewportControlsActivityAfterPanToggle,
   getWheelZoomAnimationStep,
@@ -43,6 +44,7 @@ const {
   toggleMirrorState,
 } = globalThis.YTVTTransform;
 const VIEWPORT_CONTROLS_HIDE_DELAY_MS = 3000;
+const WHEEL_UI_UPDATE_INTERVAL_MS = 1000 / 30;
 const PAN_LONG_PRESS_MS = 220;
 const PAN_MOVE_THRESHOLD_PX = 6;
 
@@ -62,7 +64,11 @@ let playerStructureObserver = null;
 let observedPlayer = null;
 let syncFrame = 0;
 let wheelZoomFrame = 0;
-let wheelUiFrame = 0;
+let wheelTargetZoom = null;
+let wheelAnchorClientX = 0;
+let wheelAnchorClientY = 0;
+let wheelLastFrameTime = 0;
+let wheelLastUiUpdateTime = 0;
 let currentVideoKey = "";
 let dragStart = null;
 let panLongPressTimer = 0;
@@ -71,7 +77,7 @@ let suppressVideoClickTimer = 0;
 let viewportControlsLastActivityAt = 0;
 let viewportControlsHideTimer = 0;
 let isMenuOpen = false;
-let lastTransformCssText = "";
+let lastTransformValue = "";
 let lastPointerClientX = 0;
 let lastPointerClientY = 0;
 let hasLastPointerPosition = false;
@@ -86,6 +92,9 @@ function getTransformStyleElement() {
     styleElement.id = TRANSFORM_STYLE_ID;
     document.documentElement.append(styleElement);
   }
+  if (!styleElement.textContent) {
+    styleElement.textContent = `${TRANSFORM_SELECTOR} { transform: var(${TRANSFORM_PROPERTY}) !important; transform-origin: center center !important; will-change: transform; }`;
+  }
 
   return styleElement;
 }
@@ -95,29 +104,31 @@ function updateTransformRule({ sourceWidth, sourceHeight, viewportWidth, viewpor
     return;
   }
 
-  let cssText = "";
+  let transformValue = "";
   if (shouldReapplyTransformAfterMutation(state)) {
-    cssText = `${TRANSFORM_SELECTOR} { ${createImportantTransformCssText(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight)} }`;
+    transformValue = createTransformStyle(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight).transform;
   }
 
-  if (cssText === lastTransformCssText) {
+  if (transformValue === lastTransformValue) {
     return;
   }
 
-  if (cssText) {
-    getTransformStyleElement().textContent = cssText;
+  if (transformValue) {
+    getTransformStyleElement();
+    video.style.setProperty(TRANSFORM_PROPERTY, transformValue);
   } else {
     clearTransformRule();
   }
-  lastTransformCssText = cssText;
+  lastTransformValue = transformValue;
 }
 
 function clearTransformRule() {
   const styleElement = document.getElementById(TRANSFORM_STYLE_ID);
+  video?.style.removeProperty(TRANSFORM_PROPERTY);
   if (styleElement?.textContent) {
     styleElement.textContent = "";
   }
-  lastTransformCssText = "";
+  lastTransformValue = "";
 }
 
 function resetState() {
@@ -150,12 +161,12 @@ function findControlsHost() {
   return player?.querySelector(".ytp-right-controls") || null;
 }
 
-function getViewportGeometry() {
+function getViewportGeometry(playerRect = null) {
   return {
     sourceWidth: video?.videoWidth || video?.clientWidth || 0,
     sourceHeight: video?.videoHeight || video?.clientHeight || 0,
-    viewportWidth: player?.clientWidth || video?.clientWidth || 0,
-    viewportHeight: player?.clientHeight || video?.clientHeight || 0,
+    viewportWidth: playerRect?.width || player?.clientWidth || video?.clientWidth || 0,
+    viewportHeight: playerRect?.height || player?.clientHeight || video?.clientHeight || 0,
   };
 }
 
@@ -165,12 +176,11 @@ function blockYouTubeWheel(event) {
   event.stopImmediatePropagation?.();
 }
 
-function applyTransform({ shouldRenderMinimap = true } = {}) {
+function applyTransform({ shouldRenderMinimap = true, geometry = getViewportGeometry() } = {}) {
   if (!video) {
     return;
   }
 
-  const geometry = getViewportGeometry();
   const { sourceWidth, sourceHeight, viewportWidth, viewportHeight } = geometry;
   state = clampPanStateToViewport(state, sourceWidth, sourceHeight, viewportWidth, viewportHeight);
   updateTransformRule(geometry);
@@ -188,26 +198,9 @@ function cancelWheelZoomAnimation() {
     cancelAnimationFrame(wheelZoomFrame);
     wheelZoomFrame = 0;
   }
-}
-
-function cancelWheelUiSync() {
-  if (wheelUiFrame) {
-    cancelAnimationFrame(wheelUiFrame);
-    wheelUiFrame = 0;
-  }
-}
-
-function scheduleWheelUiSync() {
-  if (wheelUiFrame) {
-    return;
-  }
-
-  wheelUiFrame = requestAnimationFrame(() => {
-    wheelUiFrame = 0;
-    syncToolbarTrigger();
-    syncOpenZoomPanelControls();
-    renderMinimap();
-  });
+  wheelTargetZoom = null;
+  wheelLastFrameTime = 0;
+  wheelLastUiUpdateTime = 0;
 }
 
 function clearTransform() {
@@ -217,7 +210,6 @@ function clearTransform() {
   }
 
   cancelWheelZoomAnimation();
-  cancelWheelUiSync();
   clearOverlayElements();
   cancelPanGesture();
   clearClickSuppression();
@@ -475,31 +467,82 @@ function setZoom(zoom, shouldRender = true) {
   applyTransform();
 }
 
-function setWheelZoom(zoom, event) {
-  if (!video) {
+function syncWheelUi(timestamp, geometry, force = false) {
+  if (!force && timestamp - wheelLastUiUpdateTime < WHEEL_UI_UPDATE_INTERVAL_MS) {
+    return;
+  }
+
+  wheelLastUiUpdateTime = timestamp;
+  syncToolbarTrigger();
+  syncOpenZoomPanelControls();
+  renderMinimap(geometry);
+}
+
+function animateWheelZoom(timestamp) {
+  wheelZoomFrame = 0;
+  if (!video || wheelTargetZoom === null) {
     return;
   }
 
   const rect = player?.getBoundingClientRect?.();
   if (!rect || rect.width <= 0 || rect.height <= 0) {
-    setZoom(zoom, false);
+    const targetZoom = wheelTargetZoom;
+    wheelTargetZoom = null;
+    wheelLastFrameTime = 0;
+    state = createViewportCenteredZoomState(state, targetZoom);
+    applyTransform({ shouldRenderMinimap: false });
+    syncWheelUi(timestamp, getViewportGeometry(), true);
     return;
   }
 
-  cancelWheelZoomAnimation();
-  const cursorOffsetX = event.clientX - (rect.left + rect.width / 2);
-  const cursorOffsetY = event.clientY - (rect.top + rect.height / 2);
-  const animate = () => {
-    wheelZoomFrame = 0;
-    const nextZoom = getWheelZoomAnimationStep(state.zoom, zoom);
-    state = createCursorCenteredZoomState(state, nextZoom, cursorOffsetX, cursorOffsetY);
-    applyTransform({ shouldRenderMinimap: false });
-    if (state.zoom !== zoom) {
-      wheelZoomFrame = requestAnimationFrame(animate);
-    }
-  };
+  const eventPointIsInsidePlayer =
+    wheelAnchorClientX >= rect.left && wheelAnchorClientX <= rect.right
+    && wheelAnchorClientY >= rect.top && wheelAnchorClientY <= rect.bottom;
+  const fallbackPointIsInsidePlayer =
+    hasLastPointerPosition
+    && lastPointerClientX >= rect.left && lastPointerClientX <= rect.right
+    && lastPointerClientY >= rect.top && lastPointerClientY <= rect.bottom;
+  const anchorClientX = eventPointIsInsidePlayer
+    ? wheelAnchorClientX
+    : fallbackPointIsInsidePlayer ? lastPointerClientX : rect.left + rect.width / 2;
+  const anchorClientY = eventPointIsInsidePlayer
+    ? wheelAnchorClientY
+    : fallbackPointIsInsidePlayer ? lastPointerClientY : rect.top + rect.height / 2;
+  const elapsedMs = wheelLastFrameTime ? timestamp - wheelLastFrameTime : 1000 / 60;
+  wheelLastFrameTime = timestamp;
 
-  animate();
+  const nextZoom = getWheelZoomAnimationStep(state.zoom, wheelTargetZoom, elapsedMs);
+  state = createCursorCenteredZoomState(
+    state,
+    nextZoom,
+    anchorClientX - (rect.left + rect.width / 2),
+    anchorClientY - (rect.top + rect.height / 2)
+  );
+  const geometry = getViewportGeometry(rect);
+  applyTransform({ shouldRenderMinimap: false, geometry });
+
+  const isComplete = state.zoom === wheelTargetZoom;
+  syncWheelUi(timestamp, geometry, isComplete);
+  if (isComplete) {
+    wheelTargetZoom = null;
+    wheelLastFrameTime = 0;
+    return;
+  }
+
+  wheelZoomFrame = requestAnimationFrame(animateWheelZoom);
+}
+
+function setWheelZoom(event) {
+  if (!video) {
+    return;
+  }
+
+  wheelTargetZoom = applyWheelZoomDelta(wheelTargetZoom ?? state.zoom, event);
+  wheelAnchorClientX = Number.isFinite(event.clientX) ? event.clientX : lastPointerClientX;
+  wheelAnchorClientY = Number.isFinite(event.clientY) ? event.clientY : lastPointerClientY;
+  if (!wheelZoomFrame && wheelTargetZoom !== state.zoom) {
+    wheelZoomFrame = requestAnimationFrame(animateWheelZoom);
+  }
 }
 
 function fillScreen() {
@@ -1216,8 +1259,7 @@ function applyWheelZoomFromEvent(event) {
   blockYouTubeWheel(event);
   viewportControlsLastActivityAt = Date.now();
   scheduleViewportControlsHide();
-  setWheelZoom(applyWheelZoomDelta(state.zoom, event), event);
-  scheduleWheelUiSync();
+  setWheelZoom(event);
 }
 
 function updateLastPointerPosition(event) {
@@ -1341,6 +1383,8 @@ function unbindVideo() {
   cancelPanGesture();
   clearClickSuppression();
   if (video) {
+    video.style.removeProperty(TRANSFORM_PROPERTY);
+    lastTransformValue = "";
     video.removeEventListener("pointermove", onPointerMove);
     video.removeEventListener("pointerup", endDrag);
     video.removeEventListener("pointercancel", endDrag);
