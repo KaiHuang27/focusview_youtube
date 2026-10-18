@@ -1,4 +1,4 @@
-Zoom, rotate, and mirror YouTube videos. See more details in YouTube videos.
+See more details in YouTube videos.
 
 FocusView adds smooth zoom, rotate, and mirror controls to YouTube videos in your browser.
 

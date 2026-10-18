@@ -65,4 +65,4 @@ See the [2026-09-02 product maturity audit](docs/product-audit-2026-09-02.md) fo
 
 ## Chrome Web Store Listing Translations
 
-English, Traditional Chinese, Simplified Chinese, Japanese, and Korean descriptions are maintained in [docs/store-listing](docs/store-listing/README.md). Chrome 1.1.7 declares these five listing locales and localized summaries; extension controls remain in English. Dashboard application and review status are tracked in the linked document.
+English, Traditional Chinese, Simplified Chinese, Japanese, and Korean descriptions are maintained in [docs/store-listing](docs/store-listing/README.md). Chrome 1.1.7 declares these five listing locales and localized summaries; extension controls remain in English. All five descriptions were saved and version 1.1.7 was submitted on 2026-10-18; review is pending with publication staged after approval. Submission records are tracked in the linked document.
