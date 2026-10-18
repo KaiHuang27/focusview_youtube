@@ -13,6 +13,7 @@ rm -f "$ZIP_PATH"
 cd "$ROOT_DIR"
 zip -q -r "$ZIP_PATH" \
   manifest.json \
+  _locales \
   popup.html \
   popup.css \
   src/content.js \

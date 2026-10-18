@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.7 - 2026-10-18
+
+- Added Chrome package locale metadata for English, Traditional Chinese, Simplified Chinese, Japanese, and Korean store listings.
+- Kept extension controls and product names unchanged; aligned Safari version metadata without submitting a Safari release.
+
 ## 1.1.6 - 2026-09-02
 
 ### Added

@@ -55,7 +55,7 @@ For support, feedback, or bug reports, email `kodin.gai.apps@gmail.com`.
 
 ## Release Notes
 
-Latest release: `1.1.6`.
+Latest release: `1.1.7`.
 
 See [CHANGELOG.md](CHANGELOG.md).
 
@@ -65,4 +65,4 @@ See the [2026-09-02 product maturity audit](docs/product-audit-2026-09-02.md) fo
 
 ## Chrome Web Store Listing Translations
 
-English, Traditional Chinese, Simplified Chinese, Japanese, and Korean descriptions are maintained in [docs/store-listing](docs/store-listing/README.md). These are listing-only drafts pending dashboard application; the extension UI and package metadata remain unchanged.
+English, Traditional Chinese, Simplified Chinese, Japanese, and Korean descriptions are maintained in [docs/store-listing](docs/store-listing/README.md). Chrome 1.1.7 declares these five listing locales and localized summaries; extension controls remain in English. Dashboard application and review status are tracked in the linked document.

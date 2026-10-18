@@ -30,7 +30,9 @@ test("extension manifests use store-specific product metadata", async () => {
     assert.equal(manifest.name, expectedName, `${manifestUrl.pathname} uses the store-specific product name`);
     assert.equal(manifest.short_name, "FocusView", `${manifestUrl.pathname} uses the short display name`);
     assert.equal(
-      manifest.description,
+      manifest.description === "__MSG_extensionDescription__"
+        ? JSON.parse(await readFile(new URL("../_locales/en/messages.json", import.meta.url), "utf8")).extensionDescription.message
+        : manifest.description,
       "Zoom, rotate, and mirror YouTube videos.",
       `${manifestUrl.pathname} uses concise platform-specific wording`,
     );

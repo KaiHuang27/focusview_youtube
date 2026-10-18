@@ -20,8 +20,8 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 ## Release Packaging
 
 - `scripts/build-release.sh` reads the version from `manifest.json` and writes `dist/focusview-<version>.zip`.
-- `package.json`, the Chrome manifest, the Safari extension manifest, and Xcode marketing version stay aligned for each release. Current release version: `1.1.6`; Xcode build number: `7`.
-- The release zip includes `manifest.json`, `popup.html`, `popup.css`, `src/content.js`, `src/transform-state.js`, `src/overlay.css`, and `icons/`, which are the runtime files required for Chrome Web Store upload.
+- `package.json`, the Chrome manifest, the Safari extension manifest, and Xcode marketing version stay aligned for each release. Current release version: `1.1.7`; Xcode build number: `8`.
+- The release zip includes `manifest.json`, `_locales/`, `popup.html`, `popup.css`, `src/content.js`, `src/transform-state.js`, `src/overlay.css`, and `icons/`, which are the runtime files required for Chrome Web Store upload.
 - Mac App Store distribution uses the Safari wrapper in `platforms/safari/FocusView`, not the Chrome release zip.
 - The README links directly to both supported distribution channels: Chrome Web Store and Apple App Store.
 
@@ -41,4 +41,4 @@ See [docs/product-audit-2026-09-02.md](docs/product-audit-2026-09-02.md) for evi
 ## Store Listing Content
 
 - `docs/store-listing/*.txt` contains five manually maintained, listing-only descriptions based on the public English listing. They are not runtime resources or release package inputs.
-- `docs/store-listing/README.md` tracks dashboard application, verification steps, and publication status. This documentation-only change leaves extension metadata, UI, and version unchanged.
+- `docs/store-listing/README.md` tracks dashboard application, verification steps, and publication status. Chrome uses `default_locale: en` and `_locales/*/messages.json` to enable five dashboard locales and localize only the package summary. Runtime controls and product names remain unchanged; Safari resources retain their English summary.
