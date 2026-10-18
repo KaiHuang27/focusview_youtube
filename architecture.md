@@ -37,3 +37,8 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 The current product maturity review identifies the next architecture priorities as browser-level integration coverage, accessible settings semantics, an immediate primary interaction, explicit runtime lifecycle boundaries, generated Safari runtime resources, and automated release gates.
 
 See [docs/product-audit-2026-09-02.md](docs/product-audit-2026-09-02.md) for evidence, priorities, acceptance criteria, and the phased roadmap.
+
+## Store Listing Content
+
+- `docs/store-listing/*.txt` contains five manually maintained, listing-only descriptions based on the public English listing. They are not runtime resources or release package inputs.
+- `docs/store-listing/README.md` tracks dashboard application, verification steps, and publication status. This documentation-only change leaves extension metadata, UI, and version unchanged.

@@ -62,3 +62,7 @@ See [CHANGELOG.md](CHANGELOG.md).
 ## Product Quality
 
 See the [2026-09-02 product maturity audit](docs/product-audit-2026-09-02.md) for the current UX, accessibility, architecture, testing, and release roadmap.
+
+## Chrome Web Store Listing Translations
+
+English, Traditional Chinese, Simplified Chinese, Japanese, and Korean descriptions are maintained in [docs/store-listing](docs/store-listing/README.md). These are listing-only drafts pending dashboard application; the extension UI and package metadata remain unchanged.
