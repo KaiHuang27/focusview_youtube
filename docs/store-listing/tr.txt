@@ -1,0 +1,10 @@
+YouTube videolarında daha fazla ayrıntı görün.
+FocusView, tarayıcınızdaki YouTube videolarına akıcı yakınlaştırma, döndürme ve aynalama kontrolleri ekler.
+Özellikler:
+• Yakınlaştırma modunu açmak veya kapatmak için Alt + Shift + Z tuşlarına basın
+• 100% ile 500% arasında yakınlaştırmak için kaydırın
+• Videoları 90°, 180° veya 270° döndürün
+• Videoları yatay olarak aynalayın
+Konserler, canlı yayınlar, spor klipleri, dersler, eğitimler ve yakından bakmak istediğiniz her video için uygundur.
+Gizlilik ve izinler:
+FocusView veri toplamaz, kullanıcıları izlemez ve harici sunuculara hiçbir şey göndermez. Tüm dönüşümler yerel olarak tarayıcınızda gerçekleşir.

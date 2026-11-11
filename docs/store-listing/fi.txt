@@ -1,0 +1,10 @@
+Näe enemmän yksityiskohtia YouTube-videoissa.
+FocusView lisää selaimesi YouTube-videoihin sujuvat zoomaus-, kierto- ja peilaustoiminnot.
+Ominaisuudet:
+• Ota zoomaustila käyttöön tai poista se käytöstä painamalla Alt + Shift + Z
+• Zoomaa vierittämällä välillä 100%–500%
+• Kierrä videoita 90°, 180° tai 270°
+• Peilaa videoita vaakasuunnassa
+Sopii konsertteihin, suoriin lähetyksiin, urheiluklippeihin, luentoihin, opetusvideoihin ja kaikkiin videoihin, joita haluat katsoa lähempää.
+Tietosuoja ja käyttöoikeudet:
+FocusView ei kerää tietoja, seuraa käyttäjiä eikä lähetä mitään ulkoisille palvelimille. Kaikki muunnokset tapahtuvat paikallisesti selaimessasi.

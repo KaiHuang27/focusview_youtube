@@ -15,13 +15,13 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 - `src/transform-state.test.js` verifies transform state behavior, precise capped wheel delta scaling, rapid input accumulation, refresh-rate-independent animation and 100 ms settling, Zoom mode-only player blocking and fallback decisions, player-bounds wheel hit testing, Zoom mode gesture guards, drag-start hold cancellation, and drag-time playback-rate restoration with Node's built-in test runner.
 - `src/overlay-css.test.js` verifies zoom control CSS spacing, menu alignment, menu typography, and the absence of removed prompt styles across Chrome and Safari extension resources.
 - `src/product-wording.test.js` verifies store-specific manifest metadata and popup rating destinations, popup feedback links, permission-free runtime wiring, removal of in-player review solicitation, integer user-facing zoom values, user-facing control labels, single-click/double-click arbitration with immediate keyboard activation, accumulating wheel animation wiring, Zoom mode-scoped wheel fallback, watch-page-only player observation, event-driven transform refresh, Zoom mode-only pointer tracking and player wheel binding, shared transform geometry, targeted transform writes, batched wheel and slider UI updates, and safe Safari wrapper resource and message handling across Chrome and Safari resources.
-- `src/store-locales.test.js` validates Chrome locale resolution, summary length, translated feature coverage, and inclusion of all locale files in the release ZIP.
+- `src/store-locales.test.js` validates the exact 55 supported Chrome locale codes, summary keys and length, complete translated listing copy with unchanged product/platform names and numeric controls, and inclusion of every locale file in the release ZIP.
 - Run tests with `node --test`.
 
 ## Release Packaging
 
 - `scripts/build-release.sh` reads the version from `manifest.json` and writes `dist/focusview-<version>.zip`.
-- `package.json`, the Chrome manifest, the Safari extension manifest, and Xcode marketing version stay aligned for each release. Current release version: `1.1.7`; Xcode build number: `8`.
+- `package.json`, the Chrome manifest, the Safari extension manifest, and Xcode marketing version stay aligned for each release. Current prepared release version: `1.1.8`; Xcode build number: `9`.
 - The release zip includes `manifest.json`, `_locales/`, `popup.html`, `popup.css`, `src/content.js`, `src/transform-state.js`, `src/overlay.css`, and `icons/`, which are the runtime files required for Chrome Web Store upload.
 - Mac App Store distribution uses the Safari wrapper in `platforms/safari/FocusView`, not the Chrome release zip.
 - The README links directly to both supported distribution channels: Chrome Web Store and Apple App Store.
@@ -41,5 +41,5 @@ See [docs/product-audit-2026-09-02.md](docs/product-audit-2026-09-02.md) for evi
 
 ## Store Listing Content
 
-- `docs/store-listing/*.txt` contains five manually maintained, listing-only descriptions based on the public English listing. They are not runtime resources or release package inputs.
-- `docs/store-listing/README.md` tracks dashboard application, verification steps, and publication status. Chrome uses `default_locale: en` and `_locales/*/messages.json` to enable five dashboard locales and localize only the package summary. Runtime controls and product names remain unchanged; Safari resources retain their English summary.
+- `docs/store-listing/*.txt` contains 55 manually maintained, listing-only descriptions based on the public English listing. They are not runtime resources or release package inputs.
+- `docs/store-listing/README.md` tracks dashboard application, verification steps, and publication status. Chrome uses `default_locale: en` and `_locales/*/messages.json` to enable all 55 supported dashboard locales and localize only the package summary. Runtime controls and product names remain unchanged; Safari resources retain their English summary.

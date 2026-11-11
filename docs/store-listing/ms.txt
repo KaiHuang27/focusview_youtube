@@ -1,0 +1,10 @@
+Lihat lebih banyak butiran dalam video YouTube.
+FocusView menambahkan kawalan zum, putaran dan pencerminan yang lancar pada video YouTube dalam pelayar anda.
+Ciri-ciri:
+• Tekan Alt + Shift + Z untuk menghidupkan atau mematikan mod zum
+• Tatal untuk mengezum daripada 100% hingga 500%
+• Putar video sebanyak 90°, 180° atau 270°
+• Cerminkan video secara mendatar
+Sesuai untuk konsert, siaran langsung, klip sukan, kuliah, tutorial dan sebarang video yang ingin anda lihat dengan lebih dekat.
+Privasi dan kebenaran:
+FocusView tidak mengumpulkan data, tidak menjejak pengguna dan tidak menghantar apa-apa ke pelayan luaran. Semua transformasi berlaku secara setempat dalam pelayar anda.

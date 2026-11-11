@@ -1,0 +1,10 @@
+Découvrez plus de détails dans les vidéos YouTube.
+FocusView ajoute des commandes fluides de zoom, de rotation et de miroir aux vidéos YouTube dans votre navigateur.
+Fonctionnalités :
+• Appuyez sur Alt + Shift + Z pour activer ou désactiver le mode zoom
+• Faites défiler pour zoomer de 100% à 500%
+• Faites pivoter les vidéos de 90°, 180° ou 270°
+• Retournez les vidéos horizontalement
+Idéal pour les concerts, les diffusions en direct, les extraits sportifs, les cours, les tutoriels et toute vidéo que vous souhaitez regarder de plus près.
+Confidentialité et autorisations :
+FocusView ne collecte aucune donnée, ne suit pas les utilisateurs et n'envoie rien à des serveurs externes. Toutes les transformations s'effectuent localement dans votre navigateur.

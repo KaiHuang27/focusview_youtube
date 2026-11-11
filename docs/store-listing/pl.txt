@@ -1,0 +1,10 @@
+Zobacz więcej szczegółów w filmach w YouTube.
+FocusView dodaje płynne sterowanie powiększaniem, obracaniem i odbiciem lustrzanym filmów w YouTube w Twojej przeglądarce.
+Funkcje:
+• Naciśnij Alt + Shift + Z, aby włączyć lub wyłączyć tryb powiększania
+• Przewijaj, aby powiększać od 100% do 500%
+• Obracaj filmy o 90°, 180° lub 270°
+• Odbijaj filmy w poziomie
+Idealne do koncertów, transmisji na żywo, klipów sportowych, wykładów, poradników i każdego filmu, który chcesz obejrzeć z bliska.
+Prywatność i uprawnienia:
+FocusView nie zbiera danych, nie śledzi użytkowników i niczego nie wysyła na zewnętrzne serwery. Wszystkie przekształcenia odbywają się lokalnie w Twojej przeglądarce.

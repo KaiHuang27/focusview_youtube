@@ -1,0 +1,10 @@
+Pogledajte više detalja u videozapisima na YouTubeu.
+FocusView dodaje glatke kontrole povećanja, zakretanja i zrcaljenja videozapisima na YouTubeu u vašem pregledniku.
+Značajke:
+• Pritisnite Alt + Shift + Z za uključivanje ili isključivanje načina povećanja
+• Pomičite kotačić za povećanje od 100% do 500%
+• Zakrenite videozapise za 90°, 180° ili 270°
+• Zrcalite videozapise vodoravno
+Prikladno za koncerte, prijenose uživo, sportske isječke, predavanja, vodiče i svaki videozapis koji želite pogledati izbliza.
+Privatnost i dopuštenja:
+FocusView ne prikuplja podatke, ne prati korisnike i ništa ne šalje vanjskim poslužiteljima. Sve se transformacije odvijaju lokalno u vašem pregledniku.

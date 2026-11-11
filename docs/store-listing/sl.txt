@@ -1,0 +1,10 @@
+Oglejte si več podrobnosti v videoposnetkih na platformi YouTube.
+FocusView v vašem brskalniku doda tekoče upravljanje povečave, vrtenja in zrcaljenja videoposnetkov na platformi YouTube.
+Funkcije:
+• Pritisnite Alt + Shift + Z za vklop ali izklop načina povečave
+• Pomikajte se za povečavo od 100% do 500%
+• Zavrtite videoposnetke za 90°, 180° ali 270°
+• Zrcalite videoposnetke vodoravno
+Primerno za koncerte, prenose v živo, športne izseke, predavanja, vadnice in vsak videoposnetek, ki si ga želite ogledati od blizu.
+Zasebnost in dovoljenja:
+FocusView ne zbira podatkov, ne sledi uporabnikom in ničesar ne pošilja zunanjim strežnikom. Vse preobrazbe potekajo lokalno v vašem brskalniku.

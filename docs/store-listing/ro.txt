@@ -1,0 +1,10 @@
+Vezi mai multe detalii în videoclipurile YouTube.
+FocusView adaugă comenzi fluide de mărire, rotire și oglindire videoclipurilor YouTube din browserul tău.
+Funcții:
+• Apasă Alt + Shift + Z pentru a activa sau dezactiva modul de mărire
+• Derulează pentru a mări de la 100% la 500%
+• Rotește videoclipurile cu 90°, 180° sau 270°
+• Oglindește videoclipurile orizontal
+Ideal pentru concerte, transmisiuni în direct, clipuri sportive, cursuri, tutoriale și orice videoclip pe care vrei să-l vezi mai de aproape.
+Confidențialitate și permisiuni:
+FocusView nu colectează date, nu urmărește utilizatorii și nu trimite nimic către servere externe. Toate transformările au loc local, în browserul tău.

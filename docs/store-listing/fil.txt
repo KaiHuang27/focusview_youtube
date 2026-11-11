@@ -1,0 +1,10 @@
+Makita ang higit pang detalye sa mga video sa YouTube.
+Nagdaragdag ang FocusView ng maayos na mga kontrol sa pag-zoom, pag-rotate, at pag-mirror sa mga video sa YouTube sa iyong browser.
+Mga tampok:
+• Pindutin ang Alt + Shift + Z upang i-on o i-off ang zoom mode
+• Mag-scroll upang mag-zoom mula 100% hanggang 500%
+• I-rotate ang mga video nang 90°, 180°, o 270°
+• I-mirror ang mga video nang pahalang
+Angkop para sa mga konsiyerto, livestream, sports clip, leksiyon, tutorial, at anumang video na gusto mong tingnan nang mas malapitan.
+Privacy at mga pahintulot:
+Hindi nangongolekta ng data, sumusubaybay sa mga user, o nagpapadala ng anuman sa mga panlabas na server ang FocusView. Lokal na nagaganap ang lahat ng pagbabago sa iyong browser.

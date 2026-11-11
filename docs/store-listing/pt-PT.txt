@@ -1,0 +1,10 @@
+Veja mais pormenores nos vídeos do YouTube.
+O FocusView adiciona controlos fluidos de zoom, rotação e espelhamento aos vídeos do YouTube no seu navegador.
+Funcionalidades:
+• Prima Alt + Shift + Z para ativar ou desativar o modo de zoom
+• Desloque a roda para ampliar de 100% a 500%
+• Rode vídeos em 90°, 180° ou 270°
+• Espelhe vídeos horizontalmente
+Ideal para concertos, transmissões em direto, excertos desportivos, aulas, tutoriais e qualquer vídeo que queira ver de perto.
+Privacidade e permissões:
+O FocusView não recolhe dados, não monitoriza os utilizadores nem envia nada para servidores externos. Todas as transformações são efetuadas localmente no seu navegador.

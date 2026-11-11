@@ -1,0 +1,10 @@
+Lihat lebih banyak detail dalam video YouTube.
+FocusView menambahkan kontrol zoom, putar, dan cermin yang mulus ke video YouTube di browser Anda.
+Fitur:
+• Tekan Alt + Shift + Z untuk mengaktifkan atau menonaktifkan mode zoom
+• Gulir untuk memperbesar dari 100% hingga 500%
+• Putar video sebesar 90°, 180°, atau 270°
+• Cerminkan video secara horizontal
+Cocok untuk konser, siaran langsung, cuplikan olahraga, kuliah, tutorial, dan video apa pun yang ingin Anda lihat lebih dekat.
+Privasi dan izin:
+FocusView tidak mengumpulkan data, tidak melacak pengguna, dan tidak mengirim apa pun ke server eksternal. Semua transformasi dilakukan secara lokal di browser Anda.

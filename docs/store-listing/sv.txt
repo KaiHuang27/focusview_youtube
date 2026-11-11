@@ -1,0 +1,10 @@
+Se fler detaljer i YouTube-videor.
+FocusView lägger till smidiga kontroller för zoomning, rotation och spegelvändning av YouTube-videor i din webbläsare.
+Funktioner:
+• Tryck på Alt + Shift + Z för att slå på eller av zoomläget
+• Rulla för att zooma från 100% till 500%
+• Rotera videor 90°, 180° eller 270°
+• Spegelvänd videor vågrätt
+Passar för konserter, direktsändningar, sportklipp, föreläsningar, guider och alla videor du vill se på närmare håll.
+Integritet och behörigheter:
+FocusView samlar inte in data, spårar inte användare och skickar ingenting till externa servrar. Alla omvandlingar sker lokalt i din webbläsare.

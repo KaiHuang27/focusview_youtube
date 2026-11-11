@@ -1,0 +1,10 @@
+Nézz meg több részletet a YouTube-videókban.
+A FocusView gördülékeny nagyítási, forgatási és tükrözési vezérlőkkel egészíti ki a YouTube-videókat a böngésződben.
+Funkciók:
+• Az Alt + Shift + Z megnyomásával be- vagy kikapcsolhatod a nagyítási módot
+• Görgetéssel nagyíthatsz 100% és 500% között
+• Forgasd el a videókat 90°, 180° vagy 270° szögben
+• Tükrözd a videókat vízszintesen
+Koncertekhez, élő közvetítésekhez, sportklipekhez, előadásokhoz, oktatóanyagokhoz és minden közelebbről megtekintendő videóhoz.
+Adatvédelem és engedélyek:
+A FocusView nem gyűjt adatokat, nem követi a felhasználókat, és semmit nem küld külső szerverekre. Minden átalakítás helyben, a böngésződben történik.

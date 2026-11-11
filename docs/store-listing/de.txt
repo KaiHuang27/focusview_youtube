@@ -1,0 +1,10 @@
+Entdecke mehr Details in YouTube-Videos.
+FocusView ergänzt YouTube-Videos in deinem Browser um flüssige Zoom-, Dreh- und Spiegelfunktionen.
+Funktionen:
+• Drücke Alt + Shift + Z, um den Zoommodus ein- oder auszuschalten
+• Scrolle, um von 100% bis 500% zu zoomen
+• Drehe Videos um 90°, 180° oder 270°
+• Spiegle Videos horizontal
+Ideal für Konzerte, Livestreams, Sportclips, Vorlesungen, Anleitungen und jedes Video, das du genauer betrachten möchtest.
+Datenschutz und Berechtigungen:
+FocusView sammelt keine Daten, verfolgt keine Nutzer und sendet nichts an externe Server. Alle Transformationen erfolgen lokal in deinem Browser.

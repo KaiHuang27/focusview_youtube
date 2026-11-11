@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.8 - 2026-11-11
+
+- Expanded Chrome Web Store summaries and full listing descriptions from 5 to all 55 supported locales, including regional English, Spanish, Portuguese, and Chinese variants.
+- Kept product names and runtime controls in English; no runtime or permission changes.
+- Expanded listing validation and aligned Safari version metadata locally without submitting an Apple release.
+
 ## 1.1.7 - 2026-10-18
 
 - Added Chrome package locale metadata for English, Traditional Chinese, Simplified Chinese, Japanese, and Korean store listings.
