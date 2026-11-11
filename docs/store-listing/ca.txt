@@ -1,10 +1,17 @@
-Observa més detalls als vídeos de YouTube.
-FocusView afegeix controls fluids de zoom, gir i reflexió als vídeos de YouTube al teu navegador.
+FocusView et permet ampliar, girar i invertir en mirall els vídeos de YouTube amb controls senzills i elegants. Mira més de prop i gaudeix dels detalls.
+
 Funcions:
-• Prem Alt + Shift + Z per activar o desactivar el mode de zoom
 • Desplaça la roda per ampliar del 100% al 500%
 • Gira els vídeos 90°, 180° o 270°
 • Inverteix els vídeos horitzontalment
-Ideal per a concerts, emissions en directe, clips esportius, classes, tutorials i qualsevol vídeo que vulguis veure de prop.
+• Prem Alt + Shift + Z (Mac: Option + Shift + Z) per activar o desactivar el mode de zoom
+
+Ideal per a:
+• Ajustar els vídeos a la pantalla i eliminar les bandes negres
+• Concerts i emissions en directe
+• Clips esportius
+• Classes i tutorials
+• Qualsevol vídeo que vulguis veure més de prop
+
 Privadesa i permisos:
 FocusView no recopila dades, no fa seguiment dels usuaris ni envia res a servidors externs. Totes les transformacions es fan localment al navegador.

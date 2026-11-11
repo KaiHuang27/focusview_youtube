@@ -1,10 +1,17 @@
-Découvrez plus de détails dans les vidéos YouTube.
-FocusView ajoute des commandes fluides de zoom, de rotation et de miroir aux vidéos YouTube dans votre navigateur.
+Avec ses commandes simples et élégantes, FocusView permet de zoomer, de faire pivoter et de retourner les vidéos YouTube en miroir, en toute simplicité. Regardez de plus près et profitez des détails.
+
 Fonctionnalités :
-• Appuyez sur Alt + Shift + Z pour activer ou désactiver le mode zoom
 • Faites défiler pour zoomer de 100% à 500%
 • Faites pivoter les vidéos de 90°, 180° ou 270°
 • Retournez les vidéos horizontalement
-Idéal pour les concerts, les diffusions en direct, les extraits sportifs, les cours, les tutoriels et toute vidéo que vous souhaitez regarder de plus près.
+• Appuyez sur Alt + Shift + Z (Mac: Option + Shift + Z) pour activer ou désactiver le mode zoom
+
+Idéal pour :
+• Adapter les vidéos à votre écran et supprimer les bandes noires
+• Les concerts et les diffusions en direct
+• Les extraits sportifs
+• Les cours et les tutoriels
+• Toutes les vidéos que vous souhaitez regarder de plus près
+
 Confidentialité et autorisations :
 FocusView ne collecte aucune donnée, ne suit pas les utilisateurs et n'envoie rien à des serveurs externes. Toutes les transformations s'effectuent localement dans votre navigateur.

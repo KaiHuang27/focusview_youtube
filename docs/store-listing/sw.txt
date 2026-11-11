@@ -1,10 +1,17 @@
-Ona maelezo zaidi katika video za YouTube.
-FocusView huongeza vidhibiti laini vya kukuza, kuzungusha na kuakisi video za YouTube kwenye kivinjari chako.
+Kwa vidhibiti rahisi na maridadi, FocusView hurahisisha kukuza, kuzungusha na kuakisi video za YouTube. Tazama kwa karibu zaidi na ufurahie hata mambo madogo madogo.
+
 Vipengele:
-• Bonyeza Alt + Shift + Z ili kuwasha au kuzima hali ya kukuza
 • Sogeza gurudumu ili kukuza kutoka 100% hadi 500%
 • Zungusha video kwa 90°, 180° au 270°
 • Akisi video kwa mlalo
-Inafaa kwa matamasha, matangazo ya moja kwa moja, klipu za michezo, mihadhara, mafunzo na video yoyote unayotaka kuiona kwa karibu.
+• Bonyeza Alt + Shift + Z (Mac: Option + Shift + Z) ili kuwasha au kuzima hali ya kukuza
+
+Inafaa kwa:
+• Kulinganisha ukubwa wa video na skrini yako na kuondoa mistari myeusi pembeni
+• Matamasha na matangazo ya moja kwa moja
+• Klipu za michezo
+• Mihadhara na mafunzo
+• Video yoyote unayotaka kuitazama kwa karibu zaidi
+
 Faragha na ruhusa:
 FocusView haikusanyi data, haifuatilii watumiaji na haitumi chochote kwa seva za nje. Mabadiliko yote hufanyika ndani ya kivinjari chako.

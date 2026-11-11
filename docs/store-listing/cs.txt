@@ -1,10 +1,17 @@
-Prohlédněte si více detailů ve videích na YouTube.
-FocusView přidává do vašeho prohlížeče plynulé ovládání přiblížení, otáčení a zrcadlení videí na YouTube.
+FocusView nabízí jednoduché a elegantní ovládání, se kterým snadno přiblížíte, otočíte a zrcadlově převrátíte videa na YouTube. Podívejte se zblízka a vychutnejte si detaily.
+
 Funkce:
-• Stisknutím Alt + Shift + Z zapnete nebo vypnete režim přiblížení
 • Posouváním kolečka přibližujte od 100% do 500%
 • Otáčejte videa o 90°, 180° nebo 270°
 • Zrcadlete videa vodorovně
-Vhodné pro koncerty, živé přenosy, sportovní klipy, přednášky, návody a jakékoli video, které chcete vidět zblízka.
+• Stisknutím Alt + Shift + Z (Mac: Option + Shift + Z) zapnete nebo vypnete režim přiblížení
+
+Ideální pro:
+• Přizpůsobení videí obrazovce a odstranění černých pruhů
+• Koncerty a živé přenosy
+• Sportovní klipy
+• Přednášky a návody
+• Jakékoli video, které si chcete prohlédnout zblízka
+
 Soukromí a oprávnění:
 FocusView neshromažďuje data, nesleduje uživatele a nic neposílá na externí servery. Všechny transformace probíhají místně ve vašem prohlížeči.

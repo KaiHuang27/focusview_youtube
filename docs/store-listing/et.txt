@@ -1,10 +1,17 @@
-Vaata YouTube'i videotes rohkem üksikasju.
-FocusView lisab sinu brauseris YouTube'i videotele sujuvad suumimise, pööramise ja peegeldamise juhtelemendid.
+FocusView võimaldab lihtsate ja elegantsete juhtelementidega YouTube'i videoid hõlpsalt suumida, pöörata ja peegeldada. Vaata lähemalt ja naudi üksikasju.
+
 Funktsioonid:
-• Suumirežiimi sisse- või väljalülitamiseks vajuta Alt + Shift + Z
 • Keri, et suumida vahemikus 100% kuni 500%
 • Pööra videoid 90°, 180° või 270°
 • Peegelda videoid horisontaalselt
-Sobib kontsertide, otseülekannete, spordiklippide, loengute, õpetuste ja kõigi videote jaoks, mida soovid lähemalt vaadata.
+• Suumirežiimi sisse- või väljalülitamiseks vajuta Alt + Shift + Z (Mac: Option + Shift + Z)
+
+Sobib hästi:
+• Videote ekraanile sobitamiseks ja mustade ribade eemaldamiseks
+• Kontsertide ja otseülekannete vaatamiseks
+• Spordiklippide vaatamiseks
+• Loengute ja õpetuste jälgimiseks
+• Kõigi videote lähemalt vaatamiseks
+
 Privaatsus ja õigused:
 FocusView ei kogu andmeid, ei jälgi kasutajaid ega saada midagi välistele serveritele. Kõik teisendused toimuvad kohapeal sinu brauseris.

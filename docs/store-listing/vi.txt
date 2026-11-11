@@ -1,10 +1,17 @@
-Xem thêm chi tiết trong video YouTube.
-FocusView thêm các điều khiển thu phóng, xoay và lật gương mượt mà cho video YouTube trong trình duyệt của bạn.
+Với các nút điều khiển đơn giản, tinh tế, FocusView giúp bạn dễ dàng thu phóng, xoay và lật gương video YouTube. Xem gần hơn và tận hưởng từng chi tiết.
+
 Tính năng:
-• Nhấn Alt + Shift + Z để bật hoặc tắt chế độ thu phóng
 • Cuộn để thu phóng từ 100% đến 500%
 • Xoay video 90°, 180° hoặc 270°
 • Lật gương video theo chiều ngang
-Phù hợp cho buổi hòa nhạc, phát trực tiếp, clip thể thao, bài giảng, hướng dẫn và mọi video bạn muốn xem gần hơn.
+• Nhấn Alt + Shift + Z (Mac: Option + Shift + Z) để bật hoặc tắt chế độ thu phóng
+
+Phù hợp để:
+• Điều chỉnh video vừa màn hình và loại bỏ viền đen
+• Xem hòa nhạc và phát trực tiếp
+• Xem clip thể thao
+• Theo dõi bài giảng và video hướng dẫn
+• Xem gần hơn bất kỳ video nào bạn muốn
+
 Quyền riêng tư và quyền truy cập:
 FocusView không thu thập dữ liệu, không theo dõi người dùng và không gửi bất cứ thứ gì đến máy chủ bên ngoài. Mọi phép biến đổi đều diễn ra cục bộ trong trình duyệt của bạn.

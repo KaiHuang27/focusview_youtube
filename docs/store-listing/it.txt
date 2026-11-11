@@ -1,10 +1,17 @@
-Scopri più dettagli nei video di YouTube.
-FocusView aggiunge controlli fluidi di zoom, rotazione e riflessione ai video di YouTube nel tuo browser.
+Con i suoi comandi semplici ed eleganti, FocusView ti permette di ingrandire, ruotare e specchiare facilmente i video di YouTube. Guarda più da vicino e goditi i dettagli.
+
 Funzioni:
-• Premi Alt + Shift + Z per attivare o disattivare la modalità zoom
 • Scorri per ingrandire dal 100% al 500%
 • Ruota i video di 90°, 180° o 270°
 • Rifletti i video orizzontalmente
-Ideale per concerti, dirette, clip sportive, lezioni, tutorial e qualsiasi video che vuoi osservare da vicino.
+• Premi Alt + Shift + Z (Mac: Option + Shift + Z) per attivare o disattivare la modalità zoom
+
+Ideale per:
+• Adattare i video al tuo schermo ed eliminare le bande nere
+• Concerti e dirette
+• Clip sportive
+• Lezioni e tutorial
+• Qualsiasi video che vuoi guardare più da vicino
+
 Privacy e autorizzazioni:
 FocusView non raccoglie dati, non traccia gli utenti e non invia nulla a server esterni. Tutte le trasformazioni avvengono localmente nel tuo browser.

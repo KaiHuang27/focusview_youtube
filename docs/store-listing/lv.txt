@@ -1,10 +1,17 @@
-Saskatiet vairāk detaļu YouTube videoklipos.
-FocusView jūsu pārlūkā pievieno YouTube videoklipiem plūstošas palielināšanas, pagriešanas un spoguļošanas vadīklas.
+Ar vienkāršām un elegantām vadīklām FocusView ļauj ērti palielināt, pagriezt un spoguļot YouTube videoklipus. Apskatiet tuvāk un izbaudiet detaļas.
+
 Iespējas:
-• Nospiediet Alt + Shift + Z, lai ieslēgtu vai izslēgtu palielināšanas režīmu
 • Ritiniet, lai palielinātu no 100% līdz 500%
 • Pagrieziet videoklipus par 90°, 180° vai 270°
 • Spoguļojiet videoklipus horizontāli
-Piemērots koncertiem, tiešraidēm, sporta fragmentiem, lekcijām, pamācībām un jebkuram videoklipam, ko vēlaties apskatīt tuvāk.
+• Nospiediet Alt + Shift + Z (Mac: Option + Shift + Z), lai ieslēgtu vai izslēgtu palielināšanas režīmu
+
+Lieliski piemērots:
+• Videoklipu pielāgošanai ekrānam un melno joslu noņemšanai
+• Koncertiem un tiešraidēm
+• Sporta fragmentiem
+• Lekcijām un pamācībām
+• Jebkuram videoklipam, ko vēlaties apskatīt tuvāk
+
 Privātums un atļaujas:
 FocusView neapkopo datus, neizseko lietotājus un neko nesūta uz ārējiem serveriem. Visas transformācijas notiek lokāli jūsu pārlūkā.
