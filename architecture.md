@@ -43,3 +43,5 @@ See [docs/product-audit-2026-09-02.md](docs/product-audit-2026-09-02.md) for evi
 
 - `docs/store-listing/*.txt` contains 55 manually maintained, listing-only descriptions based on the public English listing. They are not runtime resources or release package inputs.
 - `docs/store-listing/README.md` tracks dashboard application, verification steps, and publication status. Chrome uses `default_locale: en` and `_locales/*/messages.json` to enable all 55 supported dashboard locales and localize only the package summary. Full descriptions must be saved separately in the dashboard: uploading the ZIP only supplies locale metadata and summaries. All 55 full descriptions were verified against the local copy after reloading the dashboard before the 1.1.8 submission on 2026-11-11. Runtime controls and product names remain unchanged; Safari resources retain their English summary.
+
+- The four English listing variants share revised approved copy. This listing-only update is not applied to the dashboard and does not change runtime resources or package summaries; earlier dashboard verification refers to the previous copy.

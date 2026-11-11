@@ -1,14 +1,13 @@
-See more details in YouTube videos.
-
-FocusView adds smooth zoom, rotate, and mirror controls to YouTube videos in your browser.
+FocusView makes it easy to zoom, rotate, and mirror YouTube videos with simple, elegant controls. Take a closer look and enjoy the details.
 
 Features:
-• Press Alt + Shift + Z to turn zoom mode on or off
 • Scroll to zoom videos from 100% to 500%
 • Rotate videos by 90°, 180°, or 270°
 • Mirror videos horizontally
+• Press Alt + Shift + Z (Option + Shift + Z on Mac) to turn zoom mode on or off
 
-Best for:
+Perfect for:
+• Fitting videos to your screen and removing black bars
 • Concerts and livestreams
 • Sports clips
 • Lectures and tutorials
