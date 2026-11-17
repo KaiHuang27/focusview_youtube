@@ -121,7 +121,7 @@ test('support card renders bundled branding, concise copy, and explicit actions'
   assert.equal(dialog.attributes['aria-labelledby'], title.id);
   assert.equal(dialog.attributes['aria-describedby'], description.id);
   assert.equal(title.textContent, 'Enjoying FocusView?');
-  assert.equal(description.textContent, 'Your support helps me keep improving FocusView.');
+  assert.equal(description.textContent, 'Thanks for watching with FocusView! Your support helps me keep making it better.');
   assert.equal(actions.children[0].textContent, 'Rate FocusView');
   assert.equal(actions.children[1].textContent, 'Buy me a coffee');
   assert.equal(note.tagName, 'button');

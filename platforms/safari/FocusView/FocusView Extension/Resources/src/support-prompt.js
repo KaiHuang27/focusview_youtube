@@ -28,7 +28,7 @@
     header.append(logo, title);
     const description = document.createElement('p');
     description.id = 'ytvt-support-description';
-    description.textContent = 'Your support helps me keep improving FocusView.';
+    description.textContent = 'Thanks for watching with FocusView! Your support helps me keep making it better.';
     const actions = document.createElement('div');
     actions.className = 'ytvt-support-actions';
     const ratingUrl = api.runtime.getManifest().background?.service_worker
