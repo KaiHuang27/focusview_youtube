@@ -46,16 +46,21 @@
       });
       actions.append(link);
     }
+    const footer = document.createElement('div');
+    footer.className = 'ytvt-support-footer';
+    const supported = document.createElement('span');
+    supported.textContent = 'Already supported?';
     const note = document.createElement('button');
     note.type = 'button';
     note.className = 'ytvt-support-later';
-    note.textContent = 'Already supported';
+    note.textContent = 'Don’t remind me again';
     note.title = 'Remind me every 20 zoom mode activations';
     note.addEventListener('click', () => {
       void api.runtime.sendMessage({ type: 'support:later' }).catch(() => {});
       dialog.close();
     });
-    dialog.append(close, header, description, actions, note);
+    footer.append(supported, note);
+    dialog.append(close, header, description, actions, footer);
     close.addEventListener('click', () => dialog.close());
     dialog.addEventListener('close', () => {
       dialog.remove();

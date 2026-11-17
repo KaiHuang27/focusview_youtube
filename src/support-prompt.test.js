@@ -112,7 +112,8 @@ test('support card renders bundled branding, concise copy, and explicit actions'
   await context.YTVTSupport.recordActivation();
   const [dialog] = children;
   assert.equal(dialog.open, true);
-  const [close, header, description, actions, note] = dialog.children;
+  const [close, header, description, actions, footer] = dialog.children;
+  const [supported, note] = footer.children;
   const [logo, title] = header.children;
   assert.equal(close.attributes['aria-label'], 'Close');
   assert.equal(logo.src, 'chrome-extension://focusview/icons/icon-48.png');
@@ -125,7 +126,8 @@ test('support card renders bundled branding, concise copy, and explicit actions'
   assert.equal(actions.children[0].textContent, 'Rate FocusView');
   assert.equal(actions.children[1].textContent, 'Buy me a coffee');
   assert.equal(note.tagName, 'button');
-  assert.equal(note.textContent, 'Already supported');
+  assert.equal(supported.textContent, 'Already supported?');
+  assert.equal(note.textContent, 'Don’t remind me again');
   // Repeated responses must not create duplicate dialogs.
   await context.YTVTSupport.recordActivation();
   assert.equal(children.length, 1);

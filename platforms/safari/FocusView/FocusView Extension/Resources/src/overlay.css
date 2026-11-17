@@ -511,9 +511,10 @@
 .ytvt-support-actions a:first-child { color: #fff; background: #2859c5; border-color: #557bd2; }
 .ytvt-support a:hover, .ytvt-support-close:hover { filter: brightness(1.2); background-color: #ffffff26; }
 .ytvt-support :focus-visible { outline: 2px solid #93bbff; outline-offset: 3px; }
+.ytvt-support-footer { margin-top: 14px; font: 400 12px/1.5 Roboto, Arial, sans-serif; }
 .ytvt-support-later {
   display: block;
-  margin-top: 14px;
+  margin: 0;
   padding: 4px 0;
   color: #a5a5b0;
   background: transparent;
