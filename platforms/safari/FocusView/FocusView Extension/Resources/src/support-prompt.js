@@ -15,18 +15,26 @@
     close.setAttribute('aria-label', 'Close');
     close.textContent = '×';
     close.autofocus = true;
+    const header = document.createElement('header');
+    header.className = 'ytvt-support-header';
+    const logo = document.createElement('img');
+    logo.src = api.runtime.getURL('icons/icon-48.png');
+    logo.alt = '';
+    logo.width = 36;
+    logo.height = 36;
     const title = document.createElement('h2');
     title.id = 'ytvt-support-title';
     title.textContent = 'Enjoying FocusView?';
+    header.append(logo, title);
     const description = document.createElement('p');
     description.id = 'ytvt-support-description';
-    description.textContent = 'A review or a coffee helps keep FocusView growing. Thanks for your support!';
+    description.textContent = 'Your support helps me keep improving FocusView.';
     const actions = document.createElement('div');
     actions.className = 'ytvt-support-actions';
     const ratingUrl = api.runtime.getManifest().background?.service_worker
       ? 'https://chromewebstore.google.com/detail/jbdndcjclbghkmbiehjigaapembpbgdb/reviews'
       : 'https://apps.apple.com/us/app/focusview-zoom-for-youtube/id6786108302?action=write-review';
-    for (const [label, href] of [['Rate us', ratingUrl], ['Buy me a coffee', 'https://ko-fi.com/kodingai']]) {
+    for (const [label, href] of [['Rate FocusView', ratingUrl], ['Buy me a coffee', 'https://ko-fi.com/kodingai']]) {
       const link = document.createElement('a');
       link.textContent = label;
       link.href = href;
@@ -39,8 +47,8 @@
       actions.append(link);
     }
     const note = document.createElement('small');
-    note.textContent = 'Always optional. Happy watching.';
-    dialog.append(close, title, description, actions, note);
+    note.textContent = 'Always optional. Thank you!';
+    dialog.append(close, header, description, actions, note);
     close.addEventListener('click', () => dialog.close());
     dialog.addEventListener('close', () => {
       dialog.remove();

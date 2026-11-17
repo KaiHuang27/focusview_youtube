@@ -36,5 +36,15 @@
   ],
   "background": {
     "service_worker": "src/support-background.js"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "icons/icon-48.png"
+      ],
+      "matches": [
+        "https://www.youtube.com/*"
+      ]
+    }
+  ]
 }

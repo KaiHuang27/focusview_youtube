@@ -292,7 +292,7 @@ test("support prompts use local storage and ship across stores", async () => {
     const manifest = JSON.parse(await readFile(manifestUrl, "utf8"));
     assert.deepEqual(manifest.content_scripts[0].js, ["src/transform-state.js", "src/support-prompt.js", "src/content.js"]);
     assert.deepEqual(manifest.permissions, ["storage"]);
-    assert.equal(manifest.web_accessible_resources, undefined);
+    assert.deepEqual(manifest.web_accessible_resources, [{ resources: ["icons/icon-48.png"], matches: ["https://www.youtube.com/*"] }]);
   }
   for (const contentUrl of CONTENT_SCRIPT_PATHS) {
     const content = await readFile(contentUrl, "utf8");

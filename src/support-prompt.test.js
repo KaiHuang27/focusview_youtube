@@ -85,3 +85,45 @@ test('Chrome and Safari ship identical support logic and styling', async () => {
     );
   }
 });
+
+test('support card renders bundled branding, concise copy, and explicit actions', async () => {
+  const children = [];
+  const document = {
+    activeElement: null,
+    body: { append(node) { children.push(node); } },
+    createElement(tagName) {
+      return {
+        tagName, children: [], attributes: {},
+        append(...nodes) { this.children.push(...nodes); },
+        setAttribute(key, value) { this.attributes[key] = value; },
+        addEventListener() {},
+        showModal() { this.open = true; },
+      };
+    },
+  };
+  const context = vm.createContext({ document, chrome: { runtime: {
+    getURL: path => `chrome-extension://focusview/${path}`,
+    getManifest: () => ({ background: { service_worker: 'src/support-background.js' } }),
+    sendMessage: async () => ({ show: true }),
+  } } });
+  vm.runInContext(await readFile(new URL('./support-prompt.js', import.meta.url), 'utf8'), context);
+  await context.YTVTSupport.recordActivation();
+  const [dialog] = children;
+  assert.equal(dialog.open, true);
+  const [close, header, description, actions, note] = dialog.children;
+  const [logo, title] = header.children;
+  assert.equal(close.attributes['aria-label'], 'Close');
+  assert.equal(logo.src, 'chrome-extension://focusview/icons/icon-48.png');
+  assert.equal(logo.alt, '');
+  assert.equal(logo.width, 36);
+  assert.equal(dialog.attributes['aria-labelledby'], title.id);
+  assert.equal(dialog.attributes['aria-describedby'], description.id);
+  assert.equal(title.textContent, 'Enjoying FocusView?');
+  assert.equal(description.textContent, 'Your support helps me keep improving FocusView.');
+  assert.equal(actions.children[0].textContent, 'Rate FocusView');
+  assert.equal(actions.children[1].textContent, 'Buy me a coffee');
+  assert.equal(note.textContent, 'Always optional. Thank you!');
+  // Repeated responses must not create duplicate dialogs.
+  await context.YTVTSupport.recordActivation();
+  assert.equal(children.length, 1);
+});

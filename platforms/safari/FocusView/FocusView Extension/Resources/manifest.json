@@ -38,5 +38,15 @@
       "src/support-background.js"
     ],
     "persistent": false
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "icons/icon-48.png"
+      ],
+      "matches": [
+        "https://www.youtube.com/*"
+      ]
+    }
+  ]
 }
