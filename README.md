@@ -64,13 +64,3 @@ For support, feedback, or bug reports, email `kodin.gai.apps@gmail.com`.
 Latest submitted Chrome release: `1.1.8` (review pending).
 
 See [CHANGELOG.md](CHANGELOG.md).
-
-## Product Quality
-
-See the [2026-09-02 product maturity audit](docs/product-audit-2026-09-02.md) for the current UX, accessibility, architecture, testing, and release roadmap.
-
-## Chrome Web Store Listing Translations
-
-All 55 Chrome-supported locale summaries and full listing descriptions are maintained in [docs/store-listing](docs/store-listing/README.md). Chrome 1.1.8 includes localized package summaries; product names and extension controls remain in English. English regional variants share the English copy. Version 1.1.7 was confirmed published in the developer dashboard on 2026-11-11. All 55 full descriptions were verified after reloading the developer dashboard, and version 1.1.8 was submitted for review on 2026-11-11 with automatic publication after approval. The public version remains 1.1.7 until approval; see the linked release record.
-
-All 55 full listing descriptions now follow the approved English copy, with natural phrasing in the 51 non-English locales, screen fitting and black bar use cases, and Mac shortcuts. Every description uses the same four-section layout with blank lines and matching feature/use-case lists. These local revisions have not been applied to the store; package summaries are unchanged.

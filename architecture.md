@@ -26,7 +26,7 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 - `package.json`, the Chrome manifest, the Safari extension manifest, and Xcode marketing version stay aligned for each release. Current submitted Chrome version: `1.1.8` (review pending, automatic publication after approval); local Xcode build number: `9`.
 - The release zip includes `manifest.json`, `_locales/`, `popup.html`, `popup.css`, `src/content.js`, `src/transform-state.js`, `src/overlay.css`, and `icons/`, which are the runtime files required for Chrome Web Store upload.
 - Mac App Store distribution uses the Safari wrapper in `platforms/safari/FocusView`, not the Chrome release zip.
-- The README links directly to both supported distribution channels: Chrome Web Store and Apple App Store.
+- The README links directly to both supported distribution channels: Chrome Web Store and Apple App Store. Product quality audits and store listing translation details are documented below and in `docs/`, rather than in the user-facing README.
 
 ## Safari
 
