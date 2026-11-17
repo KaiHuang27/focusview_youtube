@@ -10,6 +10,8 @@ FocusView is a lightweight browser extension that runs only on YouTube pages and
 - `src/transform-state.js` contains the shared transform state helpers used by the content script and tests, including viewport-centered zoom for controls, fine-grained delta-aware cursor-centered wheel zoom with a 0.0007 sensitivity and 100-pixel delta cap, integer user-facing percentage formatting, player bounds and Zoom mode-aware fallback listener decisions, player-bounds wheel hit testing, elapsed-time-based wheel animation steps, cover zoom calculation for Fill, and full transform reset state.
 - `src/overlay.css` contains the extension UI styling and video transform presentation, including shared menu alignment and typography.
 
+- Both toolbar popups provide a separate Ko-fi support link below the existing rating and feedback row, using the existing footer styles. The static link opens `https://ko-fi.com/kodingai` in a new tab with `noopener noreferrer`; it adds no scripts, permissions, or background network requests. The README shares the same support destination.
+
 ## Testing
 
 - `src/transform-state.test.js` verifies transform state behavior, precise capped wheel delta scaling, rapid input accumulation, refresh-rate-independent animation and 100 ms settling, Zoom mode-only player blocking and fallback decisions, player-bounds wheel hit testing, Zoom mode gesture guards, drag-start hold cancellation, and drag-time playback-rate restoration with Node's built-in test runner.

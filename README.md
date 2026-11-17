@@ -49,6 +49,12 @@ It does not request browser permissions for storage, history, accounts, analytic
 
 See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
 
+## Support
+
+[Support FocusView on Ko-fi](https://ko-fi.com/kodingai) to help fund continued maintenance and development.
+
+The Chrome, Edge, and Safari toolbar popups also include this optional support link below the rating and feedback links. It opens in a new tab without loading external scripts or requesting additional permissions.
+
 ## Contact
 
 For support, feedback, or bug reports, email `kodin.gai.apps@gmail.com`.

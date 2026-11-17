@@ -19,6 +19,20 @@ test("README links to both supported browser stores", async () => {
   assert.match(readme, /apps\.apple\.com\/us\/app\/focusview-zoom-for-youtube\/id6786108302/);
 });
 
+test("toolbar popups and README share the Ko-fi support destination", async () => {
+  const readme = await readFile(new URL("../README.md", import.meta.url), "utf8");
+  assert.match(readme, /\[Support FocusView on Ko-fi\]\(https:\/\/ko-fi\.com\/kodingai\)/);
+
+  for (const popupPath of [
+    "../popup.html",
+    "../platforms/safari/FocusView/FocusView Extension/Resources/popup.html",
+  ]) {
+    const popup = await readFile(new URL(popupPath, import.meta.url), "utf8");
+    assert.match(popup, /share feedback<\/a>\.<\/p>\s*<p><span aria-hidden="true">☕<\/span> <a href="https:\/\/ko-fi\.com\/kodingai" target="_blank" rel="noopener noreferrer">Support FocusView on Ko-fi<\/a><\/p>\s*<\/section>/);
+    assert.doesNotMatch(popup, /<script\b/i);
+  }
+});
+
 test("extension manifests use store-specific product metadata", async () => {
   for (const manifestUrl of MANIFEST_PATHS) {
     const manifest = JSON.parse(await readFile(manifestUrl, "utf8"));
