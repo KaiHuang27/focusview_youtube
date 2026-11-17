@@ -32,7 +32,7 @@ Best for:
 - Long-press and drag to move around a zoomed video.
 - Rotate videos by `90°`, `180°`, or `270°`.
 - Mirror videos horizontally.
-- Every 10 times you turn on zoom mode, a compact, branded popup with the FocusView logo invites you to “Rate FocusView” or “Buy me a coffee”. Close it with × or Esc; choosing either link stops future reminders. Counts are shared across tabs and browser restarts on this device.
+- Every 10 times you turn on zoom mode, a compact, branded popup with the FocusView logo invites you to “Rate FocusView” or “Buy me a coffee”. Close it with × or Esc; choosing either link stops future reminders. Choose “Already supported” to close the popup, reset the count, and switch all future reminders to every 20 activations. Counts and this preference are shared across tabs and browser restarts on this device.
 
 ## Privacy And Permissions
 
@@ -46,7 +46,7 @@ The extension only runs on YouTube pages:
 "matches": ["https://www.youtube.com/*"]
 ```
 
-The only browser permission is local storage, used for the zoom mode activation count and whether support reminders have been stopped. These values stay on your device. It does not request permissions for history, accounts, analytics, or network access.
+The only browser permission is local storage, used for the zoom mode activation count, reminder interval, and whether support reminders have been stopped. These values stay on your device. It does not request permissions for history, accounts, analytics, or network access.
 
 See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
 

@@ -88,15 +88,17 @@ test('Chrome and Safari ship identical support logic and styling', async () => {
 
 test('support card renders bundled branding, concise copy, and explicit actions', async () => {
   const children = [];
+  const messages = [];
   const document = {
     activeElement: null,
     body: { append(node) { children.push(node); } },
     createElement(tagName) {
       return {
-        tagName, children: [], attributes: {},
+        tagName, children: [], attributes: {}, listeners: {},
         append(...nodes) { this.children.push(...nodes); },
         setAttribute(key, value) { this.attributes[key] = value; },
-        addEventListener() {},
+        addEventListener(type, listener) { this.listeners[type] = listener; },
+        close() { this.open = false; },
         showModal() { this.open = true; },
       };
     },
@@ -104,7 +106,7 @@ test('support card renders bundled branding, concise copy, and explicit actions'
   const context = vm.createContext({ document, chrome: { runtime: {
     getURL: path => `chrome-extension://focusview/${path}`,
     getManifest: () => ({ background: { service_worker: 'src/support-background.js' } }),
-    sendMessage: async () => ({ show: true }),
+    sendMessage: async message => { messages.push(message.type); return { show: true }; },
   } } });
   vm.runInContext(await readFile(new URL('./support-prompt.js', import.meta.url), 'utf8'), context);
   await context.YTVTSupport.recordActivation();
@@ -122,8 +124,42 @@ test('support card renders bundled branding, concise copy, and explicit actions'
   assert.equal(description.textContent, 'Your support helps me keep improving FocusView.');
   assert.equal(actions.children[0].textContent, 'Rate FocusView');
   assert.equal(actions.children[1].textContent, 'Buy me a coffee');
-  assert.equal(note.textContent, 'Always optional. Thank you!');
+  assert.equal(note.tagName, 'button');
+  assert.equal(note.textContent, 'Already supported');
   // Repeated responses must not create duplicate dialogs.
   await context.YTVTSupport.recordActivation();
   assert.equal(children.length, 1);
+  note.listeners.click();
+  assert.equal(messages.at(-1), 'support:later');
+  assert.equal(dialog.open, false);
+});
+
+test('already supported resets the count and persists recurring twenty-activation reminders', async () => {
+  let worker = background({ supportPrompt: { count: 7, stopped: false } });
+  assert.equal((await worker.send('support:later')).show, false);
+  assert.equal(worker.storage.supportPrompt.count, 0);
+  assert.equal(worker.storage.supportPrompt.interval, 20);
+  for (let i = 1; i <= 45; i++) {
+    if (i === 13 || i === 27) worker = background(worker.storage);
+    assert.equal((await worker.send()).show, i % 20 === 0, `activation ${i}`);
+  }
+  assert.equal(worker.storage.supportPrompt.interval, 20);
+  assert.equal(worker.storage.supportPrompt.count, 5);
+});
+
+test('twenty-activation reminders serialize concurrent tabs', async () => {
+  const worker = background();
+  await worker.send('support:later');
+  const results = await Promise.all(Array.from({ length: 43 }, () => worker.send()));
+  assert.equal(results.filter(result => result.show).length, 2);
+  assert.equal(worker.storage.supportPrompt.count, 3);
+});
+
+test('already supported cannot undo permanent suppression', async () => {
+  const worker = background();
+  await worker.send('support:later');
+  await worker.send('support:stop');
+  await worker.send('support:later');
+  for (let i = 0; i < 40; i++) assert.equal((await worker.send()).show, false);
+  assert.equal(worker.storage.supportPrompt.stopped, true);
 });
