@@ -32,7 +32,7 @@ Best for:
 - Long-press and drag to move around a zoomed video.
 - Rotate videos by `90°`, `180°`, or `270°`.
 - Mirror videos horizontally.
-- Every 10 times you turn on zoom mode, a compact, branded popup with the FocusView logo invites you to “Rate FocusView” or “Buy me a coffee”. The popup follows your system’s light or dark appearance. Close it with × or Esc; choosing either link stops future reminders. The footer reads “Already supported?” followed by “Don’t remind me again”. For now, clicking that button closes the popup, resets the count, and switches all future reminders to every 20 activations; permanent dismissal for this action is deferred. Counts and this preference are shared across tabs and browser restarts on this device.
+- Every 10 times you turn on zoom mode, a compact, branded popup with the FocusView logo invites you to “Rate FocusView” or “Buy me a coffee”. The popup follows your system’s light or dark appearance. Close it with × or Esc; choosing either link stops future reminders. The footer places “Already supported?” and “Don’t remind me again” on one line, using different text colors without an underline on the button. For now, clicking that button closes the popup, resets the count, and switches all future reminders to every 20 activations; permanent dismissal for this action is deferred. Counts and this preference are shared across tabs and browser restarts on this device.
 
 ## Privacy And Permissions
 

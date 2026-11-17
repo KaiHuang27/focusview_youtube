@@ -192,3 +192,17 @@ test("support prompts follow system light mode with readable controls", async ()
     ]) assert.match(light, rule, `${cssUrl.pathname} themes dialog controls and interaction states`);
   }
 });
+
+test("support footer aligns its labels inline without an underlined button", async () => {
+  for (const cssUrl of OVERLAY_CSS_PATHS) {
+    const css = await readFile(cssUrl, "utf8");
+    const footer = css.match(/\.ytvt-support-footer\s*\{([^}]+)\}/)?.[1];
+    const button = css.match(/\.ytvt-support-later\s*\{([^}]+)\}/)?.[1];
+    assert.match(footer, /display: flex;/);
+    assert.match(footer, /align-items: center;/);
+    assert.match(footer, /gap: 4px;/);
+    assert.match(button, /text-decoration: none;/);
+    assert.doesNotMatch(button, /text-underline-offset/);
+    assert.match(button, /color: #a5a5b0;/);
+  }
+});
