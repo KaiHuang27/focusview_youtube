@@ -15,7 +15,7 @@
       const supported = saved?.supported === true;
       if (laterCount === 3 && supported) return { show: false };
       if (message.type === 'support:reset') {
-        await api.storage.local.set({ [key]: { count: 0, interval: 10, laterCount, supported: true } });
+        await api.storage.local.set({ [key]: { count: 0, interval: 20, laterCount, supported: true } });
         return { show: false };
       }
       if (message.type === 'support:later') {
@@ -25,7 +25,7 @@
         } });
         return { show: false };
       }
-      const interval = [10, 20, 60, 100].includes(saved?.interval) ? saved.interval : 20;
+      const interval = [20, 60, 100].includes(saved?.interval) ? saved.interval : 20;
       const count = Number.isInteger(saved?.count) && saved.count >= 0 && saved.count < interval
         ? saved.count + 1 : 1;
       const show = count === interval;

@@ -44,14 +44,14 @@ test('concurrent tabs share one counter without losing increments', async () => 
   assert.equal(worker.storage.supportPrompt.count, 7);
 });
 
-test('rating or support resets every reminder tier to ten across restarts', async () => {
+test('rating or support resets every reminder tier to twenty across restarts', async () => {
   for (const interval of [10, 20, 60, 100]) {
     let worker = background({ supportPrompt: { count: interval - 1, interval, laterCount: 2 } });
     assert.equal((await worker.send('support:reset')).show, false);
     assert.equal(worker.storage.supportPrompt.count, 0);
-    assert.equal(worker.storage.supportPrompt.interval, 10);
+    assert.equal(worker.storage.supportPrompt.interval, 20);
     worker = background(worker.storage);
-    for (let i = 1; i <= 20; i++) assert.equal((await worker.send()).show, i % 10 === 0);
+    for (let i = 1; i <= 40; i++) assert.equal((await worker.send()).show, i % 20 === 0);
     assert.equal(worker.storage.supportPrompt.laterCount, 2);
     assert.equal(worker.storage.supportPrompt.supported, true);
   }
@@ -198,6 +198,7 @@ test('rating resets frequency without forgetting the first footer press', async 
 
 test('invalid preferences fall back without inferring footer or support clicks', async () => {
   for (const saved of [
+    { count: 0, interval: 10 },
     { count: 0, interval: 15 },
     { count: 0, interval: 30 },
     { count: 0, interval: 99, laterCount: -1, supported: 'true' },
