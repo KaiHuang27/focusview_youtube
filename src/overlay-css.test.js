@@ -172,3 +172,23 @@ test("review prompt styles are removed", async () => {
     assert.doesNotMatch(css, /ytvt-review/);
   }
 });
+
+test("support prompts follow system light mode with readable controls", async () => {
+  for (const cssUrl of OVERLAY_CSS_PATHS) {
+    const css = await readFile(cssUrl, "utf8");
+    assert.match(css, /\.ytvt-support\s*\{\s*color-scheme: dark;/);
+    const light = css.split("@media (prefers-color-scheme: light) {")[1];
+    assert.ok(light, `${cssUrl.pathname} supports system light mode`);
+    for (const rule of [
+      /\.ytvt-support\s*\{\s*color-scheme: light;\s*color: #202024;\s*background: #f5f5f7;/,
+      /\.ytvt-support p, \.ytvt-support-close \{ color: #51515a; \}/,
+      /\.ytvt-support-actions a\s*\{\s*color: #202024;\s*background: #fff;/,
+      /\.ytvt-support-actions a:first-child \{ color: #fff; background: #2859c5;/,
+      /\.ytvt-support a:hover, \.ytvt-support-close:hover \{ filter: none; background-color: #0000000d; \}/,
+      /\.ytvt-support-actions a:first-child:hover \{ background-color: #214ba8; \}/,
+      /\.ytvt-support :focus-visible \{ outline-color: #2859c5; \}/,
+      /\.ytvt-support-later \{ color: #61616b; \}/,
+      /\.ytvt-support-later:hover \{ color: #202024; \}/,
+    ]) assert.match(light, rule, `${cssUrl.pathname} themes dialog controls and interaction states`);
+  }
+});

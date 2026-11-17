@@ -458,6 +458,7 @@
 }
 
 .ytvt-support {
+  color-scheme: dark;
   box-sizing: border-box;
   position: fixed;
   inset: 0;
@@ -524,3 +525,25 @@
   cursor: pointer;
 }
 .ytvt-support-later:hover { color: #f5f5f7; }
+
+@media (prefers-color-scheme: light) {
+  .ytvt-support {
+    color-scheme: light;
+    color: #202024;
+    background: #f5f5f7;
+    border-color: #0000001f;
+    box-shadow: 0 24px 80px #0003;
+  }
+  .ytvt-support p, .ytvt-support-close { color: #51515a; }
+  .ytvt-support-actions a {
+    color: #202024;
+    background: #fff;
+    border-color: #00000026;
+  }
+  .ytvt-support-actions a:first-child { color: #fff; background: #2859c5; border-color: #2859c5; }
+  .ytvt-support a:hover, .ytvt-support-close:hover { filter: none; background-color: #0000000d; }
+  .ytvt-support-actions a:first-child:hover { background-color: #214ba8; }
+  .ytvt-support :focus-visible { outline-color: #2859c5; }
+  .ytvt-support-later { color: #61616b; }
+  .ytvt-support-later:hover { color: #202024; }
+}
