@@ -458,6 +458,7 @@
 }
 
 .ytvt-support {
+  --ytvt-support-secondary: #c9c9d0;
   color-scheme: dark;
   box-sizing: border-box;
   position: fixed;
@@ -481,7 +482,7 @@
 .ytvt-support-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding-right: 16px; }
 .ytvt-support-header img { flex: 0 0 36px; width: 36px; height: 36px; object-fit: contain; }
 .ytvt-support h2 { margin: 0; font: 600 20px/1.3 Roboto, Arial, sans-serif; }
-.ytvt-support p { margin: 0 0 18px; color: #c9c9d0; font: inherit; }
+.ytvt-support p { margin: 0 0 16px; color: var(--ytvt-support-secondary); font: inherit; }
 .ytvt-support-close {
   position: absolute;
   top: 8px;
@@ -489,14 +490,14 @@
   width: 36px;
   height: 36px;
   padding: 0;
-  color: #c9c9d0;
+  color: var(--ytvt-support-secondary);
   background: transparent;
   border: 0;
   border-radius: 50%;
   font: 400 26px/1 Arial, sans-serif;
   cursor: pointer;
 }
-.ytvt-support-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.ytvt-support-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .ytvt-support-actions a {
   flex: 1 1 120px;
   padding: 11px 12px;
@@ -509,40 +510,41 @@
   text-decoration: none;
 }
 .ytvt-support-actions a:first-child { color: #fff; background: #2859c5; border-color: #557bd2; }
-.ytvt-support a:hover, .ytvt-support-close:hover { filter: brightness(1.2); background-color: #ffffff26; }
+.ytvt-support a:hover, .ytvt-support-close:hover { background-color: #ffffff26; }
+.ytvt-support-actions a:first-child:hover { background-color: #3265d5; }
 .ytvt-support :focus-visible { outline: 2px solid #93bbff; outline-offset: 3px; }
-.ytvt-support-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; margin-top: 14px; font: 400 12px/1.5 Roboto, Arial, sans-serif; }
+.ytvt-support-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; margin-top: 12px; color: var(--ytvt-support-secondary); font: 400 12px/1.5 Roboto, Arial, sans-serif; }
 .ytvt-support-later {
   margin: 0;
   padding: 4px 0;
-  color: #a5a5b0;
+  color: #93bbff;
   background: transparent;
   border: 0;
   border-radius: 2px;
-  font: 400 12px/1.5 Roboto, Arial, sans-serif;
+  font: inherit;
   text-decoration: none;
   cursor: pointer;
 }
-.ytvt-support-later:hover { color: #f5f5f7; }
+.ytvt-support-later:hover { color: #b6d0ff; }
 
 @media (prefers-color-scheme: light) {
   .ytvt-support {
+    --ytvt-support-secondary: #51515a;
     color-scheme: light;
     color: #202024;
     background: #f5f5f7;
     border-color: #0000001f;
     box-shadow: 0 24px 80px #0003;
   }
-  .ytvt-support p, .ytvt-support-close { color: #51515a; }
   .ytvt-support-actions a {
     color: #202024;
     background: #fff;
     border-color: #00000026;
   }
   .ytvt-support-actions a:first-child { color: #fff; background: #2859c5; border-color: #2859c5; }
-  .ytvt-support a:hover, .ytvt-support-close:hover { filter: none; background-color: #0000000d; }
+  .ytvt-support a:hover, .ytvt-support-close:hover { background-color: #0000000d; }
   .ytvt-support-actions a:first-child:hover { background-color: #214ba8; }
   .ytvt-support :focus-visible { outline-color: #2859c5; }
-  .ytvt-support-later { color: #61616b; }
-  .ytvt-support-later:hover { color: #202024; }
+  .ytvt-support-later { color: #2859c5; }
+  .ytvt-support-later:hover { color: #214ba8; }
 }

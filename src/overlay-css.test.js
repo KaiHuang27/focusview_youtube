@@ -176,19 +176,18 @@ test("review prompt styles are removed", async () => {
 test("support prompts follow system light mode with readable controls", async () => {
   for (const cssUrl of OVERLAY_CSS_PATHS) {
     const css = await readFile(cssUrl, "utf8");
-    assert.match(css, /\.ytvt-support\s*\{\s*color-scheme: dark;/);
+    assert.match(css, /\.ytvt-support\s*\{\s*--ytvt-support-secondary: #c9c9d0;\s*color-scheme: dark;/);
     const light = css.split("@media (prefers-color-scheme: light) {")[1];
     assert.ok(light, `${cssUrl.pathname} supports system light mode`);
     for (const rule of [
-      /\.ytvt-support\s*\{\s*color-scheme: light;\s*color: #202024;\s*background: #f5f5f7;/,
-      /\.ytvt-support p, \.ytvt-support-close \{ color: #51515a; \}/,
+      /\.ytvt-support\s*\{\s*--ytvt-support-secondary: #51515a;\s*color-scheme: light;\s*color: #202024;\s*background: #f5f5f7;/,
       /\.ytvt-support-actions a\s*\{\s*color: #202024;\s*background: #fff;/,
       /\.ytvt-support-actions a:first-child \{ color: #fff; background: #2859c5;/,
-      /\.ytvt-support a:hover, \.ytvt-support-close:hover \{ filter: none; background-color: #0000000d; \}/,
+      /\.ytvt-support a:hover, \.ytvt-support-close:hover \{ background-color: #0000000d; \}/,
       /\.ytvt-support-actions a:first-child:hover \{ background-color: #214ba8; \}/,
       /\.ytvt-support :focus-visible \{ outline-color: #2859c5; \}/,
-      /\.ytvt-support-later \{ color: #61616b; \}/,
-      /\.ytvt-support-later:hover \{ color: #202024; \}/,
+      /\.ytvt-support-later \{ color: #2859c5; \}/,
+      /\.ytvt-support-later:hover \{ color: #214ba8; \}/,
     ]) assert.match(light, rule, `${cssUrl.pathname} themes dialog controls and interaction states`);
   }
 });
@@ -203,6 +202,12 @@ test("support footer aligns its labels inline without an underlined button", asy
     assert.match(footer, /gap: 4px;/);
     assert.match(button, /text-decoration: none;/);
     assert.doesNotMatch(button, /text-underline-offset/);
-    assert.match(button, /color: #a5a5b0;/);
+    assert.match(button, /color: #93bbff;/);
+    assert.match(button, /font: inherit;/);
+    assert.match(footer, /color: var\(--ytvt-support-secondary\);/);
+    assert.match(footer, /margin-top: 12px;/);
+    assert.match(css, /\.ytvt-support p \{ margin: 0 0 16px;/);
+    assert.match(css, /\.ytvt-support-actions \{[^}]*gap: 12px;/);
+    assert.match(css, /\.ytvt-support p \{[^}]*color: var\(--ytvt-support-secondary\);/);
   }
 });
