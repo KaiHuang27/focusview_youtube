@@ -11,9 +11,11 @@ This extension does not:
 - use cookies
 - access browsing history
 - access account information
-- store user data
+- store personal user data
 - send data to external servers
 - use analytics or advertising trackers
+
+The extension stores only a local zoom mode activation count and a flag indicating that support reminders have been stopped. The count resets every 10 activations; clicking either the rating or coffee link stops future reminders. These preferences contain no viewing history or personal information, are not synced, and are never transmitted. External rating and Ko-fi pages open only when you click their links.
 
 All video transform controls are applied locally in the browser. No user data leaves the device.
 

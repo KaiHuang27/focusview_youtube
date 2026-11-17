@@ -21,6 +21,7 @@
       ],
       "js": [
         "src/transform-state.js",
+        "src/support-prompt.js",
         "src/content.js"
       ],
       "css": [
@@ -29,5 +30,11 @@
       "run_at": "document_start"
     }
   ],
-  "default_locale": "en"
+  "default_locale": "en",
+  "permissions": [
+    "storage"
+  ],
+  "background": {
+    "service_worker": "src/support-background.js"
+  }
 }

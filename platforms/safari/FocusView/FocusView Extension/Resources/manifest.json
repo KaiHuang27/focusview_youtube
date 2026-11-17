@@ -16,10 +16,27 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/*"],
-      "js": ["src/transform-state.js", "src/content.js"],
-      "css": ["src/overlay.css"],
+      "matches": [
+        "https://www.youtube.com/*"
+      ],
+      "js": [
+        "src/transform-state.js",
+        "src/support-prompt.js",
+        "src/content.js"
+      ],
+      "css": [
+        "src/overlay.css"
+      ],
       "run_at": "document_start"
     }
-  ]
+  ],
+  "permissions": [
+    "storage"
+  ],
+  "background": {
+    "scripts": [
+      "src/support-background.js"
+    ],
+    "persistent": false
+  }
 }

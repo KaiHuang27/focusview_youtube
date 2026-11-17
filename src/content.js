@@ -878,6 +878,7 @@ function togglePanMode() {
     isMenuOpen = false;
   } else {
     scheduleViewportControlsHide();
+    void globalThis.YTVTSupport.recordActivation();
   }
   renderToolbar();
   applyTransform();
@@ -1098,6 +1099,7 @@ function closeMenuOnEscape(event) {
 }
 
 function onShortcutKeyDown(event) {
+  if (globalThis.YTVTSupport.isOpen()) return;
   if (!video || !isWatchPage() || !shouldTogglePanShortcut(event)) {
     return;
   }
@@ -1336,6 +1338,7 @@ function syncPointerTracking() {
 }
 
 function onWheel(event) {
+  if (globalThis.YTVTSupport.isOpen()) return;
   if (!shouldInterceptPanWheel(state) || !video) {
     return;
   }
@@ -1354,6 +1357,7 @@ function onWheel(event) {
 }
 
 function onDocumentWheel(event) {
+  if (globalThis.YTVTSupport.isOpen()) return;
   if (!video) {
     return;
   }

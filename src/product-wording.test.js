@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const CONTENT_SCRIPT_PATHS = [
@@ -287,21 +287,15 @@ test("Chrome release package includes toolbar popup resources", async () => {
 });
 
 
-test("in-player review solicitation remains removed across stores", async () => {
+test("support prompts use local storage and ship across stores", async () => {
   for (const manifestUrl of MANIFEST_PATHS) {
     const manifest = JSON.parse(await readFile(manifestUrl, "utf8"));
-
-    assert.deepEqual(manifest.content_scripts[0].js, ["src/transform-state.js", "src/content.js"]);
-    assert.equal(manifest.permissions, undefined, `${manifestUrl.pathname} requests no review storage permission`);
-    assert.equal(manifest.web_accessible_resources, undefined, `${manifestUrl.pathname} exposes no review assets`);
+    assert.deepEqual(manifest.content_scripts[0].js, ["src/transform-state.js", "src/support-prompt.js", "src/content.js"]);
+    assert.deepEqual(manifest.permissions, ["storage"]);
+    assert.equal(manifest.web_accessible_resources, undefined);
   }
-
   for (const contentUrl of CONTENT_SCRIPT_PATHS) {
     const content = await readFile(contentUrl, "utf8");
-
-    assert.doesNotMatch(content, /ReviewPrompt|review-prompt|ytvt-review|Rate FocusView|No thanks/);
+    assert.match(content, /scheduleViewportControlsHide\(\);\n    void globalThis.YTVTSupport.recordActivation\(\);/);
   }
-
-  await assert.rejects(access(new URL("./review-prompt-state.js", import.meta.url)));
-  await assert.rejects(access(new URL("../platforms/safari/FocusView/FocusView Extension/Resources/src/review-prompt-state.js", import.meta.url)));
 });
