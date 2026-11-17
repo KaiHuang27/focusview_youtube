@@ -67,3 +67,7 @@ For support, feedback, or bug reports, email `kodin.gai.apps@gmail.com`.
 Latest submitted Chrome release: `1.1.8` (review pending).
 
 See [CHANGELOG.md](CHANGELOG.md).
+
+## Verification
+
+See the [Edge support reminder live-test results](docs/edge-support-prompt-test-2026-11-17.md) for the current reminder rules, cross-tab behavior, and browser-restart checks.
