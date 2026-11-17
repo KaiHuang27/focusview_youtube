@@ -28,7 +28,8 @@ test("toolbar popups and README share the Ko-fi support destination", async () =
     "../platforms/safari/FocusView/FocusView Extension/Resources/popup.html",
   ]) {
     const popup = await readFile(new URL(popupPath, import.meta.url), "utf8");
-    assert.match(popup, /share feedback<\/a>\.<\/p>\s*<p><span aria-hidden="true">☕<\/span> <a href="https:\/\/ko-fi\.com\/kodingai" target="_blank" rel="noopener noreferrer">Support FocusView on Ko-fi<\/a><\/p>\s*<\/section>/);
+    assert.match(popup, /Enjoying FocusView\? <a[^>]+>Rate us<\/a> or <a href="https:\/\/ko-fi\.com\/kodingai" target="_blank" rel="noopener noreferrer">buy me a coffee<\/a>\.<\/p>\s*<\/section>/);
+    assert.doesNotMatch(popup, /mailto:|share feedback|☕/);
     assert.doesNotMatch(popup, /<script\b/i);
   }
 });
@@ -240,7 +241,7 @@ test("Safari toolbar button opens a visible popup", async () => {
   assert.match(popup, /width="40" height="40"/);
   assert.match(popup, /aria-label="App Store review"/);
   assert.match(popup, /apps\.apple\.com\/us\/app\/focusview-zoom-for-youtube\/id6786108302\?action=write-review/);
-  assert.match(popup, /Rate us[\s\S]*mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback[\s\S]*share feedback/);
+  assert.match(popup, /Rate us[\s\S]*https:\/\/ko-fi\.com\/kodingai[\s\S]*buy me a coffee/);
   assert.match(popupCss, /width: 340px;/);
   assert.match(popupCss, /font-size: 17px;/);
   assert.match(popupCss, /\.brand-copy \{[\s\S]*min-width: 0;/);
@@ -267,7 +268,7 @@ test("Chrome toolbar button opens a visible popup", async () => {
   assert.match(popup, /<circle cx="15" cy="15" r="8"><\/circle>/);
   assert.match(popup, /aria-label="Chrome Web Store review"/);
   assert.match(popup, /chromewebstore\.google\.com\/detail\/jbdndcjclbghkmbiehjigaapembpbgdb\/reviews/);
-  assert.match(popup, /Rate us[\s\S]*mailto:kodin\.gai\.apps@gmail\.com\?subject=FocusView%20feedback[\s\S]*share feedback/);
+  assert.match(popup, /Rate us[\s\S]*https:\/\/ko-fi\.com\/kodingai[\s\S]*buy me a coffee/);
   assert.match(popupCss, /width: 340px;/);
   assert.match(popupCss, /font-size: 17px;/);
   assert.match(popupCss, /\.brand-copy \{[\s\S]*min-width: 0;/);
