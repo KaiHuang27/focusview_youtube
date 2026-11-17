@@ -2,9 +2,10 @@
 
 ## Unreleased
 
-- Changed the first reminder-footer click to a 15-activation interval and subsequent clicks to 30 activations.
-- Rating and support links now reset reminders to every 10 activations while preserving footer-click history.
-- Migrated legacy 20-activation preferences to 15 and resumed legacy stopped reminders at 10.
+- Changed default support reminders to every 20 activations, the first footer click to 60, and subsequent clicks to 100.
+- Rating and support links reset reminders to every 10 activations while preserving footer-click history.
+- Permanently stop reminders after three footer clicks and at least one rating or support link click, in either order.
+- Removed legacy reminder-setting conversion logic.
 
 ## 1.1.8 - 2026-11-11
 

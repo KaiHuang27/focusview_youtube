@@ -29,31 +29,31 @@ function background(storage = {}, { failRead = false, failWrite = false } = {}) 
   };
 }
 
-test('show on every tenth activation, including after a background restart', async () => {
+test('show on every twentieth activation, including after a background restart', async () => {
   let worker = background();
-  for (let i = 1; i <= 30; i++) {
+  for (let i = 1; i <= 60; i++) {
     if (i === 7) worker = background(worker.storage);
-    assert.equal((await worker.send()).show, i % 10 === 0, `activation ${i}`);
+    assert.equal((await worker.send()).show, i % 20 === 0, `activation ${i}`);
   }
 });
 
 test('concurrent tabs share one counter without losing increments', async () => {
   const worker = background();
-  const results = await Promise.all(Array.from({ length: 37 }, () => worker.send()));
+  const results = await Promise.all(Array.from({ length: 67 }, () => worker.send()));
   assert.equal(results.filter(result => result.show).length, 3);
   assert.equal(worker.storage.supportPrompt.count, 7);
 });
 
 test('rating or support resets every reminder tier to ten across restarts', async () => {
-  for (const interval of [10, 15, 30]) {
+  for (const interval of [10, 20, 60, 100]) {
     let worker = background({ supportPrompt: { count: interval - 1, interval, laterCount: 2 } });
     assert.equal((await worker.send('support:reset')).show, false);
     assert.equal(worker.storage.supportPrompt.count, 0);
     assert.equal(worker.storage.supportPrompt.interval, 10);
     worker = background(worker.storage);
     for (let i = 1; i <= 20; i++) assert.equal((await worker.send()).show, i % 10 === 0);
-    await worker.send('support:later');
-    assert.equal(worker.storage.supportPrompt.interval, 30);
+    assert.equal(worker.storage.supportPrompt.laterCount, 2);
+    assert.equal(worker.storage.supportPrompt.supported, true);
   }
 });
 
@@ -75,7 +75,7 @@ test('unknown messages and foreign senders cannot change the counter', () => {
 });
 
 test('invalid counters restart safely', async () => {
-  for (const count of [-1, 10, '9', null, 1.5]) {
+  for (const count of [-1, 20, '19', null, 1.5]) {
     const worker = background({ supportPrompt: { count } });
     assert.equal((await worker.send()).show, false);
     assert.equal(worker.storage.supportPrompt.count, 1);
@@ -159,9 +159,9 @@ test('support card renders bundled branding, concise copy, and explicit actions'
   assert.equal(dialog.open, false);
 });
 
-test('footer progresses from fifteen to thirty and stays thirty across restarts', async () => {
+test('footer progresses from sixty to one hundred and stays one hundred across restarts', async () => {
   let worker = background({ supportPrompt: { count: 7 } });
-  for (const interval of [15, 30, 30]) {
+  for (const interval of [60, 100, 100, 100]) {
     assert.equal((await worker.send('support:later')).show, false);
     assert.equal(worker.storage.supportPrompt.count, 0);
     assert.equal(worker.storage.supportPrompt.interval, interval);
@@ -170,11 +170,16 @@ test('footer progresses from fifteen to thirty and stays thirty across restarts'
       assert.equal((await worker.send()).show, i % interval === 0, `interval ${interval}, activation ${i}`);
     }
   }
+  assert.equal(worker.storage.supportPrompt.laterCount, 3);
+  assert.equal(worker.storage.supportPrompt.supported, false);
+  await worker.send('support:reset');
+  worker = background(worker.storage);
+  for (let i = 0; i < 120; i++) assert.equal((await worker.send()).show, false);
 });
 
-test('fifteen and thirty activation reminders serialize concurrent tabs', async () => {
+test('sixty and one hundred activation reminders serialize concurrent tabs', async () => {
   const worker = background();
-  for (const interval of [15, 30]) {
+  for (const interval of [60, 100]) {
     await worker.send('support:later');
     const results = await Promise.all(Array.from({ length: interval * 2 + 3 }, () => worker.send()));
     assert.equal(results.filter(result => result.show).length, 2);
@@ -188,24 +193,21 @@ test('rating resets frequency without forgetting the first footer press', async 
   await worker.send('support:reset');
   worker = background(worker.storage);
   await worker.send('support:later');
-  assert.equal(worker.storage.supportPrompt.interval, 30);
+  assert.equal(worker.storage.supportPrompt.interval, 100);
 });
 
-test('legacy states migrate to recurring reminders', async () => {
-  for (const [saved, interval, laterCount] of [
-    [{ count: 0, stopped: true }, 10, 0],
-    [{ count: 4, stopped: false }, 10, 0],
-    [{ count: 4, interval: 20 }, 15, 1],
-    [{ count: 19, interval: 20 }, 15, 1],
-    [{ count: 0, interval: 99, laterCount: -1 }, 10, 0],
+test('invalid preferences fall back without inferring footer or support clicks', async () => {
+  for (const saved of [
+    { count: 0, interval: 15 },
+    { count: 0, interval: 30 },
+    { count: 0, interval: 99, laterCount: -1, supported: 'true' },
+    { count: 0, stopped: true },
   ]) {
     const worker = background({ supportPrompt: saved });
-    assert.equal((await worker.send()).show, false);
-    assert.equal(worker.storage.supportPrompt.interval, interval);
-    assert.equal(worker.storage.supportPrompt.laterCount, laterCount);
-    assert.equal('stopped' in worker.storage.supportPrompt, false);
-    await worker.send('support:later');
-    assert.equal(worker.storage.supportPrompt.interval, laterCount === 0 ? 15 : 30);
+    await worker.send();
+    assert.equal(worker.storage.supportPrompt.interval, 20);
+    assert.equal(worker.storage.supportPrompt.laterCount, 0);
+    assert.equal(worker.storage.supportPrompt.supported, false);
   }
 });
 
@@ -215,6 +217,44 @@ test('concurrent footer and rating actions retain message order', async () => {
     worker.send('support:later'), worker.send('support:reset'), worker.send('support:later'),
   ]);
   assert.equal(worker.storage.supportPrompt.count, 0);
-  assert.equal(worker.storage.supportPrompt.interval, 30);
+  assert.equal(worker.storage.supportPrompt.interval, 100);
   assert.equal(worker.storage.supportPrompt.laterCount, 2);
+});
+
+for (const linkFirst of [true, false]) {
+  test(`permanent suppression survives restarts with linkFirst=${linkFirst}`, async () => {
+    let worker = background();
+    if (linkFirst) await worker.send('support:reset');
+    for (let i = 1; i <= 3; i++) {
+      await worker.send('support:later');
+      worker = background(worker.storage);
+      if (i < 3 || !linkFirst) {
+        const interval = i === 1 ? 60 : 100;
+        for (let j = 1; j <= interval; j++) assert.equal((await worker.send()).show, j === interval);
+      }
+    }
+    if (!linkFirst) await worker.send('support:reset');
+    assert.equal(worker.storage.supportPrompt.count, 0);
+    assert.equal(worker.storage.supportPrompt.laterCount, 3);
+    assert.equal(worker.storage.supportPrompt.supported, true);
+    const stopped = structuredClone(worker.storage);
+    worker = background(worker.storage);
+    for (let i = 0; i < 120; i++) assert.equal((await worker.send()).show, false);
+    await worker.send('support:reset');
+    await worker.send('support:later');
+    assert.deepEqual(worker.storage, stopped);
+  });
+}
+
+test('concurrent actions reaching both suppression conditions permanently stop reminders', async () => {
+  for (const actions of [
+    ['support:later', 'support:reset'], ['support:reset', 'support:later'],
+  ]) {
+    const worker = background({ supportPrompt: { count: 99, interval: 100, laterCount: 2 } });
+    await Promise.all(actions.map(action => worker.send(action)));
+    for (let i = 0; i < 120; i++) assert.equal((await worker.send()).show, false);
+    assert.equal(worker.storage.supportPrompt.count, 0);
+    assert.equal(worker.storage.supportPrompt.laterCount, 3);
+    assert.equal(worker.storage.supportPrompt.supported, true);
+  }
 });

@@ -83,7 +83,7 @@
     note.type = 'button';
     note.className = 'ytvt-support-later';
     note.textContent = 'Don’t remind me again';
-    note.title = 'Remind me every 15 zoom mode activations, then every 30 after another click';
+    note.title = 'Remind me every 60 activations, then every 100. Reminders stop after three clicks and a rating or support link click.';
     note.addEventListener('click', () => {
       void api.runtime.sendMessage({ type: 'support:later' }).catch(() => {});
       dialog.close();
