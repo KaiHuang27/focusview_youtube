@@ -499,6 +499,10 @@
 }
 .ytvt-support-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .ytvt-support-actions a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   flex: 1 1 120px;
   padding: 11px 12px;
   border: 1px solid #ffffff26;
@@ -509,9 +513,8 @@
   text-align: center;
   text-decoration: none;
 }
-.ytvt-support-actions a:first-child { color: #fff; background: #2859c5; border-color: #557bd2; }
+.ytvt-support-actions svg { flex: 0 0 16px; width: 16px; height: 16px; }
 .ytvt-support a:hover, .ytvt-support-close:hover { background-color: #ffffff26; }
-.ytvt-support-actions a:first-child:hover { background-color: #3265d5; }
 .ytvt-support :focus-visible { outline: 2px solid #93bbff; outline-offset: 3px; }
 .ytvt-support-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; margin-top: 12px; color: var(--ytvt-support-secondary); font: 400 12px/1.5 Roboto, Arial, sans-serif; }
 .ytvt-support-later {
@@ -541,9 +544,7 @@
     background: #fff;
     border-color: #00000026;
   }
-  .ytvt-support-actions a:first-child { color: #fff; background: #2859c5; border-color: #2859c5; }
   .ytvt-support a:hover, .ytvt-support-close:hover { background-color: #0000000d; }
-  .ytvt-support-actions a:first-child:hover { background-color: #214ba8; }
   .ytvt-support :focus-visible { outline-color: #2859c5; }
   .ytvt-support-later { color: #2859c5; }
   .ytvt-support-later:hover { color: #214ba8; }

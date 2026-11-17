@@ -78,7 +78,7 @@ test('invalid counters restart safely', async () => {
 });
 
 test('Chrome and Safari ship identical support logic and styling', async () => {
-  for (const file of ['support-prompt.js', 'support-background.js', 'overlay.css', 'content.js']) {
+  for (const file of ['support-prompt.js', 'support-background.js', 'overlay.css', 'content.js', 'LUCIDE-LICENSE.txt']) {
     assert.equal(
       await readFile(new URL(`./${file}`, import.meta.url), 'utf8'),
       await readFile(new URL(`../platforms/safari/FocusView/FocusView Extension/Resources/src/${file}`, import.meta.url), 'utf8'),
@@ -96,6 +96,7 @@ test('support card renders bundled branding, concise copy, and explicit actions'
       return {
         tagName, children: [], attributes: {}, listeners: {},
         append(...nodes) { this.children.push(...nodes); },
+        prepend(...nodes) { this.children.unshift(...nodes); },
         setAttribute(key, value) { this.attributes[key] = value; },
         addEventListener(type, listener) { this.listeners[type] = listener; },
         close() { this.open = false; },
@@ -103,6 +104,7 @@ test('support card renders bundled branding, concise copy, and explicit actions'
       };
     },
   };
+  document.createElementNS = (_, tag) => document.createElement(tag);
   const context = vm.createContext({ document, chrome: { runtime: {
     getURL: path => `chrome-extension://focusview/${path}`,
     getManifest: () => ({ background: { service_worker: 'src/support-background.js' } }),
@@ -125,6 +127,17 @@ test('support card renders bundled branding, concise copy, and explicit actions'
   assert.equal(description.textContent, 'Thanks for watching with FocusView! Your support helps me keep making it better.');
   assert.equal(actions.children[0].textContent, 'Rate FocusView');
   assert.equal(actions.children[1].textContent, 'Buy me a coffee');
+  for (const action of actions.children) {
+    const [icon] = action.children;
+    assert.equal(icon.tagName, 'svg');
+    assert.equal(icon.attributes['aria-hidden'], 'true');
+    assert.equal(icon.attributes.focusable, 'false');
+    assert.equal(icon.attributes.width, '16');
+    assert.equal(icon.attributes.height, '16');
+    assert.equal(icon.attributes.stroke, 'currentColor');
+    assert.ok(icon.children.length > 0);
+  }
+  assert.notEqual(actions.children[0].children[0].children[0].attributes.d, actions.children[1].children[0].children[0].attributes.d);
   assert.equal(note.tagName, 'button');
   assert.equal(supported.textContent, 'Already supported?');
   assert.equal(note.textContent, 'Don’t remind me again');

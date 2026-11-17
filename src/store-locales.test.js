@@ -52,6 +52,6 @@ test('Chrome listing locales resolve metadata and ship in the release archive', 
     }
     for (const feature of ['Alt + Shift + Z', '100%', '500%', '90°', '180°', '270°']) assert.ok(description.includes(feature));
   }
-  for (const file of ['src/support-background.js', 'src/support-prompt.js']) assert.ok(files.includes(file), `${file} must be packaged`);
+  for (const file of ['src/support-background.js', 'src/support-prompt.js', 'src/LUCIDE-LICENSE.txt']) assert.ok(files.includes(file), `${file} must be packaged`);
   assert.ok(files.every(file => !file.startsWith('docs/')));
 });

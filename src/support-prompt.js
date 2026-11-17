@@ -1,6 +1,34 @@
 (() => {
   const api = globalThis.browser || globalThis.chrome;
   let activeDialog = null;
+  // Lucide icons (ISC); see LUCIDE-LICENSE.txt.
+  const actionIcons = {
+    "star": [
+      "M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"
+    ],
+    "coffee": [
+      "M10 2v2",
+      "M14 2v2",
+      "M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1",
+      "M6 2v2"
+    ]
+  };
+
+  function createActionIcon(paths) {
+    const namespace = 'http://www.w3.org/2000/svg';
+    const icon = document.createElementNS(namespace, 'svg');
+    for (const [name, value] of Object.entries({
+      width: '16', height: '16', viewBox: '0 0 24 24', fill: 'none',
+      stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round',
+      'stroke-linejoin': 'round', 'aria-hidden': 'true', focusable: 'false',
+    })) icon.setAttribute(name, value);
+    for (const d of paths) {
+      const path = document.createElementNS(namespace, 'path');
+      path.setAttribute('d', d);
+      icon.append(path);
+    }
+    return icon;
+  }
 
   function showPrompt() {
     if (activeDialog) return;
@@ -34,9 +62,10 @@
     const ratingUrl = api.runtime.getManifest().background?.service_worker
       ? 'https://chromewebstore.google.com/detail/jbdndcjclbghkmbiehjigaapembpbgdb/reviews'
       : 'https://apps.apple.com/us/app/focusview-zoom-for-youtube/id6786108302?action=write-review';
-    for (const [label, href] of [['Rate FocusView', ratingUrl], ['Buy me a coffee', 'https://ko-fi.com/kodingai']]) {
+    for (const [label, href, icon] of [['Rate FocusView', ratingUrl, 'star'], ['Buy me a coffee', 'https://ko-fi.com/kodingai', 'coffee']]) {
       const link = document.createElement('a');
       link.textContent = label;
+      link.prepend(createActionIcon(actionIcons[icon]));
       link.href = href;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
