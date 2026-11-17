@@ -51,9 +51,9 @@ See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
 
 ## Support
 
-[Support FocusView on Ko-fi](https://ko-fi.com/kodingai) to help fund continued maintenance and development.
+Enjoying FocusView? [Buy me a coffee](https://ko-fi.com/kodingai) to support continued maintenance and development.
 
-The Chrome, Edge, and Safari toolbar popups offer “Rate us” and “buy me a coffee” links in one compact footer sentence. The optional support link opens Ko-fi in a new tab without loading external scripts or requesting additional permissions. Feedback remains available through the contact email below.
+Support is entirely optional. Thank you for using FocusView!
 
 ## Contact
 
