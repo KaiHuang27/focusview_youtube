@@ -54,6 +54,8 @@ See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
 
 Enjoying FocusView? [Buy me a coffee](https://ko-fi.com/kodingai) to support continued maintenance and development.
 
+The in-player reminder says: “Thanks for watching with FocusView! Your support helps me keep making it better.”
+
 Support is entirely optional. Thank you for using FocusView!
 
 ## Contact
