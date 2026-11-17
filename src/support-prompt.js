@@ -70,7 +70,7 @@
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
       link.addEventListener('click', () => {
-        void api.runtime.sendMessage({ type: 'support:stop' }).catch(() => {});
+        void api.runtime.sendMessage({ type: 'support:reset' }).catch(() => {});
         dialog.close();
       });
       actions.append(link);
@@ -83,7 +83,7 @@
     note.type = 'button';
     note.className = 'ytvt-support-later';
     note.textContent = 'Don’t remind me again';
-    note.title = 'Remind me every 20 zoom mode activations';
+    note.title = 'Remind me every 15 zoom mode activations, then every 30 after another click';
     note.addEventListener('click', () => {
       void api.runtime.sendMessage({ type: 'support:later' }).catch(() => {});
       dialog.close();

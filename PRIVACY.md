@@ -15,7 +15,7 @@ This extension does not:
 - send data to external servers
 - use analytics or advertising trackers
 
-The extension stores only a local zoom mode activation count, a reminder interval, and a flag indicating that support reminders have been stopped. The count resets every 10 activations by default; choosing the footer button beneath “Already supported?” (currently labeled “Don’t remind me again”) resets the count and changes all future reminders to every 20 activations; clicking either the rating or coffee link stops future reminders. These preferences contain no viewing history or personal information, are not synced, and are never transmitted. External rating and Ko-fi pages open only when you click their links.
+The extension stores only a local zoom mode activation count, a reminder interval, and a footer-click count capped at two. Reminders appear every 10 activations by default. The first click on “Don’t remind me again” resets the count and changes reminders to every 15 activations; the second and subsequent clicks reset the count and change reminders to every 30 activations. Clicking either the rating or coffee link resets the count and restores the 10-activation interval, while retaining the footer-click count. Closing with × or Escape keeps the current interval. Legacy 20-activation settings migrate to the 15-activation tier; legacy stopped reminders resume at the default interval. These preferences contain no viewing history or personal information, are not synced, and are never transmitted. External rating and Ko-fi pages open only when you click their links.
 
 All video transform controls are applied locally in the browser. No user data leaves the device.
 

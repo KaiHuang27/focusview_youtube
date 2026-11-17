@@ -32,7 +32,7 @@ Best for:
 - Long-press and drag to move around a zoomed video.
 - Rotate videos by `90°`, `180°`, or `270°`.
 - Mirror videos horizontally.
-- Every 10 times you turn on zoom mode, a compact, branded popup with the FocusView logo invites you to “Rate FocusView” or “Buy me a coffee”. Both choices have equal visual weight, with matching star and coffee cup icons. The popup follows your system’s light or dark appearance. Close it with × or Esc; choosing either link stops future reminders. The footer places “Already supported?” and “Don’t remind me again” on one line, using the same secondary text color as the description for the label and a blue, non-underlined button. For now, clicking that button closes the popup, resets the count, and switches all future reminders to every 20 activations; permanent dismissal for this action is deferred. Counts and this preference are shared across tabs and browser restarts on this device.
+- Every 10 times you turn on zoom mode, a compact, branded popup with the FocusView logo invites you to “Rate FocusView” or “Buy me a coffee”. Both choices have equal visual weight, with matching star and coffee cup icons. The popup follows your system’s light or dark appearance. Close it with × or Esc; choosing either link resets the count and restores reminders every 10 activations. The footer places “Already supported?” and “Don’t remind me again” on one line, using the same secondary text color as the description for the label and a blue, non-underlined button. Clicking that button closes the popup and resets the count: the first click changes reminders to every 15 activations, and the second and all later clicks change them to every 30. Rating or support clicks do not erase this footer-click history. Counts and this preference are shared across tabs and browser restarts on this device.
 
 ## Privacy And Permissions
 
@@ -46,7 +46,7 @@ The extension only runs on YouTube pages:
 "matches": ["https://www.youtube.com/*"]
 ```
 
-The only browser permission is local storage, used for the zoom mode activation count, reminder interval, and whether support reminders have been stopped. These values stay on your device. It does not request permissions for history, accounts, analytics, or network access.
+The only browser permission is local storage, used for the zoom mode activation count, reminder interval, and footer-click count (capped at two). These values stay on your device. It does not request permissions for history, accounts, analytics, or network access.
 
 See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
 

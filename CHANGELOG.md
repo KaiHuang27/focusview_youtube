@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Changed the first reminder-footer click to a 15-activation interval and subsequent clicks to 30 activations.
+- Rating and support links now reset reminders to every 10 activations while preserving footer-click history.
+- Migrated legacy 20-activation preferences to 15 and resumed legacy stopped reminders at 10.
+
 ## 1.1.8 - 2026-11-11
 
 - Expanded Chrome Web Store summaries and full listing descriptions from 5 to all 55 supported locales, including regional English, Spanish, Portuguese, and Chinese variants.

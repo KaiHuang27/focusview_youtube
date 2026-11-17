@@ -44,12 +44,17 @@ test('concurrent tabs share one counter without losing increments', async () => 
   assert.equal(worker.storage.supportPrompt.count, 7);
 });
 
-test('rating or support permanently stops prompts across restarts', async () => {
-  let worker = background({ supportPrompt: { count: 9, stopped: false } });
-  await worker.send('support:stop');
-  worker = background(worker.storage);
-  for (let i = 0; i < 25; i++) assert.equal((await worker.send()).show, false);
-  assert.equal(worker.storage.supportPrompt.stopped, true);
+test('rating or support resets every reminder tier to ten across restarts', async () => {
+  for (const interval of [10, 15, 30]) {
+    let worker = background({ supportPrompt: { count: interval - 1, interval, laterCount: 2 } });
+    assert.equal((await worker.send('support:reset')).show, false);
+    assert.equal(worker.storage.supportPrompt.count, 0);
+    assert.equal(worker.storage.supportPrompt.interval, 10);
+    worker = background(worker.storage);
+    for (let i = 1; i <= 20; i++) assert.equal((await worker.send()).show, i % 10 === 0);
+    await worker.send('support:later');
+    assert.equal(worker.storage.supportPrompt.interval, 30);
+  }
 });
 
 for (const failure of ['failRead', 'failWrite']) {
@@ -144,37 +149,72 @@ test('support card renders bundled branding, concise copy, and explicit actions'
   // Repeated responses must not create duplicate dialogs.
   await context.YTVTSupport.recordActivation();
   assert.equal(children.length, 1);
+  for (const action of actions.children) {
+    action.listeners.click();
+    assert.equal(messages.at(-1), 'support:reset');
+    assert.equal(dialog.open, false);
+  }
   note.listeners.click();
   assert.equal(messages.at(-1), 'support:later');
   assert.equal(dialog.open, false);
 });
 
-test('already supported resets the count and persists recurring twenty-activation reminders', async () => {
-  let worker = background({ supportPrompt: { count: 7, stopped: false } });
-  assert.equal((await worker.send('support:later')).show, false);
-  assert.equal(worker.storage.supportPrompt.count, 0);
-  assert.equal(worker.storage.supportPrompt.interval, 20);
-  for (let i = 1; i <= 45; i++) {
-    if (i === 13 || i === 27) worker = background(worker.storage);
-    assert.equal((await worker.send()).show, i % 20 === 0, `activation ${i}`);
+test('footer progresses from fifteen to thirty and stays thirty across restarts', async () => {
+  let worker = background({ supportPrompt: { count: 7 } });
+  for (const interval of [15, 30, 30]) {
+    assert.equal((await worker.send('support:later')).show, false);
+    assert.equal(worker.storage.supportPrompt.count, 0);
+    assert.equal(worker.storage.supportPrompt.interval, interval);
+    for (let i = 1; i <= interval * 2 + 3; i++) {
+      if (i === 7) worker = background(worker.storage);
+      assert.equal((await worker.send()).show, i % interval === 0, `interval ${interval}, activation ${i}`);
+    }
   }
-  assert.equal(worker.storage.supportPrompt.interval, 20);
-  assert.equal(worker.storage.supportPrompt.count, 5);
 });
 
-test('twenty-activation reminders serialize concurrent tabs', async () => {
+test('fifteen and thirty activation reminders serialize concurrent tabs', async () => {
   const worker = background();
-  await worker.send('support:later');
-  const results = await Promise.all(Array.from({ length: 43 }, () => worker.send()));
-  assert.equal(results.filter(result => result.show).length, 2);
-  assert.equal(worker.storage.supportPrompt.count, 3);
+  for (const interval of [15, 30]) {
+    await worker.send('support:later');
+    const results = await Promise.all(Array.from({ length: interval * 2 + 3 }, () => worker.send()));
+    assert.equal(results.filter(result => result.show).length, 2);
+    assert.equal(worker.storage.supportPrompt.count, 3);
+  }
 });
 
-test('already supported cannot undo permanent suppression', async () => {
+test('rating resets frequency without forgetting the first footer press', async () => {
+  let worker = background();
+  await worker.send('support:later');
+  await worker.send('support:reset');
+  worker = background(worker.storage);
+  await worker.send('support:later');
+  assert.equal(worker.storage.supportPrompt.interval, 30);
+});
+
+test('legacy states migrate to recurring reminders', async () => {
+  for (const [saved, interval, laterCount] of [
+    [{ count: 0, stopped: true }, 10, 0],
+    [{ count: 4, stopped: false }, 10, 0],
+    [{ count: 4, interval: 20 }, 15, 1],
+    [{ count: 19, interval: 20 }, 15, 1],
+    [{ count: 0, interval: 99, laterCount: -1 }, 10, 0],
+  ]) {
+    const worker = background({ supportPrompt: saved });
+    assert.equal((await worker.send()).show, false);
+    assert.equal(worker.storage.supportPrompt.interval, interval);
+    assert.equal(worker.storage.supportPrompt.laterCount, laterCount);
+    assert.equal('stopped' in worker.storage.supportPrompt, false);
+    await worker.send('support:later');
+    assert.equal(worker.storage.supportPrompt.interval, laterCount === 0 ? 15 : 30);
+  }
+});
+
+test('concurrent footer and rating actions retain message order', async () => {
   const worker = background();
-  await worker.send('support:later');
-  await worker.send('support:stop');
-  await worker.send('support:later');
-  for (let i = 0; i < 40; i++) assert.equal((await worker.send()).show, false);
-  assert.equal(worker.storage.supportPrompt.stopped, true);
+  await Promise.all([
+    worker.send('support:later'), worker.send('support:reset'), worker.send('support:later'),
+  ]);
+  assert.equal(worker.storage.supportPrompt.count, 0);
+  assert.equal(worker.storage.supportPrompt.interval, 30);
+  assert.equal(worker.storage.supportPrompt.laterCount, 2);
 });
